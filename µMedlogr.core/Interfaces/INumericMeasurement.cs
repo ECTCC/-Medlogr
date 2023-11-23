@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 namespace µMedlogr.core.Interfaces;
 internal interface INumericMeasurement<T> where T : INumber<T> {
     [Key]
-    public int Id { get; set; }
-    public DateTime TimeOfMeasurement { get; set; }
-    public T Measurement { get; set; }
-    public string? Comments { get; set; }
+    internal int Id { get; set; }
+    internal DateTime TimeOfMeasurement { get; set; }
+    internal T Measurement { get; set; }
+    internal string? Comments { get; set; }
 
 }
