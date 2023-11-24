@@ -1,19 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using µMedlogr.core.Enums;
 
 namespace µMedlogr.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
-
-        public IndexModel(ILogger<IndexModel> logger)
+        public List<string> Severitys { get; set; }
+        public IndexModel()
         {
-            _logger = logger;
-        }
 
+        }
         public void OnGet()
         {
+            Severitys = Enum.GetValues(typeof(Severity))
+    .Cast<Severity>()
+    .Select(v => v.ToString())
+    .ToList();
+            var a = 0;
 
         }
     }
