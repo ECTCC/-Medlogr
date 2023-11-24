@@ -13,7 +13,7 @@ internal class µMedlogrContextFactory : IDesignTimeDbContextFactory<µMedlogrCo
     public µMedlogrContext CreateDbContext(string[] args) {
         IConfiguration config = new ConfigurationBuilder()
             .SetBasePath(Path.Combine( Directory.GetCurrentDirectory() ,  "../µMedlogr" ))
-            .AddJsonFile("appsettings.json").Build();
+            .AddJsonFile("appsettings.Development.json").Build();
 
         var connstring = config.GetConnectionString("DefaultConnection");
         var optionsBuilder = new DbContextOptionsBuilder<µMedlogrContext>();

@@ -4,6 +4,12 @@ namespace µMedlogr.core.Models;
 internal class SymptomType {
     public int Id { get; set; }
     public required string Name { get; set; }
-    public Severity SubjectiveSeverity { get; set; }
+
+    /// <summary>
+    /// The duration for which a symptom will be reported 
+    /// as active before a new assessment is needed
+    /// </summary>
+    //public float MeasureInterval { get; set; }
+    
 
 }

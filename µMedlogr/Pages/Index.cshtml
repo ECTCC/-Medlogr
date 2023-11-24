@@ -6,8 +6,10 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    @foreach(var item in Model.Severitys)
-    {
-        <p>@item</p>
-    }
+
+
+    <select asp-for="NewSeverity" asp-items="Html.GetEnumSelectList<µMedlogr.core.Enums.Severity>()">
+        <option selected="selected" value="">Severity</option>
+    </select>
+
 </div>
