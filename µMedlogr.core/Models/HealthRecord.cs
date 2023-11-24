@@ -6,7 +6,7 @@ namespace µMedlogr.core.Models;
 [PrimaryKey(nameof(Id))]
 public class HealthRecord {
     internal int Id { get; set; }
-    internal required Person Record { get; set; }
+    public required Person Record { get; set; }
     internal ICollection<INumericMeasurement<float>> Temperatures { get; set; }
     public ICollection<SymptomMeasurement> SymtomLog { get; set; }
     public ICollection<SymptomType> CurrentSymptoms { get; set; }
