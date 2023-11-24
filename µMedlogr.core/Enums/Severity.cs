@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace µMedlogr.core.Enums;
-internal enum Severity {
+public enum Severity {
     None = 0,
     Mild = 1,
     Moderate = 2,

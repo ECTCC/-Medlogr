@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace µMedlogr.core;
-internal class µMedlogrContext : DbContext {
+public class µMedlogrContext : DbContext {
 
     public µMedlogrContext(DbContextOptions options) : base(options) { }
 

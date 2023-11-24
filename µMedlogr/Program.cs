@@ -1,6 +1,7 @@
 using µMedlogr.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using µMedlogr.core;
 
 namespace µMedlogr
 {
@@ -19,7 +20,8 @@ namespace µMedlogr
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddRazorPages();
-
+            builder.Services.AddDbContext<µMedlogrContext>(options => options.UseSqlServer(connectionString));
+            builder.Services.AddScoped<µMedlogr.core.µMedlogrContext>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

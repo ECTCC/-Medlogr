@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace µMedlogr.core.Models;
-internal class Person {
+public class Person {
     [Key]
     public int Id { get; set; }
     public required string NickName { get; set; }

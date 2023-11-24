@@ -1,7 +1,7 @@
 ﻿using µMedlogr.core.Enums;
 
 namespace µMedlogr.core.Models;
-internal class SymptomType {
+public class SymptomType {
     public int Id { get; set; }
     public required string Name { get; set; }
 

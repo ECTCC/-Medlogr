@@ -1,15 +1,27 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Logga symptom";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    <h3>Lägga till symptom:</h3>
+    <div class="contain">
 
+        <form method="post" enctype="multipart/form-data">
+            <div> <label asp-for="NewSymptom" class="form-label">Ange symptom</label>
+                <textarea asp-for="NewSymptom" class="form-control" cols="40" rows="1"></textarea>
+            </div>
+            <br />
+            <select asp-for="NewSeverity" asp-items="Html.GetEnumSelectList<µMedlogr.core.Enums.Severity>()">
+                <option selected="selected" value="">Severity</option>
+            </select>
+            <br />
+            <label asp-for="Notes" class="form-label">Anteckningar</label>
+            <textarea asp-for="Notes" class="form-control" cols="40" rows="1"></textarea>
 
-    <select asp-for="NewSeverity" asp-items="Html.GetEnumSelectList<µMedlogr.core.Enums.Severity>()">
-        <option selected="selected" value="">Severity</option>
-    </select>
+            <input type="submit" class="btn btn-success" value="Lägg till">
 
+        </form>
+    </div>
 </div>

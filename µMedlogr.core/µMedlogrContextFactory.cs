@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace µMedlogr.core;
-internal class µMedlogrContextFactory : IDesignTimeDbContextFactory<µMedlogrContext> {
+public class µMedlogrContextFactory : IDesignTimeDbContextFactory<µMedlogrContext> {
     public µMedlogrContext CreateDbContext(string[] args) {
         IConfiguration config = new ConfigurationBuilder()
             .SetBasePath(Path.Combine( Directory.GetCurrentDirectory() ,  "../µMedlogr" ))
