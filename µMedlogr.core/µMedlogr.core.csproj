@@ -17,6 +17,9 @@
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 			<_Parameter1>µMedlogr</_Parameter1>
 		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>µMedlogr.test</_Parameter1>
+		</AssemblyAttribute>
 	</ItemGroup>
 
 </Project>
