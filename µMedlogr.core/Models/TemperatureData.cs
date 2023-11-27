@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace µMedlogr.core.Models;
-public class TemperatureData : INumericMeasurement<float> {
+internal class TemperatureData : INumericMeasurement<float> {
     [Key]
     public int Id { get; set; }
     public DateTime TimeOfMeasurement { get; set; }

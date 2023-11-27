@@ -9,16 +9,18 @@
     <div class="contain">
 
         <form method="post" enctype="multipart/form-data">
-            <div> <label asp-for="NewSymptom" class="form-label">Ange symptom</label>
-                <textarea asp-for="NewSymptom" class="form-control" cols="40" rows="1"></textarea>
+            <div class="form-group">
+                <label asp-for="NewSymptom" class="form-label">Ange Symptom</label>
+                <textarea asp-for="NewSymptom" class="form-control" cols="40" rows="1" placeholder="Symptom"></textarea>
             </div>
-            <br />
-            <select asp-for="NewSeverity" asp-items="Html.GetEnumSelectList<µMedlogr.core.Enums.Severity>()">
-                <option selected="selected" value="">Severity</option>
-            </select>
-            <br />
-            <label asp-for="Notes" class="form-label">Anteckningar</label>
-            <textarea asp-for="Notes" class="form-control" cols="40" rows="1"></textarea>
+            <div class="form-group">
+              <label asp-for="NewSeverity" class="col-form-label"/>
+                <select asp-for="NewSeverity" asp-items="Html.GetEnumSelectList<µMedlogr.core.Enums.Severity>()"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Notes" class="form-label">Anteckningar</label>
+                <textarea asp-for="Notes" class="form-control" cols="40" rows="1" placeholder="Övrigt"></textarea>
+            </div>
 
             <input type="submit" class="btn btn-success" value="Lägg till">
 

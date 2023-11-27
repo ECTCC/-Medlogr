@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using µMedlogr.core;
 
@@ -11,9 +12,11 @@ using µMedlogr.core;
 namespace µMedlogr.core.Migrations
 {
     [DbContext(typeof(µMedlogrContext))]
-    partial class µMedlogrContextModelSnapshot : ModelSnapshot
+    [Migration("20231126182711_PublicProperties")]
+    partial class PublicProperties
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace µMedlogr.core.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("HealthRecordSymptomType", b =>
-                {
-                    b.Property<int>("CurrentSymptomsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RecordsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CurrentSymptomsId", "RecordsId");
-
-                    b.HasIndex("RecordsId");
-
-                    b.ToTable("HealthRecordSymptomType");
-                });
 
             modelBuilder.Entity("µMedlogr.core.Models.HealthRecord", b =>
                 {
@@ -119,11 +107,16 @@ namespace µMedlogr.core.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("HealthRecordId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("HealthRecordId");
 
                     b.ToTable("SymptomTypes");
                 });
@@ -155,21 +148,6 @@ namespace µMedlogr.core.Migrations
                     b.ToTable("TemperatureDatas");
                 });
 
-            modelBuilder.Entity("HealthRecordSymptomType", b =>
-                {
-                    b.HasOne("µMedlogr.core.Models.SymptomType", null)
-                        .WithMany()
-                        .HasForeignKey("CurrentSymptomsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("µMedlogr.core.Models.HealthRecord", null)
-                        .WithMany()
-                        .HasForeignKey("RecordsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("µMedlogr.core.Models.HealthRecord", b =>
                 {
                     b.HasOne("µMedlogr.core.Models.Person", "Record")
@@ -194,6 +172,13 @@ namespace µMedlogr.core.Migrations
                     b.Navigation("Symptom");
                 });
 
+            modelBuilder.Entity("µMedlogr.core.Models.SymptomType", b =>
+                {
+                    b.HasOne("µMedlogr.core.Models.HealthRecord", null)
+                        .WithMany("CurrentSymptoms")
+                        .HasForeignKey("HealthRecordId");
+                });
+
             modelBuilder.Entity("µMedlogr.core.Models.TemperatureData", b =>
                 {
                     b.HasOne("µMedlogr.core.Models.HealthRecord", null)
@@ -203,6 +188,8 @@ namespace µMedlogr.core.Migrations
 
             modelBuilder.Entity("µMedlogr.core.Models.HealthRecord", b =>
                 {
+                    b.Navigation("CurrentSymptoms");
+
                     b.Navigation("SymtomLog");
 
                     b.Navigation("Temperatures");

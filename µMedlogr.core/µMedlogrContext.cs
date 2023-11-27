@@ -7,13 +7,13 @@ public class µMedlogrContext : DbContext {
     public µMedlogrContext(DbContextOptions options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder builder) {
-        // Add Loading behavior for related entities
+
     }
 
-    public DbSet<HealthRecord> HealthRecords { get; set; } = default!;
-    public DbSet<Person> People { get; set; } = default!;
-    public DbSet<SymptomMeasurement> SymptomMeasurements { get; set; } = default!;
-    public DbSet<SymptomType> SymptomTypes { get; set; } = default!;
-    public DbSet<TemperatureData> TemperatureDatas { get; set; } = default!;
+    internal DbSet<HealthRecord> HealthRecords { get; set; } = default!;
+    internal DbSet<Person> People { get; set; } = default!;
+    internal DbSet<SymptomMeasurement> SymptomMeasurements { get; set; } = default!;
+    internal DbSet<SymptomType> SymptomTypes { get; set; } = default!;
+    internal DbSet<TemperatureData> TemperatureDatas { get; set; } = default!;
 
 }
