@@ -10,9 +10,7 @@
     <div class="contain">
 
         <form asp-page-handler="AddSymptom" method="post" enctype="multipart/form-data">
-@*             @for (int i = 0; i < Model.SymptomSeverityList.Count; i++) {
-                @Html.HiddenFor(model => Model.SymptomSeverityList[i])
-            } *@
+
             <input type="hidden" name="injson" value=@JsonSerializer.Serialize(Model.SymptomSeverityList, new JsonSerializerOptions { WriteIndented = false }) />
             <div class="form-group">
                 <label asp-for="SymptomId" class="form-label">Ange Symptom</label>
@@ -35,10 +33,6 @@
         </table>
         <form asp-action="SaveSymptoms" method="post" enctype="multipart/form-data">
             <div class="form-group">
-                @for (int i = 0; i < Model.SymptomSeverityList.Count; i++) {
-                    <input type="hidden" asp-for=SymptomSeverityList[i] />
-                    @* @Html.HiddenFor(model => Model.SymptomSeverityList[i]) *@
-                }
                 <input type="hidden" name="json" value=@JsonSerializer.Serialize(Model.SymptomSeverityList, new JsonSerializerOptions { WriteIndented = false }) />
                 <label asp-for="Notes" class="form-label">Anteckningar</label>
                 <textarea asp-for="Notes" class="form-control" cols="40" rows="1" placeholder="Övrigt"></textarea>
