@@ -6,22 +6,20 @@ using System.ComponentModel.DataAnnotations;
 using µMedlogr.core;
 using µMedlogr.core.Enums;
 using µMedlogr.core.Models;
-using System.Text.Json;
-using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace µMedlogr.Pages;
 
 public class IndexModel(µMedlogrContext context) : PageModel {
     private readonly µMedlogrContext _context = context;
-    public int Test {  get; set; }
     [Required]
     [BindProperty]
     public string? NewSymptom { get; set; }
 
     [BindProperty]
     public string? Notes { get; set; }
-    [BindProperty(SupportsGet = true)]
-    public List<Tuple<int, Severity>> SymptomSeverityList { get; set; } = [];
+    [BindProperty]
+    public List<(int, Severity)> SymptomSeverityList { get; set; } = [];
     [BindProperty]
     public int SymptomId { get; set; }
     /// <summary>
@@ -36,13 +34,19 @@ public class IndexModel(µMedlogrContext context) : PageModel {
     [Range(0, (double)µMedlogr.core.Enums.Severity.Maximal, ErrorMessage = "Välj en allvarlighetsgrad")]
     [BindProperty]
     public Severity NewSeverity { get; set; }
+    public int SymptomIdProperty
+    {
+        get => (int)(TempData.Peek(nameof(SymptomIdProperty)) ?? 0);
+        set => TempData[nameof(SymptomIdProperty)] = value;
+    }
 
-    public async Task OnGetAsync([FromQuery]string json, [FromQuery] int test) {
-        if (json is not null) {
-            var options = new JsonSerializerOptions { WriteIndented = false };
-            this.SymptomSeverityList = JsonSerializer.Deserialize<List<Tuple<int, Severity>>>(json);
-        }
-        this.Test = test;
+    public Severity NewSeverityProperty
+    {
+        get => (Severity)(TempData.Peek(nameof(NewSeverityProperty)) ?? 0);
+        set => TempData[nameof(NewSeverityProperty)] = (int)value;
+    }
+
+    public async Task OnGetAsync() {
         //Load the SymptomChoices from DB
         var Symptoms = await _context.SymptomTypes.ToListAsync();
         SymptomChoices = new SelectList(Symptoms, nameof(SymptomType.Id), nameof(SymptomType.Name));
@@ -52,7 +56,7 @@ public class IndexModel(µMedlogrContext context) : PageModel {
     [ActionName("SaveSymptoms")]
     public async Task<IActionResult> OnPostAsync()
     {
-        if (SymptomSeverityList.Count < 1)
+        if (SymptomIdProperty < 0)
         {
             return BadRequest("Ingen nya symptom!");
         }
@@ -66,12 +70,11 @@ public class IndexModel(µMedlogrContext context) : PageModel {
     {
         if (NewSeverity > 0 && SymptomId > 0)
         {
-            SymptomSeverityList.Add(new Tuple<int, Severity>(SymptomId, NewSeverity));
-            SymptomSeverityList.Add(new Tuple<int, Severity>(SymptomId, NewSeverity));
-            SymptomSeverityList.Add(new Tuple<int, Severity>(SymptomId, NewSeverity));
-            var options = new JsonSerializerOptions { WriteIndented = false };
-            var json = JsonSerializer.Serialize(SymptomSeverityList, options);
-            return RedirectToPage("/Index",new{ json, Test=1 });
+            SymptomIdProperty = SymptomId;
+            NewSeverityProperty = NewSeverity;
+            SymptomSeverityList.Add(new(SymptomId, NewSeverity));
+            return RedirectToPage("/Index");
+
         }
         return BadRequest("Symptom saknas!");
     }
