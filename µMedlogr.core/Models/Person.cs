@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace µMedlogr.core.Models;
 [PrimaryKey(nameof(Id))]
 internal class Person {
-    internal int Id { get; set; }
+    public int Id { get; set; }
     [Required]
     public string? NickName { get; set; }
     public DateOnly DateOfBirth { get; set; }

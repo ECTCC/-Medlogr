@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace µMedlogr.core.Models;
 [PrimaryKey(nameof(Id))]
 internal class SymptomType {
-    internal int Id { get; set; }
+    public int Id { get; set; }
     [Required]
     public string? Name { get; set; }
 

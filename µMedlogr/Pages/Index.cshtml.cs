@@ -17,14 +17,14 @@ public class IndexModel(µMedlogrContext context) : PageModel {
 
     [BindProperty]
     public string? Notes { get; set; }
-    internal List<(SymptomType, Severity, string)> SymptomSeverityList { get; set; } = [];
+    [BindProperty]
+    public List<(int, Severity)> SymptomSeverityList { get; set; } = [];
     [BindProperty]
     public int SymptomId { get; set; }
     /// <summary>
     /// The database choices for symptoms
     /// </summary>
     //internal List<SymptomType> SymptomChoices { get; set; }
-    [BindProperty]
     public SelectList SymptomChoices { get; set; }
     // [BindProperty]
     // public SymptomType NewSymptomType { get; set; }
@@ -41,12 +41,27 @@ public class IndexModel(µMedlogrContext context) : PageModel {
         SymptomChoices = new SelectList(Symptoms, nameof(SymptomType.Id), nameof(SymptomType.Name));
 
     }
-    public async Task<IActionResult> OnPostAsync() {
-        if (!ModelState.IsValid) {
-            return BadRequest(ModelState);
+
+    [ActionName("SaveSymptoms")]
+    public async Task<IActionResult> OnPostAsync()
+    {
+        if (SymptomSeverityList.Count < 1)
+        {
+            return BadRequest("Ingen nya symptom!");
         }
         var test = Notes;
 
-        return Page();
+        return Redirect("/index");
+    }
+    
+    [ActionName("AddSymptom")]
+    public async Task<IActionResult> OnPostAddSymptomAsync()
+    {
+        if (NewSeverity > 0 && SymptomId > 0)
+        {
+            SymptomSeverityList.Add(new(SymptomId, NewSeverity));
+            return RedirectToPage("/Index",new{ SymptomSeverityList});
+        }
+        return BadRequest("Symptom saknas!");
     }
 }

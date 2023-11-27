@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace µMedlogr.core.Models;
 [PrimaryKey(nameof(Id))]
 internal class HealthRecord {
-    internal int Id { get; set; }
+    public int Id { get; set; }
     public Person? Record { get; set; }
     public ICollection<TemperatureData> Temperatures { get; set; }
     public ICollection<SymptomMeasurement> SymtomLog { get; set; }
