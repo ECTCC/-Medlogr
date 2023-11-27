@@ -18,12 +18,14 @@ public class IndexModel(µMedlogrContext context) : PageModel {
     [BindProperty]
     public string? Notes { get; set; }
     internal List<(SymptomType, Severity, string)> SymptomSeverityList { get; set; } = [];
-
+    [BindProperty]
+    public int SymptomId { get; set; }
     /// <summary>
     /// The database choices for symptoms
     /// </summary>
     //internal List<SymptomType> SymptomChoices { get; set; }
-    internal SelectList SymptomChoices { get; set; }
+    [BindProperty]
+    public SelectList SymptomChoices { get; set; }
     // [BindProperty]
     // public SymptomType NewSymptomType { get; set; }
     [Required]
@@ -32,10 +34,11 @@ public class IndexModel(µMedlogrContext context) : PageModel {
     [BindProperty]
     public Severity NewSeverity { get; set; }
 
-    public async void OnGetAsync() {
+    public async Task OnGetAsync() {
 
         //Load the SymptomChoices from DB
-        SymptomChoices = new SelectList(_context.SymptomTypes, nameof(SymptomType.Id), nameof(SymptomType.Name));
+        var Symptoms = await _context.SymptomTypes.ToListAsync();
+        SymptomChoices = new SelectList(Symptoms, nameof(SymptomType.Id), nameof(SymptomType.Name));
 
     }
     public async Task<IActionResult> OnPostAsync() {

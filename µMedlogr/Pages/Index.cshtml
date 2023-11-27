@@ -10,8 +10,8 @@
 
         <form method="post" enctype="multipart/form-data">
             <div class="form-group">
-                <label asp-for="NewSymptom" class="form-label">Ange Symptom</label>
-                <textarea asp-for="NewSymptom" class="form-control" cols="40" rows="1" placeholder="Symptom"></textarea>
+                <label asp-for="SymptomId" class="form-label">Ange Symptom</label>
+                <select asp-for="SymptomId" asp-items="Model.SymptomChoices"></select>
             </div>
             <div class="form-group">
               <label asp-for="NewSeverity" class="col-form-label"/>
