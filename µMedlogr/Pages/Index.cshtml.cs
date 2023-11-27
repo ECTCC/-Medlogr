@@ -6,19 +6,22 @@ using System.ComponentModel.DataAnnotations;
 using µMedlogr.core;
 using µMedlogr.core.Enums;
 using µMedlogr.core.Models;
+using System.Text.Json;
+using Microsoft.Extensions.Options;
 
 namespace µMedlogr.Pages;
 
 public class IndexModel(µMedlogrContext context) : PageModel {
     private readonly µMedlogrContext _context = context;
+    public int Test {  get; set; }
     [Required]
     [BindProperty]
     public string? NewSymptom { get; set; }
 
     [BindProperty]
     public string? Notes { get; set; }
-    [BindProperty]
-    public List<(int, Severity)> SymptomSeverityList { get; set; } = [];
+    [BindProperty(SupportsGet = true)]
+    public List<Tuple<int, Severity>> SymptomSeverityList { get; set; } = [];
     [BindProperty]
     public int SymptomId { get; set; }
     /// <summary>
@@ -34,8 +37,12 @@ public class IndexModel(µMedlogrContext context) : PageModel {
     [BindProperty]
     public Severity NewSeverity { get; set; }
 
-    public async Task OnGetAsync() {
-
+    public async Task OnGetAsync([FromQuery]string json, [FromQuery] int test) {
+        if (json is not null) {
+            var options = new JsonSerializerOptions { WriteIndented = false };
+            this.SymptomSeverityList = JsonSerializer.Deserialize<List<Tuple<int, Severity>>>(json);
+        }
+        this.Test = test;
         //Load the SymptomChoices from DB
         var Symptoms = await _context.SymptomTypes.ToListAsync();
         SymptomChoices = new SelectList(Symptoms, nameof(SymptomType.Id), nameof(SymptomType.Name));
@@ -59,8 +66,12 @@ public class IndexModel(µMedlogrContext context) : PageModel {
     {
         if (NewSeverity > 0 && SymptomId > 0)
         {
-            SymptomSeverityList.Add(new(SymptomId, NewSeverity));
-            return RedirectToPage("/Index",new{ SymptomSeverityList});
+            SymptomSeverityList.Add(new Tuple<int, Severity>(SymptomId, NewSeverity));
+            SymptomSeverityList.Add(new Tuple<int, Severity>(SymptomId, NewSeverity));
+            SymptomSeverityList.Add(new Tuple<int, Severity>(SymptomId, NewSeverity));
+            var options = new JsonSerializerOptions { WriteIndented = false };
+            var json = JsonSerializer.Serialize(SymptomSeverityList, options);
+            return RedirectToPage("/Index",new{ json, Test=1 });
         }
         return BadRequest("Symptom saknas!");
     }
