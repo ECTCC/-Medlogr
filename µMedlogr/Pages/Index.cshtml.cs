@@ -10,7 +10,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace µMedlogr.Pages;
 
-public class IndexModel(µMedlogrContext context) : PageModel {
+public class IndexModel(µMedlogrContext context) : PageModel
+{
     private readonly µMedlogrContext _context = context;
     [Required]
     [BindProperty]
@@ -46,7 +47,8 @@ public class IndexModel(µMedlogrContext context) : PageModel {
         set => TempData[nameof(NewSeverityProperty)] = (int)value;
     }
 
-    public async Task OnGetAsync() {
+    public async Task OnGetAsync()
+    {
         //Load the SymptomChoices from DB
         var Symptoms = await _context.SymptomTypes.ToListAsync();
         SymptomChoices = new SelectList(Symptoms, nameof(SymptomType.Id), nameof(SymptomType.Name));
@@ -56,15 +58,16 @@ public class IndexModel(µMedlogrContext context) : PageModel {
     [ActionName("SaveSymptoms")]
     public async Task<IActionResult> OnPostAsync()
     {
-        if (SymptomIdProperty < 0)
+        if (SymptomIdProperty > 0)
         {
-            return BadRequest("Ingen nya symptom!");
+            TempData.Remove(nameof(SymptomIdProperty));
+            TempData.Remove(nameof(NewSeverityProperty));
+            return Redirect("/index");
         }
         var test = Notes;
-
-        return Redirect("/index");
+        return BadRequest("Inga nya symptom!");
     }
-    
+
     [ActionName("AddSymptom")]
     public async Task<IActionResult> OnPostAddSymptomAsync()
     {
