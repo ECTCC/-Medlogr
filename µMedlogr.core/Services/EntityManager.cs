@@ -8,11 +8,18 @@ public class EntityManager(µMedlogrContext context)
 
     internal async Task<SymptomMeasurement> CreateSymptomMeasurement(SymptomType symptom, Severity severity)
     {
-        //if (symptom != null && severity > 0)
-        //{
-        //    if
-        //}
-        return null;
+        if (symptom is null || severity <(Severity) 1)
+        {
+            return null;
+        }
+        var newmesurment = new SymptomMeasurement { Symptom=symptom,SubjectiveSeverity=severity,TimeSymptomWasChecked=DateTime.Now};
+        return newmesurment;
+    }
+    internal async Task<bool> SaveSympomMeasurment(SymptomMeasurement symptomMeasurement)
+    {
+        //_context.Add(symptomMeasurement);
+        //await _context.SaveChangesAsync();
+        return true;
     }
 
 }
