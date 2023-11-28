@@ -2,6 +2,7 @@ using µMedlogr.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using µMedlogr.core;
+using µMedlogr.core.Services;
 
 namespace µMedlogr
 {
@@ -21,7 +22,8 @@ namespace µMedlogr
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddRazorPages();
             builder.Services.AddDbContext<µMedlogrContext>(options => options.UseSqlServer(connectionString));
-            builder.Services.AddScoped<µMedlogr.core.µMedlogrContext>();
+            builder.Services.AddScoped<µMedlogrContext>();
+            builder.Services.AddScoped<EntityManager>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

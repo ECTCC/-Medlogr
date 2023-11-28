@@ -29,6 +29,7 @@ public class EntityManager
         if(newSymptomMeasurement.Id != 0) {
             return false;
         }
+
         _context.Add(newSymptomMeasurement);
         await _context.SaveChangesAsync();
         return true;
