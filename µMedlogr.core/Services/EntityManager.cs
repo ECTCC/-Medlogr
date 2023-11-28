@@ -1,25 +1,18 @@
 ﻿using µMedlogr.core.Enums;
 using µMedlogr.core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace µMedlogr.core.Services
+namespace µMedlogr.core.Services; 
+public class EntityManager(µMedlogrContext context)
 {
-    public class EntityManager(µMedlogrContext context)
+    private readonly µMedlogrContext _context = context;
+
+    internal async Task<SymptomMeasurement> CreateSymptomMeasurement(SymptomType symptom, Severity severity)
     {
-        private readonly µMedlogrContext _context = context;
-
-        internal async Task<bool> CreateSymptomMeasurement(SymptomType symptom, Severity severity)
-        {
-            //if (symptom != null && severity > 0)
-            //{
-            //    if
-            //}
-            return true;
-        }
-
+        //if (symptom != null && severity > 0)
+        //{
+        //    if
+        //}
+        return null;
     }
+
 }

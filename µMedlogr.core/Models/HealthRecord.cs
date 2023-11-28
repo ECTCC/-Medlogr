@@ -1,15 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
-using µMedlogr.core.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace µMedlogr.core.Models;
 [PrimaryKey(nameof(Id))]
 internal class HealthRecord {
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     public Person? Record { get; set; }
-    public ICollection<TemperatureData> Temperatures { get; set; }
-    public ICollection<SymptomMeasurement> SymtomLog { get; set; }
-    public ICollection<SymptomType> CurrentSymptoms { get; set; }
+    public virtual ICollection<TemperatureData> Temperatures { get; set; }
+    public virtual ICollection<SymptomMeasurement> SymtomLog { get; set; }
+    public virtual ICollection<SymptomType> CurrentSymptoms { get; set; }
 
     internal HealthRecord() {
         Temperatures = new HashSet<TemperatureData>();

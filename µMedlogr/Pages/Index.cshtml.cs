@@ -1,13 +1,12 @@
+using µMedlogr.core;
+using µMedlogr.core.Enums;
+using µMedlogr.core.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using µMedlogr.core;
-using µMedlogr.core.Enums;
-using µMedlogr.core.Models;
 using System.Text.Json;
-using Microsoft.Extensions.Options;
 
 namespace µMedlogr.Pages;
 
@@ -39,7 +38,7 @@ public class IndexModel(µMedlogrContext context) : PageModel {
     public async Task OnGetAsync([FromQuery]string json) {
         if (json is not null) {
             var options = new JsonSerializerOptions { WriteIndented = false };
-            this.SymptomSeverityList = JsonSerializer.Deserialize<List<Tuple<int, Severity>>>(json);
+            this.SymptomSeverityList = JsonSerializer.Deserialize<List<Tuple<int, Severity>>>(json) ?? [];
         }
         //Load the SymptomChoices from DB
         var Symptoms = await _context.SymptomTypes.ToListAsync();
@@ -52,7 +51,7 @@ public class IndexModel(µMedlogrContext context) : PageModel {
     {
         if (json is not null) {
             var options = new JsonSerializerOptions { WriteIndented = false };
-            this.SymptomSeverityList = JsonSerializer.Deserialize<List<Tuple<int, Severity>>>(json);
+            this.SymptomSeverityList = JsonSerializer.Deserialize<List<Tuple<int, Severity>>>(json) ?? [];
         }
         if (SymptomSeverityList.Count < 1)
         {
@@ -68,7 +67,7 @@ public class IndexModel(µMedlogrContext context) : PageModel {
     {
         if(injson is not null) {
             var options = new JsonSerializerOptions { WriteIndented = false };
-            this.SymptomSeverityList = JsonSerializer.Deserialize<List<Tuple<int, Severity>>>(injson);
+            this.SymptomSeverityList = JsonSerializer.Deserialize<List<Tuple<int, Severity>>>(injson) ?? [];
         }
 
         if (NewSeverity > 0 && SymptomId > 0)
