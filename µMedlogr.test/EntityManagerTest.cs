@@ -4,12 +4,13 @@ using µMedlogr.core.Models;
 using µMedlogr.core.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using Xunit.Sdk;
 
 namespace µMedlogr.test;
 public class EntityManagerTest {
     #region Tests Invariant
     [Fact]
-    public void CreateSymptomMeasurement_SympomIsNull_ReturnTaskEvaluatedToNull() {
+    public void CreateSymptomMeasurement_SymptomIsNull_ReturnTaskEvaluatedToNull() {
         //Arrange
         var sut = CreateDefaultEntityManager();
 
@@ -18,6 +19,15 @@ public class EntityManagerTest {
 
         //Assert
         Assert.Null(actual.Result);
+    }
+    [Fact]
+    public void CreateSymptomMeasurement_SeverityIsOutOfRange_ThrowsArgumentOutOfRangeException()
+    {
+        //Arrange
+        var sut = CreateDefaultEntityManager();
+        //Act
+        //Assert
+        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => sut.CreateSymptomMeasurement(new SymptomType(), (Severity)Int32.MaxValue));
     }
     #endregion
     #region Tests Variant
@@ -73,4 +83,5 @@ public class EntityManagerTest {
         };
     }
     #endregion
+
 }
