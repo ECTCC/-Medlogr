@@ -5,6 +5,7 @@ using µMedlogr.core.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit.Sdk;
+using Microsoft.Extensions.Options;
 
 namespace µMedlogr.test;
 public class EntityManagerTest {
@@ -37,6 +38,24 @@ public class EntityManagerTest {
         //Assert
         Assert.Throws<ArgumentNullException>(() => new EntityManager(null!));
     }
+    [Fact]
+    public void SaveSymptomMeasurement_DatabaseDoesNotSaveValidValue_ThrowsDbUpdateException() {
+        //Arrange
+        var optionsbuilder = new DbContextOptionsBuilder<µMedlogrContext>();
+        var mock = new Mock<µMedlogrContext>(optionsbuilder.Options);
+        mock.Setup(m => m.SaveChangesAsync(default)).ReturnsAsync(0);
+        var sut = new µMedlogr.core.Services.EntityManager(mock.Object);
+        var symptomMeasurement = new SymptomMeasurement {
+            Id = 0,
+            Symptom = new SymptomType { Id = 1, Name = "Snuva", Records = [] },
+            SubjectiveSeverity = Severity.Maximal,
+            TimeSymptomWasChecked = DateTime.Now,
+        };
+
+        //Act
+        //Assert
+        Assert.ThrowsAsync<DbUpdateException>(() => sut.SaveNewSymptomMeasurement(symptomMeasurement));
+    }
     #endregion
     #region Tests Variant
     [Theory]
@@ -53,12 +72,31 @@ public class EntityManagerTest {
     [MemberData(nameof(ValidSymptomMeasurementsNotAlreadyInDatabase))]
     internal void SaveSymptomMeasurement_ValidNewSymptom_ReturnsTrue(SymptomMeasurement validSymptomMeasurement) {
         //Arrange
-        var sut = CreateDefaultEntityManager();
+        var optionsbuilder = new DbContextOptionsBuilder<µMedlogrContext>();
+        var mock = new Mock<µMedlogrContext>(optionsbuilder.Options);
+        mock.Setup(m => m.SaveChangesAsync(default)).Verifiable();
+        mock.Setup(m => m.SaveChangesAsync(default)).ReturnsAsync(1);
+        var sut = new µMedlogr.core.Services.EntityManager(mock.Object);
+
         //Act
-        var actual = sut.SaveSymptomMeasurement(validSymptomMeasurement);
+        var actual = sut.SaveNewSymptomMeasurement(validSymptomMeasurement);
         //Assert
         Assert.True(actual.Result);
+        mock.Verify(m => m.SaveChangesAsync(default), Times.Once);
     }
+    [Theory]
+    [MemberData(nameof(ValidSymptomMeasurementsAlreadyInDatabase))]
+    internal void SaveSymptomMeasurement_NewSymptomIsAlreadyAnEntity_ReturnsFalse(SymptomMeasurement validSymptomMeasurement) {
+        //Arrange
+        var sut = CreateDefaultEntityManager();
+
+        //Act
+        var actual = sut.SaveNewSymptomMeasurement(validSymptomMeasurement);
+
+        //Assert
+        Assert.False(actual.Result);
+    }
+
     #endregion
     #region Private
     private EntityManager CreateDefaultEntityManager() {
@@ -66,6 +104,7 @@ public class EntityManagerTest {
         var mock = new Mock<µMedlogrContext>(optionsbuilder.Options);
         return new µMedlogr.core.Services.EntityManager(mock.Object);
     }
+
     #endregion
     #region TestData
     public static IEnumerable<object[]> ValidSymptomMeasurementData() {
@@ -124,6 +163,30 @@ public class EntityManagerTest {
                 };
         yield return new object[] {
                 new SymptomMeasurement {   Id = 0,
+                                    Symptom = new SymptomType { Id=3, Name="Huvudvärk", Records=[] },
+                                    SubjectiveSeverity = Severity.Maximal,
+                                    TimeSymptomWasChecked = DateTime.Now,
+                }
+                };
+
+    }
+    public static IEnumerable<object[]> ValidSymptomMeasurementsAlreadyInDatabase() {
+        yield return new object[] {
+                new SymptomMeasurement {   Id = 1,
+                                    Symptom = new SymptomType { Id=1, Name="Snuva", Records=[] },
+                                    SubjectiveSeverity = Severity.Maximal,
+                                    TimeSymptomWasChecked = DateTime.Now,
+                }
+                };
+        yield return new object[] {
+                new SymptomMeasurement {   Id = -5,
+                                    Symptom = new SymptomType { Id=2, Name="Hosta", Records=[] },
+                                    SubjectiveSeverity = Severity.Maximal,
+                                    TimeSymptomWasChecked = DateTime.Now,
+                }
+                };
+        yield return new object[] {
+                new SymptomMeasurement {   Id = 1,
                                     Symptom = new SymptomType { Id=3, Name="Huvudvärk", Records=[] },
                                     SubjectiveSeverity = Severity.Maximal,
                                     TimeSymptomWasChecked = DateTime.Now,

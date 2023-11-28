@@ -20,12 +20,18 @@ public class EntityManager
         var newmesurment = new SymptomMeasurement { Symptom=symptom,SubjectiveSeverity=severity,TimeSymptomWasChecked=DateTime.Now};
         return newmesurment;
     }
-    internal async Task<bool> SaveSymptomMeasurement(SymptomMeasurement symptomMeasurement)
+    internal async Task<bool> SaveNewSymptomMeasurement(SymptomMeasurement newSymptomMeasurement)
     {
-        throw new NotImplementedException();
-        //_context.Add(symptomMeasurement);
-        //await _context.SaveChangesAsync();
-        //return true;
+        if(newSymptomMeasurement is null) {
+            return false;
+        }
+        //If Id is not 0 then the entity is not new
+        if(newSymptomMeasurement.Id != 0) {
+            return false;
+        }
+        _context.Add(newSymptomMeasurement);
+        await _context.SaveChangesAsync();
+        return true;
     }
 
 }
