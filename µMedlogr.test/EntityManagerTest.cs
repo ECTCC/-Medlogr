@@ -13,21 +13,29 @@ public class EntityManagerTest {
     public void CreateSymptomMeasurement_SymptomIsNull_ReturnTaskEvaluatedToNull() {
         //Arrange
         var sut = CreateDefaultEntityManager();
+        var severity = Severity.Maximal;
+
 
         //Act
-        var actual = sut.CreateSymptomMeasurement(null!, Severity.Maximal);
+        var actual = sut.CreateSymptomMeasurement(null!, severity);
 
         //Assert
         Assert.Null(actual.Result);
     }
     [Fact]
-    public void CreateSymptomMeasurement_SeverityIsOutOfRange_ThrowsArgumentOutOfRangeException()
-    {
+    public void CreateSymptomMeasurement_SeverityIsOutOfRange_ThrowsArgumentOutOfRangeException() {
         //Arrange
         var sut = CreateDefaultEntityManager();
         //Act
         //Assert
         Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => sut.CreateSymptomMeasurement(new SymptomType(), (Severity)Int32.MaxValue));
+    }
+    [Fact]
+    public void EntityManager_ConstructorWithNullContext_ThrowsArgumentNullException() {
+        //Arrange
+        //Act
+        //Assert
+        Assert.Throws<ArgumentNullException>(() => new EntityManager(null!));
     }
     #endregion
     #region Tests Variant
@@ -40,6 +48,16 @@ public class EntityManagerTest {
         var actual = sut.CreateSymptomMeasurement(symptom, severity);
         //Assert
         Assert.NotNull(actual.Result);
+    }
+    [Theory]
+    [MemberData(nameof(ValidSymptomMeasurementsNotAlreadyInDatabase))]
+    internal void SaveSymptomMeasurement_ValidNewSymptom_ReturnsTrue(SymptomMeasurement validSymptomMeasurement) {
+        //Arrange
+        var sut = CreateDefaultEntityManager();
+        //Act
+        var actual = sut.SaveSymptomMeasurement(validSymptomMeasurement);
+        //Assert
+        Assert.True(actual.Result);
     }
     #endregion
     #region Private
@@ -81,6 +99,37 @@ public class EntityManagerTest {
                 },
                 Severity.None
         };
+        yield return new object[] {
+            new SymptomType {   Id = 0,
+                                    Name = "Symptom2",
+                                    Records = new List<HealthRecord>()
+                },
+                Severity.Mild
+        };
+    }
+    public static IEnumerable<object[]> ValidSymptomMeasurementsNotAlreadyInDatabase() {
+        yield return new object[] {
+                new SymptomMeasurement {   Id = 0,
+                                    Symptom = new SymptomType { Id=1, Name="Snuva", Records=[] },
+                                    SubjectiveSeverity = Severity.Maximal,
+                                    TimeSymptomWasChecked = DateTime.Now,
+                }
+                };
+        yield return new object[] {
+                new SymptomMeasurement {   Id = 0,
+                                    Symptom = new SymptomType { Id=2, Name="Hosta", Records=[] },
+                                    SubjectiveSeverity = Severity.Maximal,
+                                    TimeSymptomWasChecked = DateTime.Now,
+                }
+                };
+        yield return new object[] {
+                new SymptomMeasurement {   Id = 0,
+                                    Symptom = new SymptomType { Id=3, Name="Huvudvärk", Records=[] },
+                                    SubjectiveSeverity = Severity.Maximal,
+                                    TimeSymptomWasChecked = DateTime.Now,
+                }
+                };
+
     }
     #endregion
 
