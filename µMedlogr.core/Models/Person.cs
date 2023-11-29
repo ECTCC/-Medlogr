@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace µMedlogr.core.Models;
 [PrimaryKey(nameof(Id))]
-internal class Person {
+public class Person {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     [Required]
@@ -14,5 +14,14 @@ internal class Person {
     public TimeSpan Age { get; }
     public float? WeightInKg { get; set; }
     public List<string> Allergies { get; set; } = [];
+
+    public HealthRecord HealthRecord { get; set; }
+
+    public virtual ICollection<AppUser> CareGivers { get;}
+
+    public Person()
+    {
+        CareGivers = new HashSet<AppUser>();
+    }
 
 }

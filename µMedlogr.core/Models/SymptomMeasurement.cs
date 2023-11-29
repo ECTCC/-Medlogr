@@ -5,11 +5,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace µMedlogr.core.Models;
 [PrimaryKey(nameof(Id))]
-internal class SymptomMeasurement {
+public class SymptomMeasurement {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     [Required]
     public SymptomType? Symptom { get; set; }
-    public DateTime TimeSymptomWasChecked { get; set; }
     public Severity SubjectiveSeverity { get; set; }
+    public DateTime TimeSymptomWasChecked { get; set; }
 }
