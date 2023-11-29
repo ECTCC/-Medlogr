@@ -18,12 +18,16 @@ namespace µMedlogr
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddDefaultIdentity<µMedlogr.core.Models.AppUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<µMedlogrContext>();
+
             builder.Services.AddRazorPages();
             builder.Services.AddDbContext<µMedlogrContext>(options => options.UseSqlServer(connectionString));
             builder.Services.AddScoped<µMedlogrContext>();
             builder.Services.AddScoped<EntityManager>();
+            builder.Services.AddAuthentication().AddCookie();
+            builder.Services.AddAuthorization();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

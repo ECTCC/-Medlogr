@@ -1,13 +1,15 @@
 ﻿using µMedlogr.core.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace µMedlogr.core;
-public class µMedlogrContext : DbContext {
+public class µMedlogrContext : IdentityDbContext<AppUser> {
 
     public µMedlogrContext(DbContextOptions options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        base.OnModelCreating(builder);
         builder.Entity<AppUser>()
             .HasMany(x => x.PeopleInCareOf)
             .WithMany(x => x.CareGivers)

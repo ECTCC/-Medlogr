@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace µMedlogr.core.Models
 {
-    internal class AppUser: IdentityUser
+    public class AppUser: IdentityUser
     {
-        public Person Me {  get; set; }
+        
+        public Person? Me {  get; set; }
         public virtual ICollection<Person> PeopleInCareOf  { get; set; }
-        internal AppUser()
+        public AppUser()
         { 
             PeopleInCareOf = new HashSet<Person>();
         }
