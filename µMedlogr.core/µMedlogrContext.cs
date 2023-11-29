@@ -15,5 +15,6 @@ public class µMedlogrContext : DbContext {
     internal DbSet<SymptomMeasurement> SymptomMeasurements { get; set; } = default!;
     internal DbSet<SymptomType> SymptomTypes { get; set; } = default!;
     internal DbSet<TemperatureData> TemperatureDatas { get; set; } = default!;
+    internal DbSet<HealthRecordEntry> HealthRecordsEntrys { get; set; }=default!;
 
 }

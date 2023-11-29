@@ -1,5 +1,10 @@
-﻿namespace µMedlogr.core.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace µMedlogr.core.Models;
+[PrimaryKey(nameof(Id))]
 internal class HealthRecordEntry {
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     public string? Notes { get; set; }
     public virtual ICollection<SymptomMeasurement> Measurements { get; set; }
