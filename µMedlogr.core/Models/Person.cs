@@ -15,4 +15,13 @@ internal class Person {
     public float? WeightInKg { get; set; }
     public List<string> Allergies { get; set; } = [];
 
+    public HealthRecord HealthRecord { get; set; }
+
+    public virtual ICollection<AppUser> CareGivers { get;}
+
+    public Person()
+    {
+        CareGivers = new HashSet<AppUser>();
+    }
+
 }
