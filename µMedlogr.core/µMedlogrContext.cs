@@ -8,11 +8,23 @@ public class µMedlogrContext : DbContext {
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.Entity<AppUser>().HasMany(x=>x.PeopleInCareOf).WithMany(x=>x.CareGivers);
+        builder.Entity<AppUser>()
+            .HasMany(x => x.PeopleInCareOf)
+            .WithMany(x => x.CareGivers)
+            .UsingEntity<Dictionary<string, object>>(
+                "AppUserPerson",
+                j=> j
+                .HasOne<AppUser>()
+                .WithMany()
+                .HasForeignKey("CareGiversId")
+                .OnDelete(DeleteBehavior.Restrict)
+                );
         builder.Entity<AppUser>().HasOne(x => x.Me);
-        builder.Entity<Person>().HasOne(x => x.HealthRecord);
-        builder.Entity<HealthRecord>().HasOne(x => x.Record);
-        
+        builder.Entity<HealthRecord>()
+            .HasOne(x => x.Record)
+            .WithOne(x => x.HealthRecord)
+            .HasForeignKey<Person>(x => x.Id);
+
     }
 
     internal DbSet<HealthRecord> HealthRecords { get; set; } = default!;

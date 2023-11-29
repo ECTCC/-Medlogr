@@ -12,8 +12,8 @@ using µMedlogr.core;
 namespace µMedlogr.core.Migrations
 {
     [DbContext(typeof(µMedlogrContext))]
-    [Migration("20231129090800_HealthRecordsEntryAdded")]
-    partial class HealthRecordsEntryAdded
+    [Migration("20231129121719_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace µMedlogr.core.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("AppUserPerson", b =>
+                {
+                    b.Property<string>("CareGiversId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("PeopleInCareOfId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CareGiversId", "PeopleInCareOfId");
+
+                    b.HasIndex("PeopleInCareOfId");
+
+                    b.ToTable("AppUserPerson");
+                });
 
             modelBuilder.Entity("HealthRecordSymptomType", b =>
                 {
@@ -40,6 +55,63 @@ namespace µMedlogr.core.Migrations
                     b.ToTable("HealthRecordSymptomType");
                 });
 
+            modelBuilder.Entity("µMedlogr.core.Models.AppUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("MeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MeId");
+
+                    b.ToTable("AppUsers");
+                });
+
             modelBuilder.Entity("µMedlogr.core.Models.HealthRecord", b =>
                 {
                     b.Property<int>("Id")
@@ -48,12 +120,7 @@ namespace µMedlogr.core.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("RecordId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("RecordId");
 
                     b.ToTable("HealthRecords");
                 });
@@ -84,8 +151,6 @@ namespace µMedlogr.core.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Allergies")
                         .IsRequired()
@@ -179,6 +244,21 @@ namespace µMedlogr.core.Migrations
                     b.ToTable("TemperatureDatas");
                 });
 
+            modelBuilder.Entity("AppUserPerson", b =>
+                {
+                    b.HasOne("µMedlogr.core.Models.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("CareGiversId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("µMedlogr.core.Models.Person", null)
+                        .WithMany()
+                        .HasForeignKey("PeopleInCareOfId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("HealthRecordSymptomType", b =>
                 {
                     b.HasOne("µMedlogr.core.Models.SymptomType", null)
@@ -194,13 +274,15 @@ namespace µMedlogr.core.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("µMedlogr.core.Models.HealthRecord", b =>
+            modelBuilder.Entity("µMedlogr.core.Models.AppUser", b =>
                 {
-                    b.HasOne("µMedlogr.core.Models.Person", "Record")
+                    b.HasOne("µMedlogr.core.Models.Person", "Me")
                         .WithMany()
-                        .HasForeignKey("RecordId");
+                        .HasForeignKey("MeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Record");
+                    b.Navigation("Me");
                 });
 
             modelBuilder.Entity("µMedlogr.core.Models.HealthRecordEntry", b =>
@@ -208,6 +290,17 @@ namespace µMedlogr.core.Migrations
                     b.HasOne("µMedlogr.core.Models.HealthRecord", null)
                         .WithMany("Entries")
                         .HasForeignKey("HealthRecordId");
+                });
+
+            modelBuilder.Entity("µMedlogr.core.Models.Person", b =>
+                {
+                    b.HasOne("µMedlogr.core.Models.HealthRecord", "HealthRecord")
+                        .WithOne("Record")
+                        .HasForeignKey("µMedlogr.core.Models.Person", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("HealthRecord");
                 });
 
             modelBuilder.Entity("µMedlogr.core.Models.SymptomMeasurement", b =>
@@ -235,6 +328,8 @@ namespace µMedlogr.core.Migrations
             modelBuilder.Entity("µMedlogr.core.Models.HealthRecord", b =>
                 {
                     b.Navigation("Entries");
+
+                    b.Navigation("Record");
 
                     b.Navigation("Temperatures");
                 });
