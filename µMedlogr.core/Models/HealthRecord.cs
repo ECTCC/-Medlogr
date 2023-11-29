@@ -7,13 +7,13 @@ internal class HealthRecord {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     public Person? Record { get; set; }
+    public virtual ICollection<HealthRecordEntry> Entries { get; set; }
     public virtual ICollection<TemperatureData> Temperatures { get; set; }
-    public virtual ICollection<SymptomMeasurement> SymtomLog { get; set; }
     public virtual ICollection<SymptomType> CurrentSymptoms { get; set; }
 
     internal HealthRecord() {
         Temperatures = new HashSet<TemperatureData>();
-        SymtomLog = new HashSet<SymptomMeasurement>();
+        Entries = new HashSet<HealthRecordEntry>();
         CurrentSymptoms = new HashSet<SymptomType>();
     }
 

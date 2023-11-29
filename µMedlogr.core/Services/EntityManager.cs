@@ -11,12 +11,14 @@ public class EntityManager
         _context = context; 
     }
 
-    internal async Task<SymptomMeasurement?> CreateSymptomMeasurement(SymptomType symptom, Severity severity)
+    internal async Task<SymptomMeasurement?> CreateSymptomMeasurement(int symptomId, Severity severity)
     {
-        if (symptom is null || severity <(Severity) 1)
+        if (symptomId <= 0 || severity <= Severity.None || severity > Severity.Maximal)
         {
             return null;
         }
+        var symptom = _context.SymptomTypes.Find(symptomId) ?? throw new NotImplementedException();
+
         var newmesurment = new SymptomMeasurement { Symptom=symptom,SubjectiveSeverity=severity,TimeSymptomWasChecked=DateTime.Now};
         return newmesurment;
     }
@@ -29,7 +31,7 @@ public class EntityManager
         if(newSymptomMeasurement.Id != 0) {
             return false;
         }
-
+        //_context.Attach(newSymptomMeasurement.Symptom);
         _context.Add(newSymptomMeasurement);
         await _context.SaveChangesAsync();
         return true;

@@ -64,10 +64,12 @@ public class IndexModel(EntityManager entityManager, µMedlogrContext context) :
             return BadRequest("Ingen nya symptom!");
         }
         var measurements = new List<SymptomMeasurement>();
-        foreach (var (symptom, severity) in SymptomSeverityList)
+        foreach (var (symptomId, severity) in SymptomSeverityList)
         {
-            measurements.Add(await _entityManager.CreateSymptomMeasurement(new SymptomType { Id = symptom }, severity));
-
+            var newMeasurement = await _entityManager.CreateSymptomMeasurement(symptomId, severity);
+            if (newMeasurement != null) {
+                measurements.Add(newMeasurement);
+            }
         }
         measurements.RemoveAll(item => item == null);
         try
@@ -81,7 +83,6 @@ public class IndexModel(EntityManager entityManager, µMedlogrContext context) :
         {
             
         }
-        var a = 0;
         return RedirectToPage("/index", new { json });
     }
 

@@ -10,7 +10,6 @@ internal class SymptomMeasurement {
     public int Id { get; set; }
     [Required]
     public SymptomType? Symptom { get; set; }
-    public DateTime TimeSymptomWasChecked { get; set; }
     public Severity SubjectiveSeverity { get; set; }
-    public string? Notes { get; set; }
+    public DateTime TimeSymptomWasChecked { get; set; }
 }
