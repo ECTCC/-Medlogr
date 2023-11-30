@@ -53,4 +53,5 @@ public class µMedlogrContext : IdentityDbContext<AppUser> {
             new HealthRecord{ Id = 1, PersonId = kalle.Id}
             );
     }
+
 }
