@@ -6,7 +6,8 @@ namespace µMedlogr.core.Models;
 public class HealthRecord {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
-    public Person? Record { get; set; }
+    public int PersonId { get; set; }
+    public Person Person { get; set; }
     public virtual ICollection<HealthRecordEntry> Entries { get; set; }
     public virtual ICollection<TemperatureData> Temperatures { get; set; }
     public virtual ICollection<SymptomType> CurrentSymptoms { get; set; }

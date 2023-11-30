@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34316.72
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "µMedlogr", "µMedlogr\µMedlogr.csproj", "{59EF3B6E-B55F-449B-801E-AAA1229FD674}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "µMedlogr", "µMedlogr\µMedlogr.csproj", "{59EF3B6E-B55F-449B-801E-AAA1229FD674}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "µMedlogr.test", "µMedlogr.test\µMedlogr.test.csproj", "{D7CAA914-779D-48CE-8434-44FD2B4120D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "µMedlogr.test", "µMedlogr.test\µMedlogr.test.csproj", "{D7CAA914-779D-48CE-8434-44FD2B4120D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "µMedlogr.core", "µMedlogr.core\µMedlogr.core.csproj", "{2455DC5F-015B-47B7-B8C0-491C4299B514}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "µMedlogr.core", "µMedlogr.core\µMedlogr.core.csproj", "{2455DC5F-015B-47B7-B8C0-491C4299B514}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

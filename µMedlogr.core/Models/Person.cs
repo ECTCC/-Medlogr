@@ -14,7 +14,6 @@ public class Person {
     public TimeSpan Age { get; }
     public float? WeightInKg { get; set; }
     public List<string> Allergies { get; set; } = [];
-
     public HealthRecord HealthRecord { get; set; }
 
     public virtual ICollection<AppUser> CareGivers { get;}

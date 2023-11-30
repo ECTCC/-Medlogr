@@ -12,8 +12,8 @@ using µMedlogr.core;
 namespace µMedlogr.core.Migrations
 {
     [DbContext(typeof(µMedlogrContext))]
-    [Migration("20231129135800_IdentityWorking")]
-    partial class IdentityWorking
+    [Migration("20231130145602_Kalle")]
+    partial class Kalle
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -266,9 +266,22 @@ namespace µMedlogr.core.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("PersonId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("PersonId")
+                        .IsUnique();
+
                     b.ToTable("HealthRecords");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            PersonId = 1
+                        });
                 });
 
             modelBuilder.Entity("µMedlogr.core.Models.HealthRecordEntry", b =>
@@ -298,6 +311,8 @@ namespace µMedlogr.core.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<string>("Allergies")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -315,6 +330,16 @@ namespace µMedlogr.core.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("People");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Allergies = "[]",
+                            DateOfBirth = new DateOnly(1, 1, 1),
+                            NickName = "Kalle",
+                            WeightInKg = 47f
+                        });
                 });
 
             modelBuilder.Entity("µMedlogr.core.Models.SymptomMeasurement", b =>
@@ -480,22 +505,22 @@ namespace µMedlogr.core.Migrations
                     b.Navigation("Me");
                 });
 
+            modelBuilder.Entity("µMedlogr.core.Models.HealthRecord", b =>
+                {
+                    b.HasOne("µMedlogr.core.Models.Person", "Person")
+                        .WithOne("HealthRecord")
+                        .HasForeignKey("µMedlogr.core.Models.HealthRecord", "PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Person");
+                });
+
             modelBuilder.Entity("µMedlogr.core.Models.HealthRecordEntry", b =>
                 {
                     b.HasOne("µMedlogr.core.Models.HealthRecord", null)
                         .WithMany("Entries")
                         .HasForeignKey("HealthRecordId");
-                });
-
-            modelBuilder.Entity("µMedlogr.core.Models.Person", b =>
-                {
-                    b.HasOne("µMedlogr.core.Models.HealthRecord", "HealthRecord")
-                        .WithOne("Record")
-                        .HasForeignKey("µMedlogr.core.Models.Person", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("HealthRecord");
                 });
 
             modelBuilder.Entity("µMedlogr.core.Models.SymptomMeasurement", b =>
@@ -524,14 +549,18 @@ namespace µMedlogr.core.Migrations
                 {
                     b.Navigation("Entries");
 
-                    b.Navigation("Record");
-
                     b.Navigation("Temperatures");
                 });
 
             modelBuilder.Entity("µMedlogr.core.Models.HealthRecordEntry", b =>
                 {
                     b.Navigation("Measurements");
+                });
+
+            modelBuilder.Entity("µMedlogr.core.Models.Person", b =>
+                {
+                    b.Navigation("HealthRecord")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
