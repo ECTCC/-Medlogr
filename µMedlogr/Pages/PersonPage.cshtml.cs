@@ -28,6 +28,10 @@ namespace µMedlogr.Pages
         {
             Person.Allergies = core.Services.PersonPage.ReturnSameListOrAddStringNoAllergy(SelectedAllergies);
             Person.DateOfBirth=SelectedDate;
+            var healthrecord=new core.Models.HealthRecord();
+            healthrecord.Record = Person;
+            Person.HealthRecord=healthrecord;
+            //Person.Id = 54;
             await _entityManager.SaveNewPerson(Person);
             var a = 0;
             return RedirectToPage("/PersonPage");
