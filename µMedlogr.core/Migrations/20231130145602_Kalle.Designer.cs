@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using µMedlogr.core;
 
@@ -11,9 +12,11 @@ using µMedlogr.core;
 namespace µMedlogr.core.Migrations
 {
     [DbContext(typeof(µMedlogrContext))]
-    partial class µMedlogrContextModelSnapshot : ModelSnapshot
+    [Migration("20231130145602_Kalle")]
+    partial class Kalle
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -334,7 +337,7 @@ namespace µMedlogr.core.Migrations
                             Id = 1,
                             Allergies = "[]",
                             DateOfBirth = new DateOnly(1, 1, 1),
-                            NickName = "Nisse",
+                            NickName = "Kalle",
                             WeightInKg = 47f
                         });
                 });
