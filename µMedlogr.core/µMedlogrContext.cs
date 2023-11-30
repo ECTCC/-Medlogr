@@ -27,6 +27,10 @@ public class µMedlogrContext : IdentityDbContext<AppUser> {
             .WithOne(x => x.HealthRecord)
             .HasForeignKey<Person>(x => x.Id);
 
+        //builder.Entity<Person>()
+        //    .Property(x => x.Id)
+        //    .ValueGeneratedOnAdd();
+
     }
 
     internal DbSet<HealthRecord> HealthRecords { get; set; } = default!;

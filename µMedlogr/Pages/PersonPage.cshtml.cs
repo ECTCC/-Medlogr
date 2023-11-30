@@ -1,12 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using µMedlogr.core;
+using µMedlogr.core.Interfaces;
 using µMedlogr.core.Models;
+using µMedlogr.core.Services;
 
 namespace µMedlogr.Pages
 {
-    public class PersonPageModel : PageModel
+    public class PersonPageModel(EntityManager entityManager) : PageModel
     {
+        private readonly EntityManager _entityManager = entityManager;
         [BindProperty]
         public Person Person { get; set; }
         public List<string> GenderList { get; set; }
@@ -25,6 +28,7 @@ namespace µMedlogr.Pages
         {
             Person.Allergies = core.Services.PersonPage.ReturnSameListOrAddStringNoAllergy(SelectedAllergies);
             Person.DateOfBirth=SelectedDate;
+            await _entityManager.SaveNewPerson(Person);
             var a = 0;
             return RedirectToPage("/PersonPage");
         }
