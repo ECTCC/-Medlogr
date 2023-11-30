@@ -12,8 +12,8 @@ using µMedlogr.core;
 namespace µMedlogr.core.Migrations
 {
     [DbContext(typeof(µMedlogrContext))]
-    [Migration("20231129135800_IdentityWorking")]
-    partial class IdentityWorking
+    [Migration("20231130141845_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -266,7 +266,14 @@ namespace µMedlogr.core.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("PersonId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("PersonId")
+                        .IsUnique()
+                        .HasFilter("[PersonId] IS NOT NULL");
 
                     b.ToTable("HealthRecords");
                 });
@@ -297,6 +304,8 @@ namespace µMedlogr.core.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Allergies")
                         .IsRequired()
@@ -480,22 +489,20 @@ namespace µMedlogr.core.Migrations
                     b.Navigation("Me");
                 });
 
+            modelBuilder.Entity("µMedlogr.core.Models.HealthRecord", b =>
+                {
+                    b.HasOne("µMedlogr.core.Models.Person", "Record")
+                        .WithOne("HealthRecord")
+                        .HasForeignKey("µMedlogr.core.Models.HealthRecord", "PersonId");
+
+                    b.Navigation("Record");
+                });
+
             modelBuilder.Entity("µMedlogr.core.Models.HealthRecordEntry", b =>
                 {
                     b.HasOne("µMedlogr.core.Models.HealthRecord", null)
                         .WithMany("Entries")
                         .HasForeignKey("HealthRecordId");
-                });
-
-            modelBuilder.Entity("µMedlogr.core.Models.Person", b =>
-                {
-                    b.HasOne("µMedlogr.core.Models.HealthRecord", "HealthRecord")
-                        .WithOne("Record")
-                        .HasForeignKey("µMedlogr.core.Models.Person", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("HealthRecord");
                 });
 
             modelBuilder.Entity("µMedlogr.core.Models.SymptomMeasurement", b =>
@@ -524,14 +531,18 @@ namespace µMedlogr.core.Migrations
                 {
                     b.Navigation("Entries");
 
-                    b.Navigation("Record");
-
                     b.Navigation("Temperatures");
                 });
 
             modelBuilder.Entity("µMedlogr.core.Models.HealthRecordEntry", b =>
                 {
                     b.Navigation("Measurements");
+                });
+
+            modelBuilder.Entity("µMedlogr.core.Models.Person", b =>
+                {
+                    b.Navigation("HealthRecord")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -6,7 +6,7 @@ namespace µMedlogr.core;
 public class µMedlogrContextFactory : IDesignTimeDbContextFactory<µMedlogrContext> {
     public µMedlogrContext CreateDbContext(string[] args) {
         IConfiguration config = new ConfigurationBuilder()
-            .SetBasePath(Path.Combine( Directory.GetCurrentDirectory() ,  "../µMedlogr" ))
+            .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../µMedlogr"))
             .AddJsonFile("appsettings.Development.json").Build();
 
         var connstring = config.GetConnectionString("DefaultConnection");
