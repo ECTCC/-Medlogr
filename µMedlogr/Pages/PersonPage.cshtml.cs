@@ -20,6 +20,8 @@ namespace µMedlogr.Pages
         [BindProperty]
         public List<string> SelectedAllergies { get; set; }
         [BindProperty]
+        public bool IsPerson { get; set; }
+        [BindProperty]
         public DateOnly SelectedDate { get; set; }
         public AppUser MyUser { get; set; }
         public async Task<IActionResult> OnGetAsync()
@@ -38,7 +40,14 @@ namespace µMedlogr.Pages
             Person.HealthRecord = healthrecord;
             if (MyUser is not null)
             {
-                MyUser.PeopleInCareOf.Add(Person);
+                if (IsPerson == true)
+                {
+                    MyUser.Me = Person;
+                }
+                else
+                {
+                    MyUser.PeopleInCareOf.Add(Person);
+                }
             }
             await _entityManager.SaveNewPerson(Person);
             return RedirectToPage("/PersonPage");
