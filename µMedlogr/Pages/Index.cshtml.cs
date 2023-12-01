@@ -25,16 +25,10 @@ public class IndexModel(EntityManager entityManager, µMedlogrContext context) :
     public List<Tuple<int, Severity>> SymptomSeverityList { get; set; } = [];
     [BindProperty]
     public int SymptomId { get; set; }
-    /// <summary>
-    /// The database choices for symptoms
-    /// </summary>
-    //internal List<SymptomType> SymptomChoices { get; set; }
-    public SelectList SymptomChoices { get; set; }
-    // [BindProperty]
-    // public SymptomType NewSymptomType { get; set; }
+    public SelectList SymptomChoices { get; set; } = default!;
     [Required]
-    [EnumDataType(typeof(µMedlogr.core.Enums.Severity))]
-    [Range(0, (double)µMedlogr.core.Enums.Severity.Maximal, ErrorMessage = "Välj en allvarlighetsgrad")]
+    [EnumDataType(typeof(Severity))]
+    [Range(0, (double)Severity.Maximal, ErrorMessage = "Välj en allvarlighetsgrad")]
     [BindProperty]
     public Severity NewSeverity { get; set; }
 

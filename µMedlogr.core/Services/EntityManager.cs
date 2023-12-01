@@ -104,4 +104,7 @@ public class EntityManager
         return true;
     }
 
+    internal void SaveTemperatureInHealthRecord(int healthRecordId) {
+        throw new NotImplementedException();
+    }
 }

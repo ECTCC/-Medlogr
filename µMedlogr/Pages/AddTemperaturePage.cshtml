@@ -1,12 +1,12 @@
 ﻿@page
-@model µMedlogr.Pages.LogTemperatureModel
+@model µMedlogr.Pages.AddTemperaturePage
 @{
     ViewData["Title"] = Model.Nickname;
 }
-<div class="text-center">
+<div class="container">
 @* Show List with TemperatureData *@
 <!-- #region TemperatureList -->
-  <div>
+  <div class="row">
     <table>
             @foreach (var temperature in Model.Temperatures) {
                 <tr>
@@ -20,7 +20,7 @@
 <!-- #endregion -->
 @*   A form for Adding new Temperature Measurements *@
 <!-- #region Temperatureform -->
-  <div>
+  <div class="row">
         <form asp-page-handler="AddTemperature" method="post" enctype="multipart/form-data">
             <input type="hidden" name="" value="" />
             <div class="form-group">
@@ -32,7 +32,7 @@
                 <label asp-for="Notes" class="form-label">Anteckningar</label>
                 <textarea asp-for="Notes" class="form-control" cols="40" rows="1" placeholder="Övrigt"></textarea>
             </div>
-            <input type="submit" class="btn btn-success" value="Lägg till symptom">
+            <input type="submit" class="btn btn-success" value="Lägg till temperaturmätning">
         </form>
   </div>
 <!-- #endregion -->
