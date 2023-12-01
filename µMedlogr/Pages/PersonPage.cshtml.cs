@@ -28,6 +28,10 @@ namespace µMedlogr.Pages
         {
             AllergiesList = core.Services.PersonPage.CreateAllergiesList();
             MyUser = await _userManager.GetUserAsync(User);
+            if(MyUser is not null)
+            {
+                var templist = _entityManager.GetJunctionData(MyUser);
+            }
             return Page();
         }
         public async Task<IActionResult> OnPostSavePersonAsync()

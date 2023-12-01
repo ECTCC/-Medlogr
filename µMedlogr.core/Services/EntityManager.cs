@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using µMedlogr.core.Enums;
 using µMedlogr.core.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace µMedlogr.core.Services;
 public class EntityManager
@@ -51,5 +52,25 @@ public class EntityManager
         _context.Add(person);
         await _context.SaveChangesAsync();
         return true;
+    }
+    public async Task<List<Person>> GetJunctionData(AppUser appUser)
+    {
+        var userWithPeople = _context.Users
+            .Where(x => x.Id == appUser.Id)
+            .Include(x => x.PeopleInCareOf)
+            .ThenInclude(x=> x.CareGivers)
+            .FirstOrDefault();
+        if(userWithPeople is not null && userWithPeople.PeopleInCareOf is not null)
+        {
+            var caregiverForPeople = userWithPeople.PeopleInCareOf
+        .Where(p => p.CareGivers.Any(x => x.Id == appUser.Id))
+        .ToList();
+
+            return caregiverForPeople;
+        }
+
+        return new List<Person>();
+
+        
     }
 }
