@@ -24,13 +24,14 @@ namespace µMedlogr.Pages
         [BindProperty]
         public DateOnly SelectedDate { get; set; }
         public AppUser MyUser { get; set; }
+        public List<Person> PeopleInCareOf { get; set; }
         public async Task<IActionResult> OnGetAsync()
         {
             AllergiesList = core.Services.PersonPage.CreateAllergiesList();
             MyUser = await _userManager.GetUserAsync(User);
             if(MyUser is not null)
             {
-                var templist = _entityManager.GetJunctionData(MyUser);
+                PeopleInCareOf = await _entityManager.GetJunctionData(MyUser);
             }
             return Page();
         }

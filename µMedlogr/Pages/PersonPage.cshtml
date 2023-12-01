@@ -46,6 +46,21 @@
                 <br />
                 <button type="submit" class="btn btn-primary submit-button" asp-page-handler="SavePerson">Spara Person</button>
             </form>
+            <div class="peopleincare">
+                @if (Model.PeopleInCareOf.Count > 0)
+                {
+                    @foreach (var peopleincare in Model.PeopleInCareOf)
+                    {
+                        <p>Namn: @peopleincare.NickName</p>
+                        <h4>Allergier</h4>
+                        @foreach (var allergy in peopleincare.Allergies)
+                        {
+                            <a>@allergy  </a>
+                        }
+                        <br />
+                    }
+                }
+            </div>
         }
         else
         {
