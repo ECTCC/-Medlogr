@@ -37,6 +37,10 @@ public class IndexModel(EntityManager entityManager, µMedlogrContext context) :
     [Range(0, (double)µMedlogr.core.Enums.Severity.Maximal, ErrorMessage = "Välj en allvarlighetsgrad")]
     [BindProperty]
     public Severity NewSeverity { get; set; }
+    //[BindProperty]
+    //public HealthRecord CurrentHealthRecord { get; set; }
+
+
 
     public async Task OnGetAsync([FromQuery] string json)
     {

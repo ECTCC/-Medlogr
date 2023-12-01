@@ -1,0 +1,33 @@
+﻿@page 
+@model µMedlogr.Pages.SymptomSummaryPageModel
+
+@{
+   
+}
+<div class="text-center">
+    <h4>  Helth record for @* @Model.HealthRecord.Person.NickName: *@ </h4>
+    <form>
+        <button type="submit" class="btn btn-success" asp-page="/Index">Add ny symptom</button>
+    </form>
+    
+    <form>
+        <button type="submit" class="btn btn-success" asp-page="/Index">Add temperaturmätning</button>
+    </form>
+    <h5>Symptom Measurements:</h5>
+    <ul>
+       @*  @foreach (var entry in Model.HealthRecord.Entries)
+        {
+            <li>
+                <strong>@entry.Notes:</strong>
+                <ul>
+                    @foreach (var measurement in entry.Measurements)
+                    {
+                        <li>
+                            Symptom: @measurement.Symptom, Severity: @measurement.SubjectiveSeverity, Time: @measurement.TimeSymptomWasChecked
+                        </li>
+                    }
+                </ul>
+            </li>
+        } *@
+    </ul>
+</div>
