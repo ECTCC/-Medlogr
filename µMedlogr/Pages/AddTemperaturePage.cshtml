@@ -1,32 +1,34 @@
 ﻿@page
-@model µMedlogr.Pages.AddTemperaturePage
+@model µMedlogr.Pages.AddTemperatureModel;
 @{
     ViewData["Title"] = Model.Nickname;
 }
 <div class="container">
-@* Show List with TemperatureData *@
-<!-- #region TemperatureList -->
-  <div class="row">
-    <table>
+    @* Show List with TemperatureData *@
+    <!-- #region TemperatureList -->
+    <div class="row">
+        <table>
             @foreach (var temperature in Model.Temperatures) {
                 <tr>
-                  <td>@temperature.TimeOfMeasurement</td>
-                  <td>@temperature.Measurement</td>
-                  <td>@temperature.Comments</td>
+                    <td>@temperature.TimeOfMeasurement</td>
+                    <td>@temperature.Measurement</td>
+                    <td>@temperature.Comments</td>
                 </tr>
             }
         </table>
-  </div>
-<!-- #endregion -->
-@*   A form for Adding new Temperature Measurements *@
-<!-- #region Temperatureform -->
-  <div class="row">
+    </div>
+    <!-- #endregion -->
+    @*   A form for Adding new Temperature Measurements *@
+    <!-- #region Temperatureform -->
+    <div class="row">
+        @* @Html.ValidationSummary(false, "", new { @class = "text-danger" }) *@
         <form asp-page-handler="AddTemperature" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="" value="" />
+            @Html.HiddenFor(m => m.HealthRecordId)
             <div class="form-group">
                 <label asp-for="NewTemperature" class="form-label">Uppmätt temperatur</label>
-                <input asp-for="NewTemperature" class="form-range" id="thermometer-value" type ="range" list="thermometer-markers" min="30" max="45" step="0.1"/>
+                <input asp-for="NewTemperature" class="form-range" id="thermometer-value" type="range" list="thermometer-markers" min="30" max="45" step="0.1" />
                 <p class="form-label">Temperatur: <output id="temperature-value"></output>°C</p>
+                @Html.ValidationMessageFor(x => x.NewTemperature, "Kontrollera Temperaturen", new {@class = "text-danger"})
             </div>
             <div class="form-group">
                 <label asp-for="Notes" class="form-label">Anteckningar</label>
@@ -34,8 +36,8 @@
             </div>
             <input type="submit" class="btn btn-success" value="Lägg till temperaturmätning">
         </form>
-  </div>
-<!-- #endregion -->
+    </div>
+    <!-- #endregion -->
 </div>
 
 <datalist id="thermometer-markers">
@@ -47,12 +49,40 @@
     <option value="42.5"></option>
     <option value="45"></option>
 </datalist>
-<script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+@{
+    if (TempData["Error"] != null && (string)(TempData["Error"]) == "Modal") {
+        <script type="text/javascript">
+            $(function () {
+                $('#errorModal').modal('show');
+            })
+        </script>
+    }
+}
+<script type="text/javascript">
     const value = document.querySelector("#temperature-value");
     const input = document.querySelector("#thermometer-value");
     value.textContent = input.value;
     input.addEventListener("input", (event) => {
         value.textContent = event.target.value;
     });
-
+    // $(window).on('load', function () {
+    //     $('#errorModal').modal('show');
+    // });
 </script>
+
+<div id="errorModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Information</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>@TempData["Message"]</p>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>

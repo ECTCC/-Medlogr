@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
 namespace µMedlogr.Pages;
-public class LogTemperatureModel : PageModel {
+public class AddTemperatureModel : PageModel {
     public readonly UserManager<AppUser> _userManager;
     private readonly EntityManager _entityManager;
     private readonly µMedlogrContext _context;
@@ -15,11 +15,11 @@ public class LogTemperatureModel : PageModel {
     public string Nickname { get; set; } = string.Empty;
     public int HealthRecordId { get; set; }
     [BindProperty]
-    [Range(30, 45, ErrorMessage = "Value for {0} must be between {1} and {2}")]
+    [Range(35, 45, ErrorMessage = "Value for {0} must be between {1} and {2}")]
     public float NewTemperature { get; set; }
     [BindProperty]
     public string Notes { get; set; } = string.Empty;
-    public LogTemperatureModel(EntityManager entityManager, µMedlogrContext context, UserManager<AppUser> userManager) {
+    public AddTemperatureModel(EntityManager entityManager, µMedlogrContext context, UserManager<AppUser> userManager) {
         _entityManager = entityManager;
         _context = context;
         _userManager = userManager;
@@ -32,12 +32,20 @@ public class LogTemperatureModel : PageModel {
         HealthRecordId = healthRecordId;
     }
 
-    public async Task<IActionResult> OnPostAsync(int healthRecordId) {
+    public IActionResult OnPost(int healthRecordId) {
         if (!ModelState.IsValid) {
-            return BadRequest(ModelState);
+            TempData["Error"] = "Modal";
+            TempData["Message"] = "Kontrollera angivna data";
+            return Page();
         }
 
-        _entityManager.SaveTemperatureInHealthRecord(healthRecordId);
-        return RedirectToPage("/Index");
+        var success = _entityManager.AddTemperatureData(healthRecordId, NewTemperature, Notes);
+        if (success) {
+            return RedirectToPage("/PersonPage");
+        } else {
+            TempData["Error"] = "Modal";
+            TempData["Message"] = "Kunde inte lägga till temperaturmätning";
+            return Page();
+        }
     }
 }

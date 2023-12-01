@@ -103,8 +103,4 @@ public class EntityManager
         await _context.SaveChangesAsync();
         return true;
     }
-
-    internal void SaveTemperatureInHealthRecord(int healthRecordId) {
-        throw new NotImplementedException();
-    }
 }
