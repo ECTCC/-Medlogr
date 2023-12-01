@@ -51,13 +51,12 @@
                 {
                     @foreach (var peopleincare in Model.PeopleInCareOf)
                     {
-                        <p>Namn: @peopleincare.NickName</p>
-                        <h4>Allergier</h4>
+                        <p><strong>Namn:</strong> @peopleincare.NickName</p>
+                        <h6>Allergier</h6>
                         @foreach (var allergy in peopleincare.Allergies)
                         {
                             <a>@allergy  </a>
                         }
-                        <br />
                     }
                 }
             </div>
