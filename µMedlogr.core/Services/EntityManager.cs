@@ -1,15 +1,18 @@
-﻿using µMedlogr.core.Enums;
+﻿using Microsoft.AspNetCore.Identity;
+using µMedlogr.core.Enums;
 using µMedlogr.core.Models;
 
 namespace µMedlogr.core.Services;
 public class EntityManager
 {
     private readonly µMedlogrContext _context;
+    private readonly UserManager<AppUser> _userManager;
 
-    public EntityManager(µMedlogrContext context)
+    public EntityManager(µMedlogrContext context, UserManager<AppUser> userManager)
     {
         ArgumentNullException.ThrowIfNull(context);
         _context = context;
+        _userManager = userManager;
     }
 
     internal async Task<SymptomMeasurement?> CreateSymptomMeasurement(int symptomId, Severity severity)
@@ -49,5 +52,4 @@ public class EntityManager
         await _context.SaveChangesAsync();
         return true;
     }
-
 }

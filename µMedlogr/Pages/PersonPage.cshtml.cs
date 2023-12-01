@@ -4,12 +4,15 @@ using µMedlogr.core;
 using µMedlogr.core.Interfaces;
 using µMedlogr.core.Models;
 using µMedlogr.core.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace µMedlogr.Pages
 {
-    public class PersonPageModel(EntityManager entityManager) : PageModel
+    public class PersonPageModel(EntityManager entityManager, UserManager<AppUser> userManager) : PageModel
     {
         private readonly EntityManager _entityManager = entityManager;
+        private readonly UserManager<AppUser> _userManager = userManager;
+
         [BindProperty]
         public Person Person { get; set; }
         public List<string> GenderList { get; set; }
@@ -17,23 +20,36 @@ namespace µMedlogr.Pages
         [BindProperty]
         public List<string> SelectedAllergies { get; set; }
         [BindProperty]
+        public bool IsPerson { get; set; }
+        [BindProperty]
         public DateOnly SelectedDate { get; set; }
-        public void OnGet()
+        public AppUser MyUser { get; set; }
+        public async Task<IActionResult> OnGetAsync()
         {
-            GenderList = core.Services.PersonPage.CreateGenderList();
             AllergiesList = core.Services.PersonPage.CreateAllergiesList();
-
+            MyUser = await _userManager.GetUserAsync(User);
+            return Page();
         }
         public async Task<IActionResult> OnPostSavePersonAsync()
         {
+            MyUser = await _userManager.GetUserAsync(User);
             Person.Allergies = core.Services.PersonPage.ReturnSameListOrAddStringNoAllergy(SelectedAllergies);
-            Person.DateOfBirth=SelectedDate;
-            var healthrecord=new core.Models.HealthRecord();
+            Person.DateOfBirth = SelectedDate;
+            var healthrecord = new core.Models.HealthRecord();
             healthrecord.Person = Person;
-            Person.HealthRecord=healthrecord;
-            //Person.Id = 54;
+            Person.HealthRecord = healthrecord;
+            if (MyUser is not null)
+            {
+                if (IsPerson == true)
+                {
+                    MyUser.Me = Person;
+                }
+                else
+                {
+                    MyUser.PeopleInCareOf.Add(Person);
+                }
+            }
             await _entityManager.SaveNewPerson(Person);
-            var a = 0;
             return RedirectToPage("/PersonPage");
         }
     }
