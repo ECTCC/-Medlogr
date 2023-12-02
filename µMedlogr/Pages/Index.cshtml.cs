@@ -55,7 +55,7 @@ public class IndexModel(EntityManager entityManager, µMedlogrContext context) :
         }
         if (SymptomSeverityList.Count < 1)
         {
-            return BadRequest("Ingen nya symptom!");
+            return BadRequest("Inga nya symptom!");
         }
         var measurements = new List<SymptomMeasurement>();
         foreach (var (symptomId, severity) in SymptomSeverityList)
