@@ -3,10 +3,8 @@ using µMedlogr.core.Enums;
 using µMedlogr.core.Models;
 using µMedlogr.core.Services;
 using Microsoft.EntityFrameworkCore;
-using Moq;
-using Xunit.Sdk;
-using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Moq;
 
 namespace µMedlogr.test;
 public class EntityManagerTest {
@@ -57,8 +55,32 @@ public class EntityManagerTest {
         //Assert
         Assert.ThrowsAsync<DbUpdateException>(() => sut.SaveNewSymptomMeasurement(symptomMeasurement));
     }
+    [Fact]
+    public void AddTemperatureData_InvalidHealthRecordId_ReturnsFalse() {
+        //Arrange
+        var sut = CreateDefaultEntityManager();
+        int invalidId = 0;
+        float validTemperature = 42.0f;
+        string noNotes = string.Empty;
+        //Act
+        var result = sut.AddTemperatureData(invalidId, validTemperature, noNotes);
+
+        //Assert
+        Assert.False(result);
+    }
     #endregion
     #region Tests Variant
+    [Theory]
+    [MemberData(nameof(ValidTemperatureData))]
+    internal void AddTemperatureData_ValidTemperatureParameterData_ReturnsTrue(int healthRecordId, float temperature, string notes) {
+        //Arrange
+        var sut = CreateDefaultEntityManager();
+        //Act
+        var result = sut.AddTemperatureData(healthRecordId, temperature, notes);
+        //Assert
+        Assert.True(result);
+    }
+
     [Theory]
     [MemberData(nameof(ValidSymptomMeasurementData))]
     internal void CreateSymptomMeasurement_ValidNewSymptomParameters_ReturnsANewMeasurement(int validSymptomId, Severity severity) {
@@ -185,6 +207,20 @@ public class EntityManagerTest {
                 };
 
     }
+    public static IEnumerable<object[]> ValidTemperatureData() {
+
+        yield return new object[] {
+                1,
+                37.0f,
+                ""
+                };
+        yield return new object[] {
+                1,
+                38.0f,
+                "Feber ökar"
+                };
+        }
+
     #endregion
 
 }

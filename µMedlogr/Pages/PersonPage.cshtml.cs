@@ -1,9 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using µMedlogr.core;
-using µMedlogr.core.Interfaces;
 using µMedlogr.core.Models;
 using µMedlogr.core.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Identity;
 
 namespace µMedlogr.Pages

@@ -2,13 +2,6 @@
 @model µMedlogr.Pages.PersonPageModel
 @{
 }
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" href="/css/personpage.css" />
-</head>
-<body>
-
     <div class="text-center">
         @if (Model.MyUser is not null)
         {
@@ -51,8 +44,8 @@
         {
             <p>Logga in för att lägga till personer!</p>
         }
-    </div>
+
+@section Scripts {
     <script src="~/js/datepersonpage.js"></script>
     <script src="~/js/hidediv.js"></script>
-</body>
-</html>
+}
