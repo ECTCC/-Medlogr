@@ -18,7 +18,7 @@ public class AddTemperatureModel : PageModel {
     [Range(35, 45, ErrorMessage = "Value for {0} must be between {1} and {2}")]
     public float NewTemperature { get; set; }
     [BindProperty]
-    public string Notes { get; set; } = string.Empty;
+    public string? Notes { get; set; }
     public AddTemperatureModel(EntityManager entityManager, µMedlogrContext context, UserManager<AppUser> userManager) {
         _entityManager = entityManager;
         _context = context;
