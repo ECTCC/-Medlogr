@@ -47,6 +47,7 @@ namespace µMedlogr.Pages
                     MyUser.PeopleInCareOf.Add(Person);
                 }
             }
+            await _entityManager.UpdateEntity<AppUser>(MyUser);
             await _entityManager.SaveNewPerson(Person);
             return RedirectToPage("/PersonPage");
         }

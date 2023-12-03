@@ -1,9 +1,16 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using µMedlogr.core
 @using µMedlogr.core.Models
+@using Microsoft.EntityFrameworkCore
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
+@inject µMedlogrContext context;
 @{
     var user = await UserManager.GetUserAsync(User);
+    var inCareOf = context.AppUsers
+                  .Where(x => x.Id == user!.Id)
+                  .SelectMany(x => x.PeopleInCareOf)
+                  .Include(x => x.HealthRecord);
 }
 
 <ul class="navbar-nav">
@@ -13,9 +20,9 @@
                 Feber Loggar
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                @foreach (var person in user.PeopleInCareOf) {
+                @foreach (var person in inCareOf) {
                     <li>
-                        <a class="nav-link text-dark" asp-area="" asp-page="/Feverlog" asp-route-healthrecordId="@person.HealthRecord.Id">@person.NickName</a>
+                        <a class="nav-link text-dark" asp-area="" asp-page="/Feverlog" asp-route-healthrecordId="@person.HealthRecord?.Id">@person.NickName</a>
                     </li>
                 }
                 <li><hr class="dropdown-divider"></li>

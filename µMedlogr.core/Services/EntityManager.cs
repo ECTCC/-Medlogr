@@ -79,6 +79,18 @@ public class EntityManager
     //    return true;
     //}
 
+    internal async Task<bool> UpdateEntity<T>(T entity) where T : class {
+        if (entity == null) {
+            return false;
+        }
+        _context.Update<T>(entity);
+        var task =  _context.SaveChangesAsync();
+        if (task != null) {
+            return await task > 0;
+        }
+        return false;
+    }
+
 
     internal async Task<bool> SaveNewSymptomMeasurement(SymptomMeasurement newSymptomMeasurement)
     {
