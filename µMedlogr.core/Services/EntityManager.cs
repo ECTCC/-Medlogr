@@ -68,9 +68,14 @@ public class EntityManager
 
             return caregiverForPeople;
         }
-
-        return new List<Person>();
-
-        
+        return new List<Person>();  
+    }
+    public async Task<Person>GetMeFromUser(AppUser appUser)
+    {
+        var userMe = await _context.Users
+            .Where(x => x.Id == appUser.Id)
+            .Include(x => x.Me)
+            .FirstOrDefaultAsync();
+        return userMe?.Me;
     }
 }

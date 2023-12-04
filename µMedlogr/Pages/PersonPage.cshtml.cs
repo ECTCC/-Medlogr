@@ -25,6 +25,7 @@ namespace µMedlogr.Pages
         public DateOnly SelectedDate { get; set; }
         public AppUser MyUser { get; set; }
         public List<Person> PeopleInCareOf { get; set; }
+        public Person Me { get; set; }
         public async Task<IActionResult> OnGetAsync()
         {
             AllergiesList = core.Services.PersonPage.CreateAllergiesList();
@@ -32,6 +33,7 @@ namespace µMedlogr.Pages
             if(MyUser is not null)
             {
                 PeopleInCareOf = await _entityManager.GetJunctionData(MyUser);
+                Me = await _entityManager.GetMeFromUser(MyUser);
             }
             return Page();
         }
