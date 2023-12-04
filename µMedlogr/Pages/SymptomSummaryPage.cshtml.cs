@@ -4,6 +4,8 @@ using µMedlogr.core.Services;
 using µMedlogr.core;
 using µMedlogr.core.Models;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Versioning;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace µMedlogr.Pages
 {
@@ -12,13 +14,34 @@ namespace µMedlogr.Pages
         private readonly EntityManager _entityManager = entityManager;
         private readonly µMedlogrContext _context = context;
 
+        public Person Person { get; set; }
+
         public HealthRecord HealthRecord { get; set; }
-        public async Task OnGetAsync(int personId)
+        public async Task OnGetAsync(int personId =2)
         {
-            //var CurrentHealthRecord = await _context.HealthRecords
-            //  .Include(x => x.PersonId == personId)
-            //   .FirstOrDefaultAsync();
-            
+            var currentHealthRecord = await _context.HealthRecords
+              .Where(x => x.PersonId == personId)
+              .FirstOrDefaultAsync();
+            HealthRecord = currentHealthRecord;
+
+            var currentPerson = await _context.People
+                .Where(p=>p.Id == personId)
+                .FirstOrDefaultAsync();
+            Person = currentPerson;
+            //var currentHealthRecordEntriesWithoutJoin = await _context.HealthRecordsEntrys
+            //  .Include(x => x.RecordId == currentHealthRecord.Id)
+            //  .ToListAsync();
+
+            //var currentHealthRecordEntries = await _context.HealthRecords
+            //    .Include(x => x.PersonId == personId)
+            //    .Join(
+            //        _context.HealthRecordsEntrys,
+            //        hr => hr.Id,
+            //        hre => hre.RecordId,
+            //        (hr, hre) => new { HealthRecord = hr, HealthRecordEntry = hre }
+            //        )
+            //    .FirstOrDefaultAsync();
+
 
             //var CurrentPerson = await _context.People
             //    .Include(p => p.HealthRecord)
@@ -26,5 +49,6 @@ namespace µMedlogr.Pages
             //    .SingleOrDefaultAsync();
             //CurrentHealthRecord = CurrentPerson.HealthRecord;
         }
+
     }
 }

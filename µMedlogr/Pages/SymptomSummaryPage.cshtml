@@ -5,9 +5,9 @@
    
 }
 <div class="text-center">
-    <h4>  Helth record for @* @Model.HealthRecord.Person.NickName: *@ </h4>
+    <h4>  Helth record for: @Model.Person.NickName  </h4>
     <form>
-        <button type="submit" class="btn btn-success" asp-page="/Index">Add ny symptom</button>
+        <button type="submit" class="btn btn-success" asp-page="/SymptomLog" asp-route-personId="@Model.HealthRecord.Id">Add ny symptom</button>
     </form>
     
     <form>

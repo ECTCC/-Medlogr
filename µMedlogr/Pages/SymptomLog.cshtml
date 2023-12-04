@@ -1,0 +1,45 @@
+﻿@page
+@model µMedlogr.Pages.SymptomLogModel
+@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Logga symptom";
+}
+
+<div class="text-center">
+     <h4>  Lägga till symptom för: @Model.Person.NickName </h4>
+    <div class="contain">
+
+        <form asp-page-handler="AddSymptom" method="post" enctype="multipart/form-data">
+
+            <input type="hidden" name="injson" value=@JsonSerializer.Serialize(Model.SymptomSeverityList, new JsonSerializerOptions { WriteIndented = false }) />
+            <div class="form-group">
+                <label asp-for="SymptomId" class="form-label">Ange Symptom</label>
+                <select asp-for="SymptomId" asp-items="Model.SymptomChoices"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="NewSeverity" class="col-form-label" />
+                <select asp-for="NewSeverity" asp-items="Html.GetEnumSelectList<µMedlogr.core.Enums.Severity>()"></select>
+            </div>
+            <input type="submit" class="btn btn-success" value="Lägg till symptom">
+        </form>
+
+        <table>
+            @foreach (var symptom in Model.SymptomSeverityList) {
+                <tr>
+                    <td>@Html.DisplayFor(Symptom => symptom.Item1)</td>
+                    <td>@Html.DisplayFor(Severity => symptom.Item2)</td>
+                </tr>
+            }
+        </table>
+        <form asp-action="SaveSymptoms" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <input type="hidden" name="json" value=@JsonSerializer.Serialize(Model.SymptomSeverityList, new JsonSerializerOptions { WriteIndented = false }) />
+                <label asp-for="Notes" class="form-label">Anteckningar</label>
+                <textarea asp-for="Notes" class="form-control" cols="40" rows="1" placeholder="Övrigt"></textarea>
+            </div>
+
+            <input type="submit" class="btn btn-success" value="Lägg till">
+        </form>
+    </div>
+</div>

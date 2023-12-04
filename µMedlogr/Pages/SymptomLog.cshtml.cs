@@ -9,14 +9,15 @@ using Microsoft.EntityFrameworkCore;
 using NuGet.Versioning;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
+using System.Diagnostics.Metrics;
 
 namespace µMedlogr.Pages;
 
-public class IndexModel(EntityManager entityManager, µMedlogrContext context) : PageModel
+public class SymptomLogModel(EntityManager entityManager, µMedlogrContext context) : PageModel
 {
     private readonly EntityManager _entityManager = entityManager;
     private readonly µMedlogrContext _context = context;
-    
+
     [Required]
     [BindProperty]
     public string? NewSymptom { get; set; }
@@ -27,13 +28,8 @@ public class IndexModel(EntityManager entityManager, µMedlogrContext context) :
     public List<Tuple<int, Severity>> SymptomSeverityList { get; set; } = [];
     [BindProperty]
     public int SymptomId { get; set; }
-    /// <summary>
-    /// The database choices for symptoms
-    /// </summary>
-    //internal List<SymptomType> SymptomChoices { get; set; }
     public SelectList SymptomChoices { get; set; }
-    // [BindProperty]
-    // public SymptomType NewSymptomType { get; set; }
+ 
     [Required]
     [EnumDataType(typeof(µMedlogr.core.Enums.Severity))]
     [Range(0, (double)µMedlogr.core.Enums.Severity.Maximal, ErrorMessage = "Välj en allvarlighetsgrad")]
@@ -41,10 +37,10 @@ public class IndexModel(EntityManager entityManager, µMedlogrContext context) :
     public Severity NewSeverity { get; set; }
     [BindProperty]
     public Person Person { get; set; }
+    //[BindProperty]
+    //public HealthRecord HealthRecord { get; set; }
 
-
-
-    public async Task OnGetAsync([FromQuery] string json, int helthRekordId)
+    public async Task OnGetAsync([FromQuery] string json, int healthRecordId = 2)
     {
         if (json is not null)
         {
@@ -54,15 +50,26 @@ public class IndexModel(EntityManager entityManager, µMedlogrContext context) :
         //Load the SymptomChoices from DB
         var Symptoms = await _context.SymptomTypes.ToListAsync();
         SymptomChoices = new SelectList(Symptoms, nameof(SymptomType.Id), nameof(SymptomType.Name));
-        var currentHealthrekord = _context.HealthRecords
-            .Where(hr => hr.Id == helthRekordId)
-            .Include(hr => hr.Person).FirstOrDefault();
-        var currentPerson = currentHealthrekord?.Person;
+
+        var currentHealthRecord = _context.HealthRecords
+            .Where(hr => hr.Id == healthRecordId)
+            .FirstOrDefault();
+        
+
+        var currentPersonId = await _context.HealthRecords
+           .Where(hr => hr.Id == healthRecordId)
+           .Select(hr => hr.PersonId)
+           .FirstOrDefaultAsync();
+
+        var currentPerson = await _context.People
+            .Where(person => person.Id == currentPersonId)
+            .FirstOrDefaultAsync();
         Person = currentPerson;
+
     }
 
     [ActionName("SaveSymptoms")]
-    public async Task<IActionResult> OnPostAsync([FromForm] string json, int helthRekordId)
+    public async Task<IActionResult> OnPostAsync([FromForm] string json, int healthRecordId)
     {
         if (json is not null)
         {
@@ -74,27 +81,29 @@ public class IndexModel(EntityManager entityManager, µMedlogrContext context) :
             return BadRequest("Inga nya symptom!");
         }
 
-        var measurements = new List<SymptomMeasurement>();
-        foreach (var (symptomId, severity) in SymptomSeverityList)
+        var healthRecordEntry = new HealthRecordEntry
         {
-            var newMeasurement = await _entityManager.CreateSymptomMeasurement(symptomId, severity);
-            if (newMeasurement != null) {
-                measurements.Add(newMeasurement);
-            }
+            Notes = Notes,
+            TimeSymptomWasChecked = DateTime.Now,
+
+        };
+        
+        foreach(var (symptomId,severity) in SymptomSeverityList)
+        {
+            var measurment = await _entityManager.CreateSymptomMeasurement(symptomId, severity);
+            healthRecordEntry.Measurements.Add(measurment);
         }
-        measurements.RemoveAll(item => item == null);
+       
+  Person.HealthRecord.Entries.Add(healthRecordEntry);
         try
         {
-            foreach (var measurement in measurements)
-            {
-                await _entityManager.SaveNewSymptomMeasurement(measurement);
-            }
+            await _entityManager.SaveNewHealthRecordEntry(healthRecordEntry);  
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
-            
+
         }
-        return RedirectToPage("/index", new { json });
+        return RedirectToPage("/SymptomLog");
     }
 
     [ActionName("AddSymptom")]
@@ -111,7 +120,7 @@ public class IndexModel(EntityManager entityManager, µMedlogrContext context) :
             SymptomSeverityList.Add(new Tuple<int, Severity>(SymptomId, NewSeverity));
             var options = new JsonSerializerOptions { WriteIndented = false };
             var json = JsonSerializer.Serialize(SymptomSeverityList, options);
-            return RedirectToPage("/Index", new { json });
+            return RedirectToPage("/SymptomLog", new { json });
         }
         return BadRequest("Symptom saknas!");
     }

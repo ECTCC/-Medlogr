@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using µMedlogr.core.Enums;
 using µMedlogr.core.Models;
+using Microsoft.IdentityModel.Tokens;
+using System;
 
 namespace µMedlogr.core.Services;
 public class EntityManager
@@ -23,9 +25,10 @@ public class EntityManager
         }
         var symptom = _context.SymptomTypes.Find(symptomId) ?? throw new NotImplementedException();
 
-        var newmesurment = new SymptomMeasurement { Symptom = symptom, SubjectiveSeverity = severity, TimeSymptomWasChecked = DateTime.Now };
-        return newmesurment;
+        var newMesurment = new SymptomMeasurement { Symptom = symptom, SubjectiveSeverity = severity };
+        return newMesurment;
     }
+
     internal async Task<bool> SaveNewSymptomMeasurement(SymptomMeasurement newSymptomMeasurement)
     {
         if (newSymptomMeasurement is null)
@@ -49,6 +52,21 @@ public class EntityManager
             return false;
         }
         _context.Add(person);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    internal async Task<bool> SaveNewHealthRecordEntry(HealthRecordEntry recordEntry)
+    {
+        if (recordEntry is null)
+        {
+            return false;
+        }
+        if (recordEntry.Id != 0)
+        {
+            return false;
+        }
+        _context.Add(recordEntry);
         await _context.SaveChangesAsync();
         return true;
     }
