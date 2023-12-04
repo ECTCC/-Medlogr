@@ -24,6 +24,12 @@ public class PersonPageModel(EntityManager entityManager, UserManager<AppUser> u
     public Person Me { get; set; }
     [BindProperty]
     public List<string> EditListAllergies { get; set; }
+    [BindProperty]
+    public DateOnly EditBirthDate { get; set; }
+    [BindProperty]
+    public string EditNickName { get; set; }
+    [BindProperty]
+    public float? EditedWeight { get; set; }
 
     public async Task<IActionResult> OnGetAsync() {
         AllergiesList = PersonPage.CreateAllergiesList();
@@ -72,7 +78,16 @@ public class PersonPageModel(EntityManager entityManager, UserManager<AppUser> u
     public async Task<IActionResult> OnPostEditPersonInCareOfAsync(int id)
     {
         var person = await _entityManager.GetOnePerson(id);
-        var a = 0;
+        var allergies = PersonPage.ReturnSameListOrAddStringNoAllergy(EditListAllergies);
+        if(EditNickName is null)
+        {
+            return RedirectToPage("/PersonPage");
+        }
+        var success = await _entityManager.EditOnePerson(person,EditNickName,EditBirthDate,EditedWeight,allergies);
+        if (success == false)
+        {
+            //Error handeling here or error message.
+        }
         return RedirectToPage("/PersonPage");
     }
     public async Task<IActionResult>OnPostDeletePersonAsync(int id)

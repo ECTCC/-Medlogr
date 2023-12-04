@@ -92,8 +92,25 @@
                     {
                         <a>@allergy  </a>
                     }
-                    <form method="post" asp-page-handler="EditPersonInCareOf">
+                    <form method="post" enctype="multipart/form-data" asp-page-handler="EditPersonInCareOf">
                         <input type="hidden" name="id" value="@peopleincare.Id"/>
+                        <input asp-for="EditNickName" class="form-control register-input-100" placeholder="Fyll i namn här." />
+                        @if (Model.AllergiesList is not null && Model.AllergiesList.Any())
+                        {
+                            <div>
+                                <br />
+                                <h5>Lägg till allergi</h5>
+                                @foreach (var allergi in Model.AllergiesList)
+                                {
+                                    <input type="checkbox" id="@allergi" name="editListAllergies" value="@allergi">
+                                    <label for="@allergi">@allergi</label>
+                                }
+                            </div>
+                        }
+                       @*  Fix with start date here *@
+                        <input type="date" id="selectedDate" name="EditBirthDate" />
+                        <br />
+                        <input asp-for="EditedWeight" type="number" min="0" max="250" placeholder="Ange din vikt" class="register-input-100" />
                         <button>Redigera användare</button>
                     </form>
                     <form method="post" asp-page-handler="DeletePerson">
