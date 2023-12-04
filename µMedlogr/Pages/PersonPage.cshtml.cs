@@ -22,7 +22,9 @@ public class PersonPageModel(EntityManager entityManager, UserManager<AppUser> u
     public AppUser? MyUser { get; set; }
     public List<Person> PeopleInCareOf { get; set; }
     public Person Me { get; set; }
-  
+    [BindProperty]
+    public List<string> EditListAllergies { get; set; }
+
     public async Task<IActionResult> OnGetAsync() {
         AllergiesList = PersonPage.CreateAllergiesList();
         MyUser = await _userManager.GetUserAsync(User);
@@ -71,6 +73,16 @@ public class PersonPageModel(EntityManager entityManager, UserManager<AppUser> u
     {
         var person = await _entityManager.GetOnePerson(id);
         var a = 0;
+        return RedirectToPage("/PersonPage");
+    }
+    public async Task<IActionResult>OnPostDeletePersonAsync(int id)
+    {
+        var person = await _entityManager.GetOnePerson(id);
+        var success = await _entityManager.DeleteOnePerson(person);
+        if(success == false)
+        {
+            //Error handeling here. 
+        }
         return RedirectToPage("/PersonPage");
     }
 }

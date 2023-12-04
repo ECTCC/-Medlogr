@@ -96,6 +96,10 @@
                         <input type="hidden" name="id" value="@peopleincare.Id"/>
                         <button>Redigera användare</button>
                     </form>
+                    <form method="post" asp-page-handler="DeletePerson">
+                        <input type="hidden" name="id" value="@peopleincare.Id" />
+                        <button type="submit" class="btn btn-danger">Radera användare.</button>
+                    </form>
                 }
             }
         </div>
