@@ -6,30 +6,30 @@ using System.Threading.Tasks;
 
 namespace µMedlogr.test
 {
-    public class PersonPage
+    public class PersonPageTest
     {
         [Fact]
         public void CreateList_OfString_ReturnList()
         {
             //arrange
-            var sut= µMedlogr.core.Services.PersonPage.CreateAllergiesList();
-            //act
 
+            //act
+            var actual= µMedlogr.core.Services.PersonPage.CreateAllergiesList();
             //assert
-            Assert.IsType<List<string>>(sut);
+            Assert.IsType<List<string>>(actual);
         }
         [Fact]
         public void ReturnList_IfEmtpy_WithOneString()
         {
             //arrange
             List<string> myemptyList = new List<string>();
-            var sut = µMedlogr.core.Services.PersonPage.ReturnSameListOrAddStringNoAllergy(myemptyList);
+            var expected = "Inga allergier";
             //act
-            var actual = "Inga allergier";
+            var actual = µMedlogr.core.Services.PersonPage.ReturnSameListOrAddStringNoAllergy(myemptyList);
             //assert
-            Assert.Single(sut);
-            Assert.Equal(actual, sut[0]);
-            Assert.NotEmpty(sut);
+            Assert.Single(actual);
+            Assert.Equal(expected, actual[0]);
+            Assert.NotEmpty(actual);
 
         }
     }

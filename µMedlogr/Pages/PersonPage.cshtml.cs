@@ -20,9 +20,17 @@ public class PersonPageModel(EntityManager entityManager, UserManager<AppUser> u
     [BindProperty]
     public DateOnly SelectedDate { get; set; }
     public AppUser? MyUser { get; set; }
+    public List<Person> PeopleInCareOf { get; set; }
+    public Person Me { get; set; }
+  
     public async Task<IActionResult> OnGetAsync() {
         AllergiesList = PersonPage.CreateAllergiesList();
         MyUser = await _userManager.GetUserAsync(User);
+        if(MyUser is not null)
+            {
+                PeopleInCareOf = await _entityManager.GetJunctionData(MyUser);
+                Me = await _entityManager.GetMeFromUser(MyUser);
+            }
         return Page();
     }
     public async Task<IActionResult> OnPostSavePersonAsync() {
@@ -42,14 +50,12 @@ public class PersonPageModel(EntityManager entityManager, UserManager<AppUser> u
                 Person.HealthRecord = healthrecord;
                 MyUser.Me = Person;
                 await _entityManager.UpdateEntity<AppUser>(MyUser);
-                return RedirectToPage("/PersonPage");
             } else {
                 MyUser.Me!.Allergies = PersonPage.ReturnSameListOrAddStringNoAllergy(SelectedAllergies);
                 MyUser.Me.DateOfBirth = SelectedDate;
                 MyUser.Me.NickName = Person.NickName;
                 MyUser.Me.WeightInKg = Person.WeightInKg;
                 await _entityManager.UpdateEntity<AppUser>(MyUser);
-                return RedirectToPage("/PersonPage");
             }
         } else {
             var healthrecord = new HealthRecord {
@@ -58,7 +64,7 @@ public class PersonPageModel(EntityManager entityManager, UserManager<AppUser> u
             Person.HealthRecord = healthrecord;
             MyUser.PeopleInCareOf.Add(Person);
             await _entityManager.UpdateEntity<AppUser>(MyUser);
-            return RedirectToPage("/PersonPage");
         }
+      return RedirectToPage("/PersonPage");
     }
 }
