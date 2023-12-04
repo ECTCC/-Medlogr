@@ -1,8 +1,13 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Moq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using µMedlogr.core;
+using µMedlogr.core.Models;
+using µMedlogr.core.Services;
 
 namespace µMedlogr.test
 {
@@ -30,7 +35,6 @@ namespace µMedlogr.test
             Assert.Single(actual);
             Assert.Equal(expected, actual[0]);
             Assert.NotEmpty(actual);
-
         }
     }
 }
