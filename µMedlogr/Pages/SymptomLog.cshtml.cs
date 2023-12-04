@@ -54,7 +54,7 @@ public class SymptomLogModel(EntityManager entityManager, µMedlogrContext conte
         var currentHealthRecord = _context.HealthRecords
             .Where(hr => hr.Id == healthRecordId)
             .FirstOrDefault();
-        
+        //HealthRecord = currentHealthRecord;
 
         var currentPersonId = await _context.HealthRecords
            .Where(hr => hr.Id == healthRecordId)
@@ -69,8 +69,12 @@ public class SymptomLogModel(EntityManager entityManager, µMedlogrContext conte
     }
 
     [ActionName("SaveSymptoms")]
-    public async Task<IActionResult> OnPostAsync([FromForm] string json, int healthRecordId)
+    public async Task<IActionResult> OnPostAsync([FromForm] string json, int healthRecordId = 2)
     {
+        var currentHealthRecord = _context.HealthRecords
+            .Where(hr => hr.Id == healthRecordId)
+            .FirstOrDefault();
+
         if (json is not null)
         {
             var options = new JsonSerializerOptions { WriteIndented = false };
@@ -80,7 +84,7 @@ public class SymptomLogModel(EntityManager entityManager, µMedlogrContext conte
         {
             return BadRequest("Inga nya symptom!");
         }
-
+       
         var healthRecordEntry = new HealthRecordEntry
         {
             Notes = Notes,
@@ -93,8 +97,8 @@ public class SymptomLogModel(EntityManager entityManager, µMedlogrContext conte
             var measurment = await _entityManager.CreateSymptomMeasurement(symptomId, severity);
             healthRecordEntry.Measurements.Add(measurment);
         }
+        currentHealthRecord.Entries.Add(healthRecordEntry);
        
-  Person.HealthRecord.Entries.Add(healthRecordEntry);
         try
         {
             await _entityManager.SaveNewHealthRecordEntry(healthRecordEntry);  
