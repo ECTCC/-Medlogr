@@ -11,11 +11,13 @@ public class HealthRecord {
     public virtual ICollection<HealthRecordEntry> Entries { get; set; }
     public virtual ICollection<TemperatureData> Temperatures { get; set; }
     public virtual ICollection<SymptomType> CurrentSymptoms { get; set; }
+    public virtual ICollection<Event> Events { get; set; }
 
     internal HealthRecord() {
         Temperatures = new HashSet<TemperatureData>();
         Entries = new HashSet<HealthRecordEntry>();
         CurrentSymptoms = new HashSet<SymptomType>();
+        Events = new HashSet<Event>();
     }
 
 }
