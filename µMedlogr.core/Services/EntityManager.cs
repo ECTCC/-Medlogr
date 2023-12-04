@@ -171,4 +171,25 @@ public class EntityManager
             .FirstOrDefaultAsync();
         return userMe?.Me;
     }
+    public async Task<Person> GetOnePerson(int id)
+    {
+        var person = await _context.People.Where(x => x.Id == id).FirstOrDefaultAsync();
+        return person;
+    }
+    public async Task<bool> EditOnePerson(Person person, string nickname, DateOnly birthdate, float weight, List<string> allergies)
+    {
+        person.DateOfBirth = birthdate;
+        person.Allergies = allergies;
+        person.NickName = nickname;
+        person.WeightInKg = weight;
+        var updatedPerson = await _context.SaveChangesAsync();
+        if (updatedPerson >= 1)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

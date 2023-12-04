@@ -9,9 +9,11 @@
 @{
     string? myUserId = null;
     Person? myPerson = null;
-    if (SignInManager.IsSignedIn(User)) {
+    if (SignInManager.IsSignedIn(User))
+    {
         myUserId = UserManager.GetUserId(User);
-        if (myUserId != null) {
+        if (myUserId != null)
+        {
             myPerson = context.AppUsers
               .Where(x => x.Id == myUserId)
               .Include(x => x.Me)
@@ -22,15 +24,18 @@
     }
 }
 <div class="text-center">
-    @if (Model.MyUser is not null) {
+    @if (Model.MyUser is not null)
+    {
         <h4>Lägg till person</h4>
         <form method="post" enctype="multipart/form-data" class="person-page-form">
             <input asp-for="Person.NickName" class="form-control register-input-100" placeholder="Fyll i namn här." />
-            @if (Model.AllergiesList is not null && Model.AllergiesList.Any()) {
+            @if (Model.AllergiesList is not null && Model.AllergiesList.Any())
+            {
                 <div>
                     <br />
                     <h5>Lägg till allergi</h5>
-                    @foreach (var allergi in Model.AllergiesList) {
+                    @foreach (var allergi in Model.AllergiesList)
+                    {
                         <input type="checkbox" id="@allergi" name="selectedAllergies" value="@allergi">
                         <label for="@allergi">@allergi</label>
                     }
@@ -45,11 +50,14 @@
             <br />
             <label>
                 <input asp-for="IsPerson" type="radio" value="true" />
-                @if (myPerson != null) {
+                @if (myPerson != null)
+                {
                     <span>
                         Uppdatera min hälsodata
                     </span>
-                } else {
+                }
+                else
+                {
                     <span>
                         Spara min hälsodata
                     </span>
@@ -64,25 +72,36 @@
         </form>
 
         <div class="peopleincare">
-            @if (Model.Me is not null) {
+            @if (Model.Me is not null)
+            {
                 <p>Information för dig själv @Model.Me.NickName</p>
                 <h6>Allergier</h6>
-                @foreach (var allergy in Model.Me.Allergies) {
+                @foreach (var allergy in Model.Me.Allergies)
+                {
                     <a>@allergy</a>
                 }
             }
-            @if (Model.PeopleInCareOf.Count > 0) {
+            @if (Model.PeopleInCareOf.Count > 0)
+            {
                 <p>Information om personer du har hand om.</p>
-                @foreach (var peopleincare in Model.PeopleInCareOf) {
+                @foreach (var peopleincare in Model.PeopleInCareOf)
+                {
                     <p><strong>Namn:</strong> @peopleincare.NickName</p>
                     <h6>Allergier</h6>
-                    @foreach (var allergy in peopleincare.Allergies) {
+                    @foreach (var allergy in peopleincare.Allergies)
+                    {
                         <a>@allergy  </a>
                     }
+                    <form method="post" asp-page-handler="EditPersonInCareOf">
+                        <input type="hidden" name="id" value="@peopleincare.Id"/>
+                        <button>Redigera användare</button>
+                    </form>
                 }
             }
         </div>
-    } else {
+    }
+    else
+    {
         <p>Logga in för att lägga till personer!</p>
     }
 </div>

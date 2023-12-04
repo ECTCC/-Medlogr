@@ -67,4 +67,10 @@ public class PersonPageModel(EntityManager entityManager, UserManager<AppUser> u
         }
       return RedirectToPage("/PersonPage");
     }
+    public async Task<IActionResult> OnPostEditPersonInCareOfAsync(int id)
+    {
+        var person = await _entityManager.GetOnePerson(id);
+        var a = 0;
+        return RedirectToPage("/PersonPage");
+    }
 }
