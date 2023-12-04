@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using µMedlogr.core.Enums;
 
 namespace µMedlogr.core.Models;
 [PrimaryKey(nameof(Id))]
