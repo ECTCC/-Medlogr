@@ -4,9 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace µMedlogr.Pages; 
-public class PersonPageModel(EntityManager entityManager, UserManager<AppUser> userManager) : PageModel
-{
+namespace µMedlogr.Pages;
+public class PersonPageModel(EntityManager entityManager, UserManager<AppUser> userManager) : PageModel {
     private readonly EntityManager _entityManager = entityManager;
     private readonly UserManager<AppUser> _userManager = userManager;
 
@@ -21,16 +20,14 @@ public class PersonPageModel(EntityManager entityManager, UserManager<AppUser> u
     [BindProperty]
     public DateOnly SelectedDate { get; set; }
     public AppUser? MyUser { get; set; }
-    public async Task<IActionResult> OnGetAsync()
-    {
+    public async Task<IActionResult> OnGetAsync() {
         AllergiesList = PersonPage.CreateAllergiesList();
         MyUser = await _userManager.GetUserAsync(User);
         return Page();
     }
-    public async Task<IActionResult> OnPostSavePersonAsync()
-    {
+    public async Task<IActionResult> OnPostSavePersonAsync() {
         MyUser = await _userManager.GetUserAsync(User);
-        if(MyUser == null) {
+        if (MyUser == null) {
             // Put Error Message in Tempdata
             return RedirectToPage("/PersonPage");
         }
@@ -38,7 +35,7 @@ public class PersonPageModel(EntityManager entityManager, UserManager<AppUser> u
         Person.DateOfBirth = SelectedDate;
         var myperson = _entityManager.GetUserPerson(MyUser.Id);
         if (IsPerson) {
-            if(myperson == null) {
+            if (myperson == null) {
                 var healthrecord = new HealthRecord {
                     Person = Person
                 };
