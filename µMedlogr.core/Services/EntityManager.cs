@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using µMedlogr.core.Enums;
 using µMedlogr.core.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace µMedlogr.core.Services;
 public class EntityManager
@@ -13,6 +14,33 @@ public class EntityManager
         ArgumentNullException.ThrowIfNull(context);
         _context = context;
         _userManager = userManager;
+    }
+
+    internal Person? GetUserPerson(string userId) {
+        if (userId == null) {
+            return null;
+        }
+        //Cs8602 will never acrtually trigger since ThenInclude will never dereference null includes by design 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+        return _context.AppUsers
+            .Where(x => x.Id == userId)
+            .Include(x => x.Me)
+            .ThenInclude(x => x.HealthRecord)
+            .Include(x => x.Me)
+            .ThenInclude(x => x.CareGivers)
+            .Select(x => x.Me)
+            .SingleOrDefault();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+    }
+    internal HealthRecord? GetHealthRecordById(string userId) {
+        if(userId == null) {
+            return null;
+        }
+        return _context.AppUsers
+            .Where(x => x.Id == userId)
+            .Select(x => x.Me)
+            .Select(x => x.HealthRecord)
+            .SingleOrDefault();
     }
 
     internal async Task<SymptomMeasurement?> CreateSymptomMeasurement(int symptomId, Severity severity)

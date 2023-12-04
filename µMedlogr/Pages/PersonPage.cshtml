@@ -1,49 +1,72 @@
 ﻿@page
 @model µMedlogr.Pages.PersonPageModel
+@using Microsoft.EntityFrameworkCore
+@using µMedlogr.core
+@using µMedlogr.core.Models
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+@inject µMedlogrContext context;
 @{
+    string? myUserId = null;
+    Person? myPerson = null;
+    if (SignInManager.IsSignedIn(User)) {
+        myUserId = UserManager.GetUserId(User);
+        if (myUserId != null) {
+            myPerson = context.AppUsers
+              .Where(x => x.Id == myUserId)
+              .Include(x => x.Me)
+                .ThenInclude(m => m.HealthRecord)
+                .Select(x => x.Me)
+               .FirstOrDefault();
+        }
+    }
 }
-    <div class="text-center">
-        @if (Model.MyUser is not null)
-        {
-            <h4>Lägg till person</h4>
-            <form method="post" enctype="multipart/form-data" class="person-page-form">
-                <input asp-for="Person.NickName" class="form-control register-input-100" placeholder="Fyll i namn här." />
-                @if (Model.AllergiesList is not null && Model.AllergiesList.Any())
-                {
-                    <div>
-                        <br />
-                        <h5>Lägg till allergi</h5>
-                        @foreach (var allergi in Model.AllergiesList)
-                        {
-                            <input type="checkbox" id="@allergi" name="selectedAllergies" value="@allergi">
-                            <label for="@allergi">@allergi</label>
-                        }
-                    </div>
-                }
-                <input type="date" id="selectedDate" name="SelectedDate" />
-                <br />
-                <button id="toggleButton">Visa/Dölj Vikt</button>
-                <div id="weightDiv" class="hidden">
-                    <input asp-for="Person.WeightInKg" type="number" min="0" max="250" placeholder="Ange din vikt" class="register-input-100" />
+<div class="text-center">
+    @if (Model.MyUser is not null) {
+        <h4>Lägg till person</h4>
+        <form method="post" enctype="multipart/form-data" class="person-page-form">
+            <input asp-for="Person.NickName" class="form-control register-input-100" placeholder="Fyll i namn här." />
+            @if (Model.AllergiesList is not null && Model.AllergiesList.Any()) {
+                <div>
+                    <br />
+                    <h5>Lägg till allergi</h5>
+                    @foreach (var allergi in Model.AllergiesList) {
+                        <input type="checkbox" id="@allergi" name="selectedAllergies" value="@allergi">
+                        <label for="@allergi">@allergi</label>
+                    }
                 </div>
-                <br />
-                <label>
-                    <input asp-for="IsPerson" type="radio" value="true" />
-                    Lägga till mig själv.
-                </label>
+            }
+            <input type="date" id="selectedDate" name="SelectedDate" />
+            <br />
+            <button id="toggleButton">Visa/Dölj Vikt</button>
+            <div id="weightDiv" class="hidden">
+                <input asp-for="Person.WeightInKg" type="number" min="0" max="250" placeholder="Ange din vikt" class="register-input-100" />
+            </div>
+            <br />
+            <label>
+                <input asp-for="IsPerson" type="radio" value="true" />
+                @if (myPerson != null) {
+                    <span>
+                        Uppdatera min hälsodata
+                    </span>
+                } else {
+                    <span>
+                        Spara min hälsodata
+                    </span>
+                }
+            </label>
 
-                <label>
-                    <input asp-for="IsPerson" type="radio" value="false" checked />
-                    Lägga till någon jag har hand om.
-                </label>
-                <br />
-                <button type="submit" class="btn btn-primary submit-button" asp-page-handler="SavePerson">Spara Person</button>
-            </form>
-        }
-        else
-        {
-            <p>Logga in för att lägga till personer!</p>
-        }
+            <label>
+                <input asp-for="IsPerson" type="radio" value="false" checked />
+                Lägga till någon jag har hand om.
+            </label>
+            <br />
+            <button type="submit" class="btn btn-primary submit-button" asp-page-handler="SavePerson">Spara Person</button>
+        </form>
+    } else {
+        <p>Logga in för att lägga till personer!</p>
+    }
+</div>
 
 @section Scripts {
     <script src="~/js/datepersonpage.js"></script>
