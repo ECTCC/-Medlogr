@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using µMedlogr.core.Enums;
 using µMedlogr.core.Models;
+using System;
 using Microsoft.EntityFrameworkCore;
 
 namespace µMedlogr.core.Services;
@@ -55,8 +56,8 @@ public class EntityManager
         }
         var symptom = _context.SymptomTypes.Find(symptomId) ?? throw new NotImplementedException();
 
-        var newmesurment = new SymptomMeasurement { Symptom = symptom, SubjectiveSeverity = severity, TimeSymptomWasChecked = DateTime.Now };
-        return newmesurment;
+        var newMesurment = new SymptomMeasurement { Symptom = symptom, SubjectiveSeverity = severity };
+        return newMesurment;
     }
 
     internal IEnumerable<TemperatureData> GetTemperatureDataByHealthRecordId(int healthRecordId)
@@ -133,8 +134,7 @@ public class EntityManager
         }
         return false;
     }
-
-
+  
     internal async Task<bool> SaveNewSymptomMeasurement(SymptomMeasurement newSymptomMeasurement)
     {
         if (newSymptomMeasurement is null)
@@ -161,6 +161,21 @@ public class EntityManager
         await _context.SaveChangesAsync();
         return true;
     }
+
+    internal async Task<bool> SaveNewHealthRecordEntry(HealthRecordEntry recordEntry)
+    {
+        if (recordEntry is null)
+        {
+            return false;
+        }
+        if (recordEntry.Id != 0)
+        {
+            return false;
+        }
+        _context.Add(recordEntry);
+        await _context.SaveChangesAsync();
+        return true;
+      
     public async Task<List<Person>> GetJunctionData(AppUser appUser)
     {
         var userWithPeople = _context.Users
@@ -178,6 +193,7 @@ public class EntityManager
         }
         return new List<Person>();
     }
+      
     public async Task<Person> GetMeFromUser(AppUser appUser)
     {
         var userMe = await _context.Users
@@ -186,11 +202,13 @@ public class EntityManager
             .FirstOrDefaultAsync();
         return userMe?.Me;
     }
+      
     public async Task<Person> GetOnePerson(int id)
     {
         var person = await _context.People.Where(x => x.Id == id).FirstOrDefaultAsync();
         return person;
     }
+      
     public async Task<bool> EditOnePerson(Person person, string nickname, DateOnly birthdate, float? weight, List<string> allergies)
     {
         person.DateOfBirth = birthdate;
@@ -207,6 +225,7 @@ public class EntityManager
             return false;
         }
     }
+      
     public async Task<bool> DeleteOnePerson(Person person)
     {
         var removePerson = _context.People.Remove(person);
