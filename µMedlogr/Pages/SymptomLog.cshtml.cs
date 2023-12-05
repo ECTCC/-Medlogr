@@ -6,10 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Versioning;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
-using System.Diagnostics.Metrics;
 
 namespace µMedlogr.Pages;
 
@@ -29,7 +27,7 @@ public class SymptomLogModel(EntityManager entityManager, µMedlogrContext conte
     [BindProperty]
     public int SymptomId { get; set; }
     public SelectList SymptomChoices { get; set; }
- 
+
     [Required]
     [EnumDataType(typeof(µMedlogr.core.Enums.Severity))]
     [Range(0, (double)µMedlogr.core.Enums.Severity.Maximal, ErrorMessage = "Välj en allvarlighetsgrad")]
@@ -37,8 +35,9 @@ public class SymptomLogModel(EntityManager entityManager, µMedlogrContext conte
     public Severity NewSeverity { get; set; }
     [BindProperty]
     public Person Person { get; set; }
-    //[BindProperty]
-    //public HealthRecord HealthRecord { get; set; }
+   
+    [BindProperty]
+    public List<HealthRecordEntry> CurrentHealthRecordEntries { get; set; }
 
     public async Task OnGetAsync([FromQuery] string json, int healthRecordId = 2)
     {
@@ -47,14 +46,12 @@ public class SymptomLogModel(EntityManager entityManager, µMedlogrContext conte
             var options = new JsonSerializerOptions { WriteIndented = false };
             this.SymptomSeverityList = JsonSerializer.Deserialize<List<Tuple<int, Severity>>>(json) ?? [];
         }
-        //Load the SymptomChoices from DB
         var Symptoms = await _context.SymptomTypes.ToListAsync();
         SymptomChoices = new SelectList(Symptoms, nameof(SymptomType.Id), nameof(SymptomType.Name));
 
         var currentHealthRecord = _context.HealthRecords
             .Where(hr => hr.Id == healthRecordId)
             .FirstOrDefault();
-        //HealthRecord = currentHealthRecord;
 
         var currentPersonId = await _context.HealthRecords
            .Where(hr => hr.Id == healthRecordId)
@@ -66,6 +63,11 @@ public class SymptomLogModel(EntityManager entityManager, µMedlogrContext conte
             .FirstOrDefaultAsync();
         Person = currentPerson;
 
+        CurrentHealthRecordEntries = await _context.HealthRecords
+            .Where(hr => hr.PersonId == currentPersonId)
+            .SelectMany(hr => hr.Entries)
+            .Include(entry => entry.Measurements)
+            .ToListAsync();
     }
 
     [ActionName("SaveSymptoms")]
@@ -84,24 +86,24 @@ public class SymptomLogModel(EntityManager entityManager, µMedlogrContext conte
         {
             return BadRequest("Inga nya symptom!");
         }
-       
+
         var healthRecordEntry = new HealthRecordEntry
         {
             Notes = Notes,
             TimeSymptomWasChecked = DateTime.Now,
 
         };
-        
-        foreach(var (symptomId,severity) in SymptomSeverityList)
+
+        foreach (var (symptomId, severity) in SymptomSeverityList)
         {
             var measurment = await _entityManager.CreateSymptomMeasurement(symptomId, severity);
             healthRecordEntry.Measurements.Add(measurment);
         }
         currentHealthRecord.Entries.Add(healthRecordEntry);
-       
+
         try
         {
-            await _entityManager.SaveNewHealthRecordEntry(healthRecordEntry);  
+            await _entityManager.SaveNewHealthRecordEntry(healthRecordEntry);
         }
         catch (Exception ex)
         {
@@ -127,5 +129,15 @@ public class SymptomLogModel(EntityManager entityManager, µMedlogrContext conte
             return RedirectToPage("/SymptomLog", new { json });
         }
         return BadRequest("Symptom saknas!");
+    }
+
+    public async Task<string> GetSymptomName(int symptomId)
+    {
+        var symptom = await _context.SymptomTypes
+            .Where(x => x.Id == symptomId)
+            .FirstOrDefaultAsync();
+
+        return symptom == null ? "Symptom unknown" : symptom.Name;
+
     }
 }

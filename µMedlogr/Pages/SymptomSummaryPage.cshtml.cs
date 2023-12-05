@@ -28,27 +28,7 @@ namespace µMedlogr.Pages
                 .Where(p=>p.Id == personId)
                 .FirstOrDefaultAsync();
             Person = currentPerson;
-            //var currentHealthRecordEntriesWithoutJoin = await _context.HealthRecordsEntrys
-            //  .Include(x => x.RecordId == currentHealthRecord.Id)
-            //  .ToListAsync();
-
-            //var currentHealthRecordEntries = await _context.HealthRecords
-            //    .Include(x => x.PersonId == personId)
-            //    .Join(
-            //        _context.HealthRecordsEntrys,
-            //        hr => hr.Id,
-            //        hre => hre.RecordId,
-            //        (hr, hre) => new { HealthRecord = hr, HealthRecordEntry = hre }
-            //        )
-            //    .FirstOrDefaultAsync();
-
-
-            //var CurrentPerson = await _context.People
-            //    .Include(p => p.HealthRecord)
-            //    .ThenInclude(hr => hr.CurrentSymptoms)
-            //    .SingleOrDefaultAsync();
-            //CurrentHealthRecord = CurrentPerson.HealthRecord;
+           
         }
-
     }
 }

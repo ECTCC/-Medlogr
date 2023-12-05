@@ -4,7 +4,7 @@
 @{
    
 }
-<div class="text-center">
+ <div class="text-center">
     <h4>  Helth record for: @Model.Person.NickName  </h4>
     <form>
         <button type="submit" class="btn btn-success" asp-page="/SymptomLog" asp-route-personId="@Model.HealthRecord.Id">Add ny symptom</button>
@@ -13,21 +13,20 @@
     <form>
         <button type="submit" class="btn btn-success" asp-page="/Index">Add temperaturmätning</button>
     </form>
-    <h5>Symptom Measurements:</h5>
-    <ul>
-        @foreach (var entry in Model.HealthRecord.Entries)
-        {
-            <li>
-                <strong>@entry.Notes:</strong>
-                <ul>
-                    @foreach (var measurement in entry.Measurements)
-                    {
-                        <li>
-                            Symptom: @measurement.Symptom, Severity: @measurement.SubjectiveSeverity
-                        </li>
-                    }
-                </ul>
-            </li>
-        }
-    </ul>
-</div>
+   
+</div> 
+@* <div class="container">
+    <div class="text-center mt-4">
+        <h4>Health Record for: <span class="text-success">@Model.Person.NickName</span></h4>
+
+        <div class="d-flex flex-column align-items-center mt-4">
+            <form asp-page="/SymptomLog" asp-route-personId="@Model.HealthRecord.Id">
+                <button type="submit" class="btn btn-success btn-lg mb-3">Add New Symptom</button>
+            </form>
+
+            <form asp-page="/Index">
+                <button type="submit" class="btn btn-success btn-lg">Add Temperature Measurement</button>
+            </form>
+        </div>
+    </div>
+</div> *@
