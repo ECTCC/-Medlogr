@@ -38,8 +38,8 @@ public class SymptomLogModel(EntityManager entityManager, µMedlogrContext conte
    
     [BindProperty]
     public List<HealthRecordEntry> CurrentHealthRecordEntries { get; set; }
-
-    public async Task OnGetAsync([FromQuery] string json, int healthRecordId = 2)
+    //Remove hard coded value here
+    public async Task OnGetAsync([FromQuery] string json, int healthRecordId = 1)
     {
         if (json is not null)
         {
@@ -69,9 +69,9 @@ public class SymptomLogModel(EntityManager entityManager, µMedlogrContext conte
             .Include(entry => entry.Measurements)
             .ToListAsync();
     }
-
+    //Remove hard coded value here
     [ActionName("SaveSymptoms")]
-    public async Task<IActionResult> OnPostAsync([FromForm] string json, int healthRecordId = 2)
+    public async Task<IActionResult> OnPostAsync([FromForm] string json, int healthRecordId = 1)
     {
         var currentHealthRecord = _context.HealthRecords
             .Where(hr => hr.Id == healthRecordId)

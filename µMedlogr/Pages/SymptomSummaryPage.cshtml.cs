@@ -17,7 +17,8 @@ namespace µMedlogr.Pages
         public Person Person { get; set; }
 
         public HealthRecord HealthRecord { get; set; }
-        public async Task OnGetAsync(int personId =2)
+        //Remove hard coded value here
+        public async Task OnGetAsync(int personId =1)
         {
             var currentHealthRecord = await _context.HealthRecords
               .Where(x => x.PersonId == personId)
