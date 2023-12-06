@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "µMedlogr.test", "µMedlogr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "µMedlogr.core", "µMedlogr.core\µMedlogr.core.csproj", "{2455DC5F-015B-47B7-B8C0-491C4299B514}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "µMedlogr.Tests.Integration", "µMedlogr.Tests.Integration\µMedlogr.Tests.Integration.csproj", "{A469FC02-7A79-4498-81EE-04588A91D2B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "µMedlogr.Tests.Integration", "µMedlogr.Tests.Integration\µMedlogr.Tests.Integration.csproj", "{A469FC02-7A79-4498-81EE-04588A91D2B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
