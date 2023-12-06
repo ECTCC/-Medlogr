@@ -211,6 +211,10 @@ public class EntityManager
         }
         return new Event() { Title = title, Description = description, NotedAt = time, AdministeredMedicines = drugs };
     }
+
+    internal bool SaveEntity<T>() {
+        throw new NotImplementedException();
+    }
   
     public async Task<Person> GetOnePerson(int id)
     {
