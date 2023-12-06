@@ -21,7 +21,7 @@
 			<_Parameter1>µMedlogr</_Parameter1>
 		</AssemblyAttribute>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-			<_Parameter1>µMedlogr.test</_Parameter1>
+			<_Parameter1>µMedlogr.Tests.Unit</_Parameter1>
 		</AssemblyAttribute>
 	  <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 		<_Parameter1>DynamicProxyGenAssembly2</_Parameter1>

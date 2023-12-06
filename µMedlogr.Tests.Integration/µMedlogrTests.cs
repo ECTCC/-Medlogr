@@ -11,6 +11,7 @@ public class µMedlogrTests {
         }
 
         [Fact]
+        [Trait("Category", "Integration")]
         public async Task CanGetIndexPage() {
             // Arrange
             var navbar = "<ul class=\"navbar-nav\">";
@@ -28,12 +29,14 @@ public class µMedlogrTests {
         }
 
         [Fact]
+        [Trait("Category", "Integration")]
         public async Task CanLoginAsValidUser() {
             var identifyingElement = "<form class=\"form-inline\" action=\"/Identity/Account/Logout?returnUrl=%2F\" method=\"post\">";
 
         }
 
         [Fact]
+        [Trait("Category", "Integration")]
         public async Task LoginPage_ReturnsFailureForInvalidUser() {
 
             //Act
