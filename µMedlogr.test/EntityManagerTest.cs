@@ -6,15 +6,38 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Moq;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using System.Reflection.Metadata;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Data.Entity.Infrastructure;
 
 namespace µMedlogr.test;
 public class EntityManagerTest
 {
-    //private readonly UserManager<AppUser> _userManager;
-    //public EntityManagerTest(UserManager<AppUser> userManager )
-    //{
-    //    userManager =_userManager;
-    //}
+    private readonly UserManager<AppUser> _userManager;
+    private readonly DbContextOptions<µMedlogrContext> _context;
+    public EntityManagerTest(UserManager<AppUser> userManager)
+    {
+        userManager = _userManager;
+        _context = new DbContextOptionsBuilder<µMedlogrContext>()
+       .UseInMemoryDatabase("TestDb")
+       .ConfigureWarnings(b => b.Ignore(InMemoryEventId.TransactionIgnoredWarning))
+       .Options;
+
+        using var context = new µMedlogrContext(_context);
+
+        context.Database.EnsureDeleted();
+        context.Database.EnsureCreated();
+
+        context.AddRange(
+            new HealthRecord(){ Id = 1, Temperatures = [],
+                PersonId = 1,
+                Entries = [],CurrentSymptoms = [],
+
+            });
+
+        context.SaveChanges();
+    }
     #region Tests Invariant
     [Fact]
     public void CreateSymptomMeasurement_SymptomIdIsZero_ReturnTaskEvaluatedToNull()
@@ -64,7 +87,7 @@ public class EntityManagerTest
 
         //Act
         //Assert
-        Assert.ThrowsAsync<DbUpdateException>(() => sut.SaveNewSymptomMeasurement(symptomMeasurement));
+        Assert.ThrowsAsync<Microsoft.EntityFrameworkCore.DbUpdateException>(() => sut.SaveNewSymptomMeasurement(symptomMeasurement));
     }
     [Fact]
     public void AddTemperatureData_InvalidHealthRecordId_ReturnsFalse()
@@ -82,17 +105,17 @@ public class EntityManagerTest
     }
     #endregion
     #region Tests Variant
-    //[Theory]
-    //[MemberData(nameof(ValidTemperatureData))]
-    //internal void AddTemperatureData_ValidTemperatureParameterData_ReturnsTrue(int healthRecordId, float temperature, string notes)
-    //{
-    //    //Arrange
-    //    var sut = CreateDefaultEntityManager();
-    //    //Act
-    //    var result = sut.AddTemperatureData(healthRecordId, temperature, notes);
-    //    //Assert
-    //    Assert.True(result);
-    //}
+    [Theory]
+    [MemberData(nameof(ValidTemperatureData))]
+    internal void AddTemperatureData_ValidTemperatureParameterData_ReturnsTrue(int healthRecordId, float temperature, string notes)
+    {
+        //Arrange
+        var sut = CreateDefaultEntityManager();
+        //Act
+        var result = sut.AddTemperatureData(healthRecordId, temperature, notes);
+        //Assert
+        Assert.True(result);
+    }
 
     //[Theory]
     //[MemberData(nameof(ValidSymptomMeasurementData))]
@@ -148,10 +171,20 @@ public class EntityManagerTest
     {
         var optionsbuilder = new DbContextOptionsBuilder<µMedlogrContext>();
         var mock = new Mock<µMedlogrContext>(optionsbuilder.Options);
+        using var context = CreateContext();
         var userManagerMock = new Mock<UserManager<AppUser>>(Mock.Of<IUserStore<AppUser>>(), null, null, null, null, null, null, null, null);
 
-        return new µMedlogr.core.Services.EntityManager(mock.Object, userManagerMock.Object);
+        return new µMedlogr.core.Services.EntityManager(context, userManagerMock.Object);
     }
+
+    µMedlogrContext CreateContext() => new µMedlogrContext(_context);
+
+    //private EntityManager CreateEntityManagerInMemoryDb()
+    //{
+    //    var optionbuilder = new DbContextOptionsBuilder<µMedlogrContext>()
+    //         .UseInMemoryDatabase(databaseName: "InMemoryDb")
+    //         .Options;
+    //}
 
     //    #endregion
     //    #region TestData
@@ -254,3 +287,55 @@ public class FakeDbSet<T> : DbSet<T> where T : class
 {
     public override IEntityType EntityType => throw new NotImplementedException();
 }
+//public class µMedlogrContext : DbContext
+//{
+//    internal DbSet<HealthRecord> HealthRecords { get; set; } = default!;
+//    internal DbSet<Person> People { get; set; } = default!;
+//    internal DbSet<SymptomMeasurement> SymptomMeasurements { get; set; } = default!;
+//    internal DbSet<SymptomType> SymptomTypes { get; set; } = default!;
+//    internal DbSet<TemperatureData> TemperatureDatas { get; set; } = default!;
+//    internal DbSet<HealthRecordEntry> HealthRecordsEntrys { get; set; } = default!;
+//    internal DbSet<AppUser> AppUsers { get; set; } = default!;
+
+//    public µMedlogrContext(DbContextOptions options) : base(options) { }
+//    protected override void OnModelCreating(ModelBuilder builder)
+//    {
+//        base.OnModelCreating(builder);
+
+//        builder.Entity<AppUser>()
+//            .HasMany(x => x.PeopleInCareOf)
+//            .WithMany(x => x.CareGivers)
+//            .UsingEntity<Dictionary<string, object>>(
+//                "AppUserPerson",
+//                j => j
+//                .HasOne<AppUser>()
+//                .WithMany()
+//                .HasForeignKey("CareGiversId")
+//                .OnDelete(DeleteBehavior.Restrict)
+//                );
+
+//        builder.Entity<AppUser>()
+//            .HasOne(x => x.Me);
+
+//        builder.Entity<HealthRecord>()
+//            .HasOne(x => x.Person)
+//            .WithOne(x => x.HealthRecord)
+//            .HasForeignKey<HealthRecord>("PersonId");
+
+//        SeedDataBase(builder);
+
+//    }
+
+//    private void SeedDataBase(ModelBuilder builder)
+//    {
+//        //Skapa object innan
+//        var kalle = new Person { Id = 1, NickName = "Nisse", WeightInKg = 47 };
+
+//        builder.Entity<Person>().HasData(
+//            kalle
+//            );
+//        builder.Entity<HealthRecord>().HasData(
+//            new HealthRecord { Id = 1, PersonId = kalle.Id }
+//            );
+//    }
+//}

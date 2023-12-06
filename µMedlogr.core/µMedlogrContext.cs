@@ -1,6 +1,7 @@
 ﻿using µMedlogr.core.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Entity.Infrastructure;
 
 namespace µMedlogr.core;
 public class µMedlogrContext : IdentityDbContext<AppUser> {
