@@ -192,6 +192,17 @@ public class EntityManager {
         }
         return false;
     }
+    internal bool SaveEntity<T>() {
+        throw new NotImplementedException();
+    }
     #endregion
+    internal Event CreateEvent(string title, string description, DateTime time, List<int>? drugIds) {
+        var drugs = new List<Drug>();
+        if (!drugIds.IsNullOrEmpty()) {
+            drugs = [.. _context.Drugs.Where(drug => drugIds!.Contains(drug.Id))];
+        }
+        return new Event() { Title = title, Description = description, NotedAt = time, AdministeredMedicines = drugs };
+    }
+
 }
 
