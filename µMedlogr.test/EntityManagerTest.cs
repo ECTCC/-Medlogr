@@ -9,7 +9,6 @@ using Moq;
 
 namespace µMedlogr.test;
 public class EntityManagerTest {
-    //private readonly UserManager<AppUser> _userManager;
     private readonly DbContextOptions<µMedlogrContext> _contextOptions;
     public EntityManagerTest() {
         _contextOptions = new DbContextOptionsBuilder<µMedlogrContext>()
@@ -54,7 +53,7 @@ public class EntityManagerTest {
         var optionsbuilder = new DbContextOptionsBuilder<µMedlogrContext>();
         var mock = new Mock<µMedlogrContext>(optionsbuilder.Options);
         mock.Setup(m => m.SaveChangesAsync(default)).ReturnsAsync(0);
-        var userManagerMock = new Mock<UserManager<AppUser>>(Mock.Of<IUserStore<AppUser>>(), null, null, null, null, null, null, null, null);
+        var userManagerMock = DefaultUserManagerMock();
         var sut = new EntityManager(mock.Object, userManagerMock.Object);
         var symptomMeasurement = new SymptomMeasurement {
             Id = 0,
@@ -64,7 +63,7 @@ public class EntityManagerTest {
 
         //Act
         //Assert
-        Assert.ThrowsAsync<Microsoft.EntityFrameworkCore.DbUpdateException>(() => sut.SaveNewSymptomMeasurement(symptomMeasurement));
+        Assert.ThrowsAsync<DbUpdateException>(() => sut.SaveNewSymptomMeasurement(symptomMeasurement));
     }
     [Fact]
     public void AddTemperatureData_InvalidHealthRecordId_ReturnsFalse() {
@@ -108,7 +107,7 @@ public class EntityManagerTest {
         //Arrange
         var optionsbuilder = new DbContextOptionsBuilder<µMedlogrContext>();
         var mock = new Mock<µMedlogrContext>(optionsbuilder.Options);
-        var userManagerMock = new Mock<UserManager<AppUser>>(Mock.Of<IUserStore<AppUser>>(), null, null, null, null, null, null, null, null);
+        var userManagerMock = DefaultUserManagerMock();
         mock.Setup(m => m.SaveChangesAsync(default)).Verifiable();
         mock.Setup(m => m.SaveChangesAsync(default)).ReturnsAsync(1);
         var sut = new EntityManager(mock.Object, userManagerMock.Object);
@@ -137,15 +136,21 @@ public class EntityManagerTest {
     private EntityManager CreateDefaultEntityManager() {
         //ResetDb();
         var context = CreateContext();
-        var userManagerMock = new Mock<UserManager<AppUser>>(Mock.Of<IUserStore<AppUser>>(), null, null, null, null, null, null, null, null);
+        Mock<UserManager<AppUser>> userManagerMock = DefaultUserManagerMock();
 
         return new EntityManager(context, userManagerMock.Object);
+    }
+
+    private static Mock<UserManager<AppUser>> DefaultUserManagerMock() {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        return new Mock<UserManager<AppUser>>(Mock.Of<IUserStore<AppUser>>(), null, null, null, null, null, null, null, null);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     }
 
     private EntityManager CreateEntityManagerWithMockedDbContext() {
         var optionsbuilder = new DbContextOptionsBuilder<µMedlogrContext>();
         var mock = new Mock<µMedlogrContext>(optionsbuilder.Options);
-        var userManagerMock = new Mock<UserManager<AppUser>>(Mock.Of<IUserStore<AppUser>>(), null, null, null, null, null, null, null, null);
+        var userManagerMock = DefaultUserManagerMock();
 
         return new EntityManager(mock.Object, userManagerMock.Object);
     }
