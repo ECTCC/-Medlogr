@@ -23,4 +23,4 @@ jobs:
       run: dotnet build --configuration release
 
     - name: Test
-      run: dotnet test --filter Category=Unit --logger "console;verbosity=detailed" --no-build
+      run: dotnet test --filter Category=Unit --logger "console;verbosity=detailed"
