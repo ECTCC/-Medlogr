@@ -2,6 +2,7 @@
 using µMedlogr.core.Enums;
 using µMedlogr.core.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace µMedlogr.core.Services;
 public class EntityManager
@@ -170,5 +171,13 @@ public class EntityManager
             .Include(x => x.Me)
             .FirstOrDefaultAsync();
         return userMe?.Me;
+    }
+
+    internal Event CreateEvent(string title, string description, DateTime time, List<int>? drugIds) {
+        var drugs = new List<Drug>();
+        if (!drugIds.IsNullOrEmpty()) {
+            drugs = [.. _context.Drugs.Where(drug => drugIds!.Contains(drug.Id))];
+        }
+        return new Event() { Title = title, Description = description, NotedAt = time, AdministeredMedicines = drugs };
     }
 }
