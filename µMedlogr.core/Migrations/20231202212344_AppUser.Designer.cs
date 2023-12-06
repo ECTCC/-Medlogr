@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using µMedlogr.core;
 
@@ -11,9 +12,11 @@ using µMedlogr.core;
 namespace µMedlogr.core.Migrations
 {
     [DbContext(typeof(µMedlogrContext))]
-    partial class µMedlogrContextModelSnapshot : ModelSnapshot
+    [Migration("20231202212344_AppUser")]
+    partial class AppUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -295,9 +298,6 @@ namespace µMedlogr.core.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("TimeSymptomWasChecked")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("Id");
 
                     b.HasIndex("HealthRecordId");
@@ -358,6 +358,9 @@ namespace µMedlogr.core.Migrations
 
                     b.Property<int>("SymptomId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("TimeSymptomWasChecked")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

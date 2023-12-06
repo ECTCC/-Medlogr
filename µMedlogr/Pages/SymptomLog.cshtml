@@ -1,0 +1,82 @@
+﻿@page
+@model µMedlogr.Pages.SymptomLogModel
+@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Logga symptom";
+}
+
+<div class="text-center">
+    <h4>  Lägga till symptom för: @Model.Person.NickName </h4>
+    <div class="contain">
+
+        <form asp-page-handler="AddSymptom" method="post" enctype="multipart/form-data">
+
+            <input type="hidden" name="injson" value=@JsonSerializer.Serialize(Model.SymptomSeverityList, new JsonSerializerOptions { WriteIndented = false }) />
+            <div class="form-group">
+                <label asp-for="SymptomId" class="form-label">Ange Symptom</label>
+                <select asp-for="SymptomId" asp-items="Model.SymptomChoices"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="NewSeverity" class="col-form-label" />
+                <select asp-for="NewSeverity" asp-items="Html.GetEnumSelectList<µMedlogr.core.Enums.Severity>()"></select>
+            </div>
+            <input type="submit" class="btn btn-success" value="Lägg symptom till lista">
+        </form>
+
+        <table class="table table m-0 p-0">
+            <thead>
+                <tr>
+                    <th>Symptoms</th>
+                    <th>Severity</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var (symptomId, severity) in Model.SymptomSeverityList)
+                {
+                    <tr>
+                        <td> @await Model.GetSymptomName(@symptomId)</td>
+                        <td>@severity</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <form asp-action="SaveSymptoms" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <input type="hidden" name="json" value=@JsonSerializer.Serialize(Model.SymptomSeverityList, new JsonSerializerOptions { WriteIndented = false }) />
+                <label asp-for="Notes" class="form-label" style="font-weight: bold;font-size: larger;">Anteckningar</label>
+                <textarea asp-for="Notes" class="form-control" cols="40" rows="1" placeholder="Övrigt"></textarea>
+            </div>
+            <br />
+            <input type="submit" class="btn btn-success" value="Spara">
+        </form>
+    </div>
+
+    <table class="table table m-0 p-0">
+        <thead>
+            <tr>
+                <th>Notes</th>
+                <th>Time Checked</th>
+                <th>Symptoms</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entry in Model.CurrentHealthRecordEntries)
+            {
+                <tr>
+                    <td>@entry.Notes</td>
+                    <td>@entry.TimeSymptomWasChecked</td>
+                    <td>
+                        <ul>
+                            @foreach (var measurement in entry.Measurements)
+                            {
+                                <li>@measurement.Symptom.Name - Severity: @measurement.SubjectiveSeverity</li>
+                            }
+                        </ul>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

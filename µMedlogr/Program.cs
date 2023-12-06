@@ -21,6 +21,7 @@ public class Program {
 
         builder.Services.AddRazorPages();
         builder.Services.AddDbContext<µMedlogrContext>(options => options.UseSqlServer(connectionString));
+        //builder.Services.AddDbContext<µMedlogrContext>();
         builder.Services.AddScoped<µMedlogrContext>();
         builder.Services.AddScoped<EntityManager>();
         builder.Services.AddAuthentication().AddCookie();
@@ -34,6 +35,13 @@ public class Program {
             app.UseExceptionHandler("/Error");
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
+        }
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+
+            var context = services.GetRequiredService<µMedlogrContext>();
+            context.Database.EnsureCreated();
         }
 
         app.UseHttpsRedirection();

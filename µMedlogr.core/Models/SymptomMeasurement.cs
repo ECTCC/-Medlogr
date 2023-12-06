@@ -11,5 +11,5 @@ public class SymptomMeasurement {
     [Required]
     public SymptomType? Symptom { get; set; }
     public Severity SubjectiveSeverity { get; set; }
-    public DateTime TimeSymptomWasChecked { get; set; }
+    
 }
