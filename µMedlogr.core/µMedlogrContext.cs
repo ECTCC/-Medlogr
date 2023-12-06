@@ -44,15 +44,14 @@ public class µMedlogrContext : IdentityDbContext<AppUser> {
 
     }
 
-    private void InitData(ModelBuilder builder) {
-        //Skapa object innan
-        var kalle = new Person { Id = 1, NickName = "Nisse", WeightInKg = 47 };
+    private void SeedDataBase(ModelBuilder builder) {
+        //var kalle = new Person { Id = -1, NickName = "Nisse", WeightInKg = 47 };
 
-        builder.Entity<Person>().HasData(
-            kalle
-            );
-        builder.Entity<HealthRecord>().HasData(
-            new HealthRecord{ Id = 1, PersonId = kalle.Id}
-            );
+        //builder.Entity<Person>().HasData(
+        //    kalle
+        //    );
+        //builder.Entity<HealthRecord>().HasData(
+        //    new HealthRecord { Id = -1, PersonId = kalle.Id }
+        //    );
     }
 }
