@@ -11,6 +11,8 @@ public class µMedlogrContext : IdentityDbContext<AppUser> {
     internal DbSet<TemperatureData> TemperatureDatas { get; set; } = default!;
     internal DbSet<HealthRecordEntry> HealthRecordsEntrys { get; set; }=default!;
     internal DbSet<AppUser> AppUsers { get; set; }= default!;
+    internal DbSet<Drug> Drugs { get; set; } = default!;
+    internal DbSet<Event> Events { get; set; } = default!;
 
     public µMedlogrContext(DbContextOptions options) : base(options) { }
 
@@ -38,7 +40,7 @@ public class µMedlogrContext : IdentityDbContext<AppUser> {
             .WithOne(x => x.HealthRecord)
             .HasForeignKey<HealthRecord>("PersonId");
 
-        SeedDataBase(builder);
+        InitData(builder);
 
     }
 

@@ -2,6 +2,7 @@
 using µMedlogr.core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace µMedlogr.core.Services;
 public class EntityManager {
