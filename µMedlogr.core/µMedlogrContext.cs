@@ -1,7 +1,6 @@
 ﻿using µMedlogr.core.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Data.Entity.Infrastructure;
 
 namespace µMedlogr.core;
 public class µMedlogrContext : IdentityDbContext<AppUser> {
@@ -44,14 +43,13 @@ public class µMedlogrContext : IdentityDbContext<AppUser> {
     }
 
     private void SeedDataBase(ModelBuilder builder) {
-        //Skapa object innan
-        var kalle = new Person { Id = 1, NickName = "Nisse", WeightInKg = 47 };
+        //var kalle = new Person { Id = -1, NickName = "Nisse", WeightInKg = 47 };
 
-        builder.Entity<Person>().HasData(
-            kalle
-            );
-        builder.Entity<HealthRecord>().HasData(
-            new HealthRecord{ Id = 1, PersonId = kalle.Id}
-            );
+        //builder.Entity<Person>().HasData(
+        //    kalle
+        //    );
+        //builder.Entity<HealthRecord>().HasData(
+        //    new HealthRecord { Id = -1, PersonId = kalle.Id }
+        //    );
     }
 }
