@@ -44,7 +44,7 @@ public class µMedlogrContext : IdentityDbContext<AppUser> {
 
     }
 
-    private void SeedDataBase(ModelBuilder builder) {
+    private void InitData(ModelBuilder builder) {
         //var kalle = new Person { Id = -1, NickName = "Nisse", WeightInKg = 47 };
 
         //builder.Entity<Person>().HasData(
