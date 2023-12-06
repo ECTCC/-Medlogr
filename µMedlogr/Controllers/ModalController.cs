@@ -15,7 +15,6 @@ public class ModalController(EntityManager entityManager) : Controller {
     [HttpPost, Route("AddEvent")]
     [ActionName("AddEvent")]
     public async Task<IActionResult> AddEventAsync([FromForm] int healthrecordId, [FromForm] string title, [FromForm] string description, [FromForm] string drugsIdJson) {
-        var a = Request.QueryString;
         if (healthrecordId != 0 && title != null && description != null) {
 
             var drugIds = new List<int>();
@@ -26,7 +25,7 @@ public class ModalController(EntityManager entityManager) : Controller {
                 }
             }
             Event newEvent = _entityManager.CreateEvent(title, description, DateTime.Now, drugIds);
-            //Save Entity
+            bool success = _entityManager.SaveEntity<Drug>();
         }
         return Redirect(Request.Headers["Referer"]);
     }
