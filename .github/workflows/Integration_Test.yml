@@ -10,6 +10,19 @@ jobs:
   build-and-test:
     if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    env:
+      ConnectionStrings__µMedlogr: "Server=localhost,1433;Initial Catalog=µMedlogr; User Id=sa; PAssword=NotARealPassw0rd!;Trusted_Connection=True;TrustServerCertificate=True"
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        env: 
+          MSSQL_SA_PASSWORD: NotARealPassw0rd
+          ACCEPT_EULA: Y
+        ports: 
+          - "1433:1433"
+    defaults:
+      run:
+        working-directory: code
     steps:
     - uses: actions/checkout@v4
 
