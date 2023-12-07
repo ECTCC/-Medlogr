@@ -11,7 +11,7 @@ jobs:
     if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     env:
-      ConnectionStrings__µMedlogr: "Server=localhost,1433;Initial Catalog=µMedlogr; User Id=sa; PAssword=NotARealPassw0rd!;Trusted_Connection=True;TrustServerCertificate=True"
+      ConnectionStrings__µMedlogr: "Server=localhost,1433;Initial Catalog=µMedlogr; User Id=sa; Password=NotARealPassw0rd!;Trusted_Connection=True;TrustServerCertificate=True"
     services:
       sqlserver:
         image: mcr.microsoft.com/mssql/server:2019-latest
@@ -22,7 +22,7 @@ jobs:
           - "1433:1433"
     defaults:
       run:
-        working-directory: code
+        working-directory: ./
     steps:
     - uses: actions/checkout@v4
 
