@@ -11,8 +11,9 @@
     <div class="contain">
 
         <form asp-page-handler="AddSymptom" method="post" enctype="multipart/form-data">
-
+            @Html.HiddenFor(m => m.HealthRecordId)
             <input type="hidden" name="injson" value=@JsonSerializer.Serialize(Model.SymptomSeverityList, new JsonSerializerOptions { WriteIndented = false }) />
+           @*  <input type="hidden" name="healthRecordId" value="@Model.HealthRecordId" /> *@
             <div class="form-group">
                 <label asp-for="SymptomId" class="form-label">Ange Symptom</label>
                 <select asp-for="SymptomId" asp-items="Model.SymptomChoices"></select>
@@ -43,8 +44,10 @@
             </tbody>
         </table>
         <form asp-action="SaveSymptoms" method="post" enctype="multipart/form-data">
+            @Html.HiddenFor(m => m.HealthRecordId)
             <div class="form-group">
                 <input type="hidden" name="json" value=@JsonSerializer.Serialize(Model.SymptomSeverityList, new JsonSerializerOptions { WriteIndented = false }) />
+                @* <input type="hidden" name="healthRecordId" value="@Model.HealthRecordId" /> *@
                 <label asp-for="Notes" class="form-label" style="font-weight: bold;font-size: larger;">Anteckningar</label>
                 <textarea asp-for="Notes" class="form-control" cols="40" rows="1" placeholder="Övrigt"></textarea>
             </div>

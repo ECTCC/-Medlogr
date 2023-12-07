@@ -1,44 +1,94 @@
 ﻿@page
-@using System.Text.Json
 @model IndexModel
+@using Microsoft.AspNetCore.Identity
+@using System.Text.Json
+@using µMedlogr.core.Models
+@using Microsoft.EntityFrameworkCore
+@using µMedlogr.core
+
 @{
-    ViewData["Title"] = "Logga symptom";
+
 }
 
-<div class="text-center">
-    <h3>Lägga till symptom:</h3>
-    <div class="contain">
-
-        <form asp-page-handler="AddSymptom" method="post" enctype="multipart/form-data">
-
-            <input type="hidden" name="injson" value=@JsonSerializer.Serialize(Model.SymptomSeverityList, new JsonSerializerOptions { WriteIndented = false }) />
-            <div class="form-group">
-                <label asp-for="SymptomId" class="form-label">Ange Symptom</label>
-                <select asp-for="SymptomId" asp-items="Model.SymptomChoices"></select>
+<div class="container">
+    @if (Model.MyUser is not null)
+    {
+        <div class="card d-flex justify-content-between">
+            <div class="p-2">
+                <h4><strong>Namn:</strong> @Model.Me.NickName</h4>
+                <h6>Allergier</h6>
+                @foreach (var allergy in Model.Me.Allergies)
+                {
+                    <a>@allergy</a>
+                }
+                <h6>Vikt: @Model.Me.WeightInKg</h6>
             </div>
-            <div class="form-group">
-                <label asp-for="NewSeverity" class="col-form-label" />
-                <select asp-for="NewSeverity" asp-items="Html.GetEnumSelectList<µMedlogr.core.Enums.Severity>()"></select>
-            </div>
-            <input type="submit" class="btn btn-success" value="Lägg till symptom">
-        </form>
 
-        <table>
-            @foreach (var symptom in Model.SymptomSeverityList) {
-                <tr>
-                    <td>@Html.DisplayFor(Symptom => symptom.Item1)</td>
-                    <td>@Html.DisplayFor(Severity => symptom.Item2)</td>
-                </tr>
+            <div class="p-2">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <a class="btn btn-success" asp-area="" asp-page="/Feverlog" asp-route-healthrecordId="@Model.Me.HealthRecord?.Id">Temperaturogg</a>
+                    </li>
+                    <li class="list-group-item">
+                        <a class="btn btn-success" asp-area="" asp-page="/SymptomLog" asp-route-healthrecordId="@Model.Me.HealthRecord?.Id">Symptomlogg</a>
+                    </li>
+                    <li class="list-group-item">
+                        <a class="btn btn-outline-success" asp-area="" asp-page="/" asp-route-healthrecordId="@Model.Me.HealthRecord?.Id">HändelseLogg</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        @if (Model.PeopleInCareOf.Count > 0)
+        {
+            @foreach (var person in Model.PeopleInCareOf)
+            {
+                <div class="card d-flex justify-content-between">
+                    <div class="p-2">
+                        <h4><strong>Namn:</strong> @person.NickName</h4>
+                        <h6>Allergier</h6>
+                        @foreach (var allergy in person.Allergies)
+                        {
+                            <a>@allergy</a>
+                        }
+                        <h6>Vikt: @person.WeightInKg</h6>
+                    </div>
+
+                    <div class="p-2">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <a class="btn btn-success" asp-area="" asp-page="/Feverlog" asp-route-healthrecordId="@person.HealthRecord?.Id">Temperaturogg</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a class="btn btn-success" asp-area="" asp-page="/SymptomLog" asp-route-healthrecordId="@person.HealthRecord?.Id">Symptomlogg</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a class="btn btn-outline-success" asp-area="" asp-page="/" asp-route-healthrecordId="@person.HealthRecord?.Id">HändelseLogg</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             }
-        </table>
-        <form asp-action="SaveSymptoms" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <input type="hidden" name="json" value=@JsonSerializer.Serialize(Model.SymptomSeverityList, new JsonSerializerOptions { WriteIndented = false }) />
-                <label asp-for="Notes" class="form-label">Anteckningar</label>
-                <textarea asp-for="Notes" class="form-control" cols="40" rows="1" placeholder="Övrigt"></textarea>
-            </div>
+        }
+    }
+    else
+    {
+        <section class=" bg-info-50 p-8 p-lg-0 pt-lg-5 text-center text-sm-start text-black-75 min-vh-100">
+            <div class="container">
+                <div class="d-sm-flex align-items-center justify-content-between">
+                    <div>
+                        <h1>Välkommen till µMedlogr!</h1>
+                        <p class="lead my-4">
 
-            <input type="submit" class="btn btn-success" value="Lägg till">
-        </form>
-    </div>
+                        </p>
+                        <p>
+                            Logga in eller registrera dig så att du kan fortsätta!
+
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    }
 </div>

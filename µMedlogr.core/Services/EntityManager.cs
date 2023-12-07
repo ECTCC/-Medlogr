@@ -14,6 +14,14 @@ public class EntityManager {
         _userManager = userManager;
     }
     #region Person
+
+    //internal Person? GetPersonByHealthRecordId(int healthRecordId)
+    //{
+    //    return _context.HealthRecords
+    //       .Where(hr => hr.Id == healthRecordId)
+    //       .Select(hr => hr.Person)
+    //       .FirstOrDefault();       
+    //}
     internal Person? GetUserPerson(string userId) {
         if (userId == null) {
             return null;
@@ -86,14 +94,15 @@ public class EntityManager {
     }
     #endregion
     #region HealthRecord
-    internal async Task<bool> SaveNewHealthRecordEntry(HealthRecordEntry recordEntry) {
-        if (recordEntry is null) {
+    internal async Task<bool> SaveNewHealthRecordEntry(HealthRecordEntry healthRecordEntry)
+    {
+        if (healthRecordEntry is null) {
             return false;
         }
-        if (recordEntry.Id != 0) {
+        if (healthRecordEntry.Id != 0) {
             return false;
         }
-        _context.Add(recordEntry);
+        _context.Add(healthRecordEntry);
         await _context.SaveChangesAsync();
         return true;
     }
@@ -107,6 +116,16 @@ public class EntityManager {
             .Select(x => x.HealthRecord)
             .SingleOrDefault();
     }
+    public async Task<List< HealthRecordEntry>>GetHealthRecordEntriesByHealthRekordId(int personId)
+    {
+        var healthRekordentries = await _context.HealthRecords
+            .Where(hr => hr.PersonId == personId)
+            .SelectMany(hr => hr.Entries)
+            .Include(entry => entry.Measurements)
+            .ToListAsync();
+        return healthRekordentries;
+    }
+
     internal bool AddTemperatureData(int healthRecordId, float temperature, string? notes) {
         //Valid Health record Id?
         if (healthRecordId <= 0) {
@@ -130,7 +149,8 @@ public class EntityManager {
         }
         return false;
     }
-    internal async Task<SymptomMeasurement?> CreateSymptomMeasurement(int symptomId, Severity severity) {
+    internal async Task<SymptomMeasurement?> CreateSymptomMeasurement(int symptomId, Severity severity)
+    {
         if (symptomId <= 0 || severity <= Severity.None || severity > Severity.Maximal) {
             return null;
         }
@@ -139,15 +159,14 @@ public class EntityManager {
         var newMesurment = new SymptomMeasurement { Symptom = symptom, SubjectiveSeverity = severity };
         return newMesurment;
     }
-    internal async Task<bool> SaveNewSymptomMeasurement(SymptomMeasurement newSymptomMeasurement) {
+    internal async Task<bool> SaveNewSymptomMeasurement(SymptomMeasurement newSymptomMeasurement)
+    {
         if (newSymptomMeasurement is null) {
             return false;
         }
-        //If Id is not 0 then the entity is not new
         if (newSymptomMeasurement.Id != 0) {
             return false;
         }
-        //_context.Attach(newSymptomMeasurement.Symptom);
         _context.Add(newSymptomMeasurement);
         await _context.SaveChangesAsync();
         return true;
