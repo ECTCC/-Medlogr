@@ -2,24 +2,24 @@
 using µMedlogr.core.Models;
 
 namespace µMedlogr.core.Services;
-internal class PersonService : IEntityService<Person> {
-    public bool Delete(Person entity) {
+public class DrugService : IEntityService<Drug> {
+    public bool Delete(Drug entity) {
         throw new NotImplementedException();
     }
 
-    public Person? Find(int key) {
+    public Drug? Find(int key) {
         throw new NotImplementedException();
     }
 
-    public IEnumerable<Person> GetAll() {
+    public IEnumerable<Drug> GetAll() {
         throw new NotImplementedException();
     }
 
-    public bool SaveAll(IEnumerable<Person> people) {
+    public bool SaveAll(IEnumerable<Drug> values) {
         throw new NotImplementedException();
     }
 
-    public bool Update(Person entity) {
+    public bool Update(Drug entity) {
         throw new NotImplementedException();
     }
 }

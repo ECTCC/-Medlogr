@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using µMedlogr.core.Services;
 
 namespace µMedlogr.Pages.Shared;
-public class AddEventModalModel(HealthRecordService healthRecordService) : PageModel {
-    private readonly HealthRecordService _healthService = healthRecordService;
+public class AddEventModalModel([FromServices]DrugService drugservice) : PageModel {
+    private readonly DrugService _drugService = drugservice;
 
     [BindProperty]
     public Event Event { get; set; } = new Event();
@@ -15,12 +15,12 @@ public class AddEventModalModel(HealthRecordService healthRecordService) : PageM
     [BindProperty]
     public SelectList DrugChoices { get; set; } = default!;
     public IActionResult OnGetPartial(int healthrecordId) {
-        var healthrecord = _healthService.Find(healthrecordId);
+        List<(int id, string name)> drugs = _drugService.GetAll().Select(x=> (x.Id, x.Name)).ToList();
 
-        //DrugChoices = new SelectList(drugs, nameof(Drug.Id), nameof(Drug.Name));
+        DrugChoices = new SelectList(drugs, nameof(Drug.Id), nameof(Drug.Name));
 
         HealthRecordId = healthrecordId;
-        AddEventModalModel viewdata = new(_healthService) { HealthRecordId = healthrecordId};
+        AddEventModalModel viewdata = new(_drugService) { HealthRecordId = healthrecordId};
         return Partial("Shared/AddEventModal", viewdata);
     }
 }
