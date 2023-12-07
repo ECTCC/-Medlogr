@@ -11,6 +11,13 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Show Repo Info
+      run: |
+        git log --oneline
+        git branch -a
 
     - name: Show Commit Count
       run: |
