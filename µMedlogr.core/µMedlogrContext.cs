@@ -45,7 +45,43 @@ public class µMedlogrContext : IdentityDbContext<AppUser> {
     }
 
     private void InitData(ModelBuilder builder) {
-        //var kalle = new Person { Id = -1, NickName = "Nisse", WeightInKg = 47 };
+        List<Drug> drugs = [
+            new Drug() {
+                Id = 1,
+                Name = "Ipren", 
+                Form=Enums.Form.Tablet, 
+                ActiveSubstance="Kokain", 
+                Effects = [Enums.Effect.Analgesic] 
+            },
+            new Drug() {
+                Id = 2,
+                Name = "Treo",
+                Form = Enums.Form.Tablet,
+                ActiveSubstance = "MDMA",
+                Effects = [Enums.Effect.Analgesic, Enums.Effect.Anti_Inflammatory, Enums.Effect.Antipyretic]
+            },
+            new Drug() {
+                Id = 3,
+                Name = "Viagra",
+                Form = Enums.Form.Tablet,
+                ActiveSubstance = "Secret",
+                Effects = [Enums.Effect.Other]
+            },
+            new Drug() {
+                Id = 4,
+                Name = "Amoxicillin",
+                Form = Enums.Form.Liquid,
+                ActiveSubstance = "Kokain",
+                Effects = [Enums.Effect.Antibiotic]
+            },
+            new Drug() {
+                Id = 5,
+                Name = "Thomas Energy Supplement",
+                Form = Enums.Form.Injection,
+                ActiveSubstance = "alpha-methylphenethylamine",
+                Effects = [Enums.Effect.Analgesic, Enums.Effect.Other]
+            }
+            ];
 
         //builder.Entity<Person>().HasData(
         //    kalle

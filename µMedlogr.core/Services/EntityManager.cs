@@ -196,7 +196,12 @@ public class EntityManager {
         throw new NotImplementedException();
     }
     #endregion
+
     internal Event CreateEvent(string title, string description, DateTime time, List<int>? drugIds) {
+        //Uppdatera healthrecord i context
+        _context.SaveChanges();
+
+
         var drugs = new List<Drug>();
         if (!drugIds.IsNullOrEmpty()) {
             drugs = [.. _context.Drugs.Where(drug => drugIds!.Contains(drug.Id))];

@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.Tracing;
 
 namespace µMedlogr.core.Models;
 [PrimaryKey(nameof(Id))]
-public class HealthRecord {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+public class HealthRecord : Entity {
     public int PersonId { get; set; }
     public Person Person { get; set; } = default!;
     public virtual ICollection<HealthRecordEntry> Entries { get; set; }

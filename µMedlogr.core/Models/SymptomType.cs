@@ -4,9 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace µMedlogr.core.Models;
 [PrimaryKey(nameof(Id))]
-public class SymptomType {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+public class SymptomType : Entity {
     [Required]
     public string? Name { get; set; }
 

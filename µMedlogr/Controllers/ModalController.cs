@@ -1,14 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Web;
-using µMedlogr.core.Models;
+﻿using µMedlogr.core.Models;
 using µMedlogr.core.Services;
-using System.Text.Json;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.Text.Json;
 
 namespace µMedlogr.Controllers;
-//[ApiController]
-//[Route("[controller]")]
+
 public class ModalController(EntityManager entityManager) : Controller {
     private readonly EntityManager _entityManager = entityManager;
 

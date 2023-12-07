@@ -7,6 +7,7 @@
 @inject UserManager<AppUser> UserManager
 @inject µMedlogrContext context;
 @inject EntityManager EntityManager;
+@inject HealthRecordService healthrecordService;
 @{
     var user = await UserManager.GetUserAsync(User);
     var myPerson = user != null ? EntityManager.GetUserPerson(user.Id) : null;
@@ -60,7 +61,7 @@
 
 @if (myPerson is not null) {
     <div id="AddEventModal" class="modal fade">
-        @Html.Partial("AddEventModal", new AddEventModalModel() { HealthrecordId = myPerson.HealthRecord.Id })
+        @Html.Partial("AddEventModal", new AddEventModalModel(healthrecordService) { HealthRecordId = myPerson.HealthRecord.Id })
     </div>
 }
 
