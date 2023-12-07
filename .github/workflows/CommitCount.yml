@@ -23,3 +23,8 @@ jobs:
       run: |
         echo "Number of Commits: $(git rev-list --count --all)"
       shell: bash
+
+    - name: Show Commit Count per Person
+      run: |
+        git shortlog -sn
+      shell: bash
