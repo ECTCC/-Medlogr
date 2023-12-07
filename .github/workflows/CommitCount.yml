@@ -14,5 +14,5 @@ jobs:
 
     - name: Show Commit Count
       run: |
-        echo "Number of Commits: $(git rev-list --count HEAD)"
+        echo "Number of Commits: $(git rev-list --count --all)"
       shell: bash
