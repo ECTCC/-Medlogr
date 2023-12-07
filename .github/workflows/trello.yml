@@ -8,7 +8,7 @@ jobs:
     build:
         runs-on: ubuntu-latest
         steps:
-            - uses: rematocorp/trello-integration-action@v7
+            - uses: rematocorp/trello-integration-action@v8.0.0
               with:
                   # REQUIRED
                   github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -25,11 +25,11 @@ jobs:
                   # Newline-separated list of mapping between Github username and Trello username.
                   # Use it for people who have different usernames in Github and Trello.
                   # If the current username is not in the list, we still try to find a Trello user with that username.
-                  github-users-to-trello-users: |-
+                  map-github-users-to-trello: |-
                       Bertwald:thomas_ace8
                       Ziriado:christofferziriado
                       EminaDu:eminadu
-
+                  
                   # REQUIRED: Trello API key, visit https://trello.com/app-key for key.
                   trello-api-key: ${{ secrets.TRELLO_API_KEY }}
 
