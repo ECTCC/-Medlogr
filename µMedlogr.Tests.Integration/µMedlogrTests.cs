@@ -21,10 +21,10 @@ public class µMedlogrTests {
             var content = await response.Content.ReadAsStringAsync();
 
             //Assert
+            response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(contentType, response.Content.Headers.ContentType?.MediaType);
             Assert.True(response.Content.Headers.ContentLength > 0);
-            response.EnsureSuccessStatusCode();
             Assert.Contains(navbar, content);
         }
 

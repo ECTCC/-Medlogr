@@ -9,8 +9,7 @@
         </div>
         <div class="modal-body">
             <form method="post" asp-controller="Modal" asp-action="AddEvent" enctype="multipart/form-data">
-                @Html.HiddenFor(m => m.HealthrecordId)
-                @* <input asp-for="HealthrecordId" name="healthrecordId" /> *@
+                @Html.HiddenFor(m => m.HealthRecordId)
                 <div class="form-group">
                     <label asp-for="Event.Title" class="form-label">Händelse</label>
                     <textarea asp-for="Event.Title" name="title" class="form-control" cols="40" rows="1" placeholder="Namn på Händelsen"></textarea>

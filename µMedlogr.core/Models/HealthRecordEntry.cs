@@ -3,9 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace µMedlogr.core.Models;
 [PrimaryKey(nameof(Id))]
-public class HealthRecordEntry {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+public class HealthRecordEntry : Entity {
     public string? Notes { get; set; }
     public DateTime TimeSymptomWasChecked { get; set; }
   

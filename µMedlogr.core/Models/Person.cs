@@ -4,9 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace µMedlogr.core.Models;
 [PrimaryKey(nameof(Id))]
-public class Person {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+public class Person : Entity {
     [Required]
     public string? NickName { get; set; }
     public DateOnly DateOfBirth { get; set; }

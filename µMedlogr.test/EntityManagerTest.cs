@@ -12,7 +12,7 @@ public class EntityManagerTest {
     private readonly DbContextOptions<µMedlogrContext> _contextOptions;
     public EntityManagerTest() {
         _contextOptions = new DbContextOptionsBuilder<µMedlogrContext>()
-       .UseInMemoryDatabase("TestDb")
+       .UseInMemoryDatabase("TestDb") //Add Context imdb root
        .ConfigureWarnings(b => b.Ignore(InMemoryEventId.TransactionIgnoredWarning))
        .Options;
         ResetDb();
@@ -167,10 +167,9 @@ public class EntityManagerTest {
 
     private void ResetDb() {
         using var context = new µMedlogrContext(_contextOptions);
-
+        // Do not delete between uses
         context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
-
         context.SaveChanges();
     }
 
