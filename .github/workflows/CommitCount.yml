@@ -26,6 +26,6 @@ jobs:
 
     - name: Show Commit Count per Person
       run: |
-       echo "Commit Count per Person:"
-        git shortlog -sn | awk '{print $2, $1}'
+       commit_count_per_person=$(git shortlog -sn | awk '{$1=""; print $0}')
+        echo "Commit Count per Person: $commit_count_per_person"
       shell: bash
