@@ -5,22 +5,20 @@
 @using µMedlogr.core.Models
 @using Microsoft.EntityFrameworkCore
 @using µMedlogr.core
+@using µMedlogr.core.Services
 
 @{
 
 }
 
 <div class="container">
-    @if (Model.MyUser is not null)
-    {
+    @if (Model.MyUser is not null) {
         <div class="card d-flex justify-content-between">
             <div class="p-2">
                 <h4><strong>Namn:</strong> @Model?.Me?.NickName</h4>
                 <h6>Allergier</h6>
-                @if (Model.Me is not null)
-                {
-                    foreach (var allergy in Model.Me.Allergies)
-                    {
+                @if (Model.Me is not null) {
+                    foreach (var allergy in Model.Me.Allergies) {
                         <a>@allergy</a>
                     }
                     <h6>Vikt: @Model.Me.WeightInKg</h6>
@@ -30,28 +28,25 @@
             <div class="p-2">
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <a class="btn btn-success" asp-area="" asp-page="/Feverlog" asp-route-healthRecordId="@Model.Me?.HealthRecord?.Id">Temperaturogg</a>
+                        <a class="btn btn-success" asp-area="" asp-page="/Feverlog" asp-route-healthRecordId="@Model.Me?.HealthRecord?.Id">Temperaturmätningar</a>
                     </li>
                     <li class="list-group-item">
-                        <a class="btn btn-success" asp-area="" asp-page="/SymptomLog" asp-route-healthRecordId="@Model.Me?.HealthRecord?.Id">Symptomlogg</a>
+                        <a class="btn btn-success" asp-area="" asp-page="/SymptomLog" asp-route-healthRecordId="@Model.Me?.HealthRecord?.Id">Symptomhistorik</a>
                     </li>
                     <li class="list-group-item">
-                        <a class="btn btn-outline-success" asp-area="" asp-page="/" asp-route-healthRecordId="@Model.Me?.HealthRecord?.Id">HändelseLogg</a>
+                        <a class="btn btn-success" asp-area="" asp-page="/EventLog" asp-route-healthRecordId="@Model.Me?.HealthRecord?.Id">Händelser</a>
                     </li>
                 </ul>
             </div>
         </div>
 
-        @if (Model.PeopleInCareOf.Count > 0)
-        {
-            @foreach (var person in Model.PeopleInCareOf)
-            {
+        @if (Model.PeopleInCareOf.Count > 0) {
+            @foreach (var person in Model.PeopleInCareOf) {
                 <div class="card d-flex justify-content-between">
                     <div class="p-2">
                         <h4><strong>Namn:</strong> @person.NickName</h4>
                         <h6>Allergier</h6>
-                        @foreach (var allergy in person.Allergies)
-                        {
+                        @foreach (var allergy in person.Allergies) {
                             <a>@allergy</a>
                         }
                         <h6>Vikt: @person.WeightInKg</h6>
@@ -60,22 +55,20 @@
                     <div class="p-2">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                <a class="btn btn-success" asp-area="" asp-page="/Feverlog" asp-route-healthRecordId="@person?.HealthRecord?.Id">Temperaturogg</a>
+                                <a class="btn btn-success" asp-area="" asp-page="/Feverlog" asp-route-healthRecordId="@person?.HealthRecord?.Id">Temperaturmätningar</a>
                             </li>
                             <li class="list-group-item">
-                                <a class="btn btn-success" asp-area="" asp-page="/SymptomLog" asp-route-healthRecordId="@person?.HealthRecord?.Id">Symptomlogg</a>
+                                <a class="btn btn-success" asp-area="" asp-page="/SymptomLog" asp-route-healthRecordId="@person?.HealthRecord?.Id">Symptomhistorik</a>
                             </li>
                             <li class="list-group-item">
-                                <a class="btn btn-outline-success" asp-area="" asp-page="/" asp-route-healthRecordId="@person?.HealthRecord?.Id">HändelseLogg</a>
+                                <a class="btn btn-success" asp-area="" asp-page="/EventLog" asp-route-healthRecordId="@person?.HealthRecord?.Id">Händelser</a>
                             </li>
                         </ul>
                     </div>
                 </div>
             }
         }
-    }
-    else
-    {
+    } else {
         <section class=" bg-info-50 p-8 p-lg-0 pt-lg-5 text-center text-sm-start text-black-75 min-vh-100">
             <div class="container">
                 <div class="d-sm-flex align-items-center justify-content-between">
@@ -96,3 +89,6 @@
     }
 </div>
 
+@* <div id="AddEventModal" class="modal fade">
+    <partial name="Shared/AddEventModal" model="new Shared.AddEventModalModel(Model.HttpContext.RequestServices.GetService<DrugService>()){HealthRecordId=Model.}"></partial>
+</div> *@

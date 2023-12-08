@@ -12,9 +12,12 @@ public class DrugService(µMedlogrContext context) : IEntityService<Drug> {
     public Drug? Find(int key) {
         return _context.Drugs.Find(key);
     }
-
+    /// <summary>
+    /// Gets all drugs with only id and name properties
+    /// </summary>
+    /// <returns>A list of drugs</returns>
     public IEnumerable<Drug> GetAll() {
-        return _context.Drugs.AsEnumerable();
+        return _context.Drugs.Select(x => new Drug() {Id=x.Id, Name=x.Name, ActiveSubstance=null! }).AsEnumerable();
     }
 
     public bool SaveAll(IEnumerable<Drug> values) {

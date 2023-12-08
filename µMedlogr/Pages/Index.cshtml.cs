@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace µMedlogr.Pages;
 
-public class IndexModel(EntityManager entityManager, µMedlogrContext context, UserManager<AppUser> userManager) : PageModel
+public class IndexModel(UserManager<AppUser> userManager, EntityManager entityManager, µMedlogrContext context) : PageModel
 {
     private readonly EntityManager _entityManager = entityManager;
     private readonly µMedlogrContext _context = context;

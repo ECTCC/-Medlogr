@@ -30,18 +30,12 @@ public class Program {
             .AddDatabaseDeveloperPageExceptionFilter();
 
         builder.Services
-            .AddDefaultIdentity<µMedlogr.core.Models.AppUser>(options => options.SignIn.RequireConfirmedAccount = false)
+            .AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = false)
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<µMedlogrContext>();
 
-        builder.Services.AddRazorPages();
-        builder.Services.AddDbContext<µMedlogrContext>(options => options.UseSqlServer(connectionString));
-        builder.Services.AddScoped<µMedlogrContext>();
-        builder.Services.AddScoped<EntityManager>();
-        builder.Services.AddScoped<HealthRecordService>();
-        builder.Services.AddScoped<DrugService>();
-        builder.Services.AddAuthentication().AddCookie();
-        builder.Services.AddAuthorization();
+        SetupServices(builder, connectionString);
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -71,5 +65,18 @@ public class Program {
 
 
         app.Run();
+    }
+
+    private static void SetupServices(WebApplicationBuilder builder, string connectionString) {
+        builder.Services.AddRazorPages();
+        builder.Services.AddDbContext<µMedlogrContext>(options => options.UseSqlServer(connectionString));
+        builder.Services.AddScoped<µMedlogrContext>();
+        builder.Services.AddScoped<EntityManager>();
+        builder.Services.AddScoped<HealthRecordService>();
+        builder.Services.AddScoped<DrugService>();
+        builder.Services.AddScoped<PersonService>();
+        builder.Services.AddScoped<SymptomService>();
+        builder.Services.AddAuthentication().AddCookie();
+        builder.Services.AddAuthorization();
     }
 }

@@ -2,7 +2,7 @@
 using µMedlogr.core.Models;
 
 namespace µMedlogr.core.Services;
-internal class PersonService : IEntityService<Person> {
+public class PersonService : IEntityService<Person> {
     public bool Delete(Person entity) {
         throw new NotImplementedException();
     }

@@ -18,6 +18,8 @@
                     <label asp-for="Event.Description" class="form-label">Beskrivning</label>
                     <textarea asp-for="Event.Description" name="description" class="form-control" cols="40" rows="1" placeholder="Kort kommentar"></textarea>
                 </div>
+                <select asp-for="SelectedDrugs" asp-items="Model.DrugChoices" name="drugId"></select>
+
                 <input type="submit" class="btn btn-success" value="Logga Händelsen">
             </form>
             <a asp-controller="Modal" asp-action="AddEvent" asp-route-newEvent="@Model.Event">Test</a>

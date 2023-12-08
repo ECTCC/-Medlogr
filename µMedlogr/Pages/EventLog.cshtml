@@ -1,0 +1,39 @@
+﻿@page
+@using µMedlogr.core.Services
+@model µMedlogr.Pages.EventLogModel
+@{
+}
+
+<div class="container" id="eventlog">
+    @foreach (var entry in Model.EventHistory) {
+        <div class="row">
+            <div class="col-sm">
+                @entry.NotedAt.ToString("yyyy/mm/dd hh:mm:ss")
+            </div>
+            <div class="col-sm">
+                @entry.Title
+            </div>
+            <div class="col-sm">
+                @entry.AdministeredMedicines
+            </div>
+        </div>
+        <div class="row">
+            @entry.Description
+        </div>
+    }
+</div>
+<div id="pagecontrol">
+    <a class="btn btn-success" id="eventbutton" value="">Logga en händelse </a>
+</div>
+
+<div id="AddEventModal" class="modal fade">
+    <partial name="Shared/AddEventModal" model="new Shared.AddEventModalModel(Model.HttpContext.RequestServices.GetService<DrugService>()){HealthRecordId=Model.HealthRecordId}"></partial>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $('#eventbutton').click((event) => {
+            $('#AddEventModal').modal('show')
+        });
+    </script>
+}

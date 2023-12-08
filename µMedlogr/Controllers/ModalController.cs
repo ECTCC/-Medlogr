@@ -11,17 +11,17 @@ public class ModalController(EntityManager entityManager) : Controller {
 
     [HttpPost, Route("AddEvent")]
     [ActionName("AddEvent")]
-    public async Task<IActionResult> AddEventAsync([FromForm] int healthrecordId, [FromForm] string title, [FromForm] string description, [FromForm] string drugsIdJson) {
+    public async Task<IActionResult> AddEventAsync([FromForm] int healthrecordId, [FromForm] string title, [FromForm] string description, int drugId) {
         if (healthrecordId != 0 && title != null && description != null) {
 
-            var drugIds = new List<int>();
-            if (drugsIdJson is not null && drugsIdJson != String.Empty) {
-                var deserializedDrugs = JsonSerializer.Deserialize<List<int>>(drugsIdJson);
-                if (!deserializedDrugs.IsNullOrEmpty()) {
-                    drugIds = deserializedDrugs;
-                }
-            }
-            Event newEvent = _entityManager.CreateEvent(title, description, DateTime.Now, drugIds);
+            //var drugIds = new List<int>();
+            //if (drugsIdJson is not null && drugsIdJson != String.Empty) {
+            //    var deserializedDrugs = JsonSerializer.Deserialize<List<int>>(drugsIdJson);
+            //    if (!deserializedDrugs.IsNullOrEmpty()) {
+            //        drugIds = deserializedDrugs;
+            //    }
+            //}
+            Event newEvent = _entityManager.CreateEvent(title, description, DateTime.Now, [drugId]);
             bool success = _entityManager.SaveEntity<Drug>();
         }
         return Redirect(Request.Headers["Referer"]);

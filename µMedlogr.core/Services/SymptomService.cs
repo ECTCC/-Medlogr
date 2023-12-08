@@ -14,7 +14,7 @@ internal class SymptomService(µMedlogrContext medlogrContext) : IEntityService<
     }
 
     public IEnumerable<SymptomType> GetAll() {
-        return _medlogrContext.SymptomTypes.AsEnumerable();
+        return [.. _medlogrContext.SymptomTypes.Select(x => new SymptomType() {Id = x.Id, Name=x.Name })];
     }
 
     public bool SaveAll(IEnumerable<SymptomType> values) {
