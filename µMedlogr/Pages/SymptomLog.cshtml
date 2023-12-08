@@ -46,7 +46,7 @@
         <form asp-action="SaveSymptoms" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <input type="hidden" name="json" value=@JsonSerializer.Serialize(Model.SymptomSeverityList, new JsonSerializerOptions { WriteIndented = false }) />
-                <input type="hidden" value="@Model.Person.HealthRecord.Id" />
+                <input type="hidden" name="healthRecordId" value="@Model.HealthRecordId" />
                 <label asp-for="Notes" class="form-label" style="font-weight: bold;font-size: larger;">Anteckningar</label>
                 <textarea asp-for="Notes" class="form-control" cols="40" rows="1" placeholder="Övrigt"></textarea>
             </div>

@@ -31,7 +31,7 @@ public class SymptomLogModel : PageModel
     [Range(0, (double)µMedlogr.core.Enums.Severity.Maximal, ErrorMessage = "Välj en allvarlighetsgrad")]
     [BindProperty]
     public Severity NewSeverity { get; set; }
-    
+    [BindProperty]
     public Person? Person { get; set; }
     [BindProperty]
     public int HealthRecordId { get; set; }
@@ -64,10 +64,10 @@ public class SymptomLogModel : PageModel
         HealthRecordId = healthRecordId;
 
             MyUser = await _userManager.GetUserAsync(User);
-            Person = _entityManager.GetUserPerson(MyUser.Id);
+            Person = _entityManager.GetPersonByHealthRecordId(healthRecordId);
             //CurrentHealthRecord = _entityManager.GetHealthRecordById(MyUser.Id);
 
-            CurrentHealthRecordEntries = await _entityManager.GetHealthRecordEntriesByHealthRekordId(Person.Id);
+            CurrentHealthRecordEntries = await _entityManager.GetHealthRecordEntriesByHealthRekordId(healthRecordId);
     
 
     }
@@ -109,7 +109,7 @@ public class SymptomLogModel : PageModel
         {
             return BadRequest("Inga HelthRekordId!");
         }
-
+       
         try
         {
             await _entityManager.SaveNewHealthRecordEntry(healthRecordEntry);
@@ -118,7 +118,7 @@ public class SymptomLogModel : PageModel
         {
 
         }
-        return RedirectToPage("/SymptomLog");
+        return RedirectToPage("/SymptomLog", new {healthRecordId });
     }
 
     [ActionName("AddSymptom")]
@@ -135,7 +135,8 @@ public class SymptomLogModel : PageModel
             SymptomSeverityList.Add(new Tuple<int, Severity>(SymptomId, NewSeverity));
             var options = new JsonSerializerOptions { WriteIndented = false };
             var json = JsonSerializer.Serialize(SymptomSeverityList, options);
-            return RedirectToPage("/SymptomLog", new { json });
+            var healthRecordId = HealthRecordId;
+            return RedirectToPage("/SymptomLog", new { json, healthRecordId});
         }
         return BadRequest("Symptom saknas!");
     }

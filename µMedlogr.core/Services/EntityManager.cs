@@ -17,13 +17,14 @@ public class EntityManager
     }
     #region Person
 
-    //internal Person? GetPersonByHealthRecordId(int healthRecordId)
-    //{
-    //    return _context.HealthRecords
-    //       .Where(hr => hr.Id == healthRecordId)
-    //       .Select(hr => hr.Person)
-    //       .FirstOrDefault();       
-    //}
+    internal Person? GetPersonByHealthRecordId(int healthRecordId)
+    {
+        return _context.HealthRecords
+           .Where(hr => hr.Id == healthRecordId)
+           .Include(hr=>hr.Person)
+           .Select(hr => hr.Person)
+           .FirstOrDefault();
+    }
     internal Person? GetUserPerson(string userId)
     {
         if (userId == null)
