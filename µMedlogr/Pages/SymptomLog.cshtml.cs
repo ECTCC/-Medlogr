@@ -16,7 +16,7 @@ public class SymptomLogModel : PageModel
 {
     public readonly UserManager<AppUser> _userManager;
     private readonly EntityManager _entityManager;
-    private readonly µMedlogrContext _context;
+    private readonly µMedlogrContext _context;//premjestii
 
     [BindProperty]
     public string? Notes { get; set; }
@@ -63,84 +63,72 @@ public class SymptomLogModel : PageModel
 
         HealthRecordId = healthRecordId;
 
-            MyUser = await _userManager.GetUserAsync(User);
-            Person = _entityManager.GetPersonByHealthRecordId(healthRecordId);
-            //CurrentHealthRecord = _entityManager.GetHealthRecordById(MyUser.Id);
+        MyUser = await _userManager.GetUserAsync(User);
+        Person = _entityManager.GetPersonByHealthRecordId(healthRecordId);
+        //CurrentHealthRecord = _entityManager.GetHealthRecordById(MyUser.Id);
 
-            CurrentHealthRecordEntries = await _entityManager.GetHealthRecordEntriesByHealthRekordId(healthRecordId);
-    
+        CurrentHealthRecordEntries = await _entityManager.GetHealthRecordEntriesByHealthRekordId(healthRecordId);
+
 
     }
 
     [ActionName("SaveSymptoms")]
     public async Task<IActionResult> OnPostAsync([FromForm] string json, int healthRecordId)
     {
+        var options = new JsonSerializerOptions { WriteIndented = false };
+        this.SymptomSeverityList = JsonSerializer.Deserialize<List<Tuple<int, Severity>>>(json) ?? [];
+
         var currentHealthRecord = _context.HealthRecords
             .Where(hr => hr.Id == healthRecordId)
             .FirstOrDefault();
        
-        if (json is not null)
+        if (SymptomSeverityList.Count < 1 || json is null || currentHealthRecord is null)
         {
-            var options = new JsonSerializerOptions { WriteIndented = false };
-            this.SymptomSeverityList = JsonSerializer.Deserialize<List<Tuple<int, Severity>>>(json) ?? [];
+            return BadRequest("Något gick fel!");
         }
-        if (SymptomSeverityList.Count < 1)
-        {
-            return BadRequest("Inga nya symptom!");
-        }
-
+        
         var healthRecordEntry = new HealthRecordEntry
         {
             Notes = Notes,
             TimeSymptomWasChecked = DateTime.Now,
-
         };
 
-        if (currentHealthRecord != null) { 
         foreach (var (symptomId, severity) in SymptomSeverityList)
         {
             var measurment = await _entityManager.CreateSymptomMeasurement(symptomId, severity);
             healthRecordEntry.Measurements.Add(measurment);
         }
-        
-            currentHealthRecord.Entries.Add(healthRecordEntry);
-        }
-        else
-        {
-            return BadRequest("Inga HelthRekordId!");
-        }
-       
+
+        currentHealthRecord.Entries.Add(healthRecordEntry);
+
         try
         {
             await _entityManager.SaveNewHealthRecordEntry(healthRecordEntry);
         }
+        //Popraviti
         catch (Exception ex)
         {
 
         }
-        return RedirectToPage("/SymptomLog", new {healthRecordId });
+        return RedirectToPage("/SymptomLog", new { healthRecordId });
     }
 
     [ActionName("AddSymptom")]
     public async Task<IActionResult> OnPostAddSymptomAsync([FromForm] string injson)
     {
-        if (injson is not null)
+        if (NewSeverity < 0 || SymptomId < 0 || injson is null)
         {
-            var options = new JsonSerializerOptions { WriteIndented = false };
-            this.SymptomSeverityList = JsonSerializer.Deserialize<List<Tuple<int, Severity>>>(injson) ?? [];
+            return BadRequest("Symptom saknas!");
         }
+        var jsonOptions = new JsonSerializerOptions { WriteIndented = false };
+        this.SymptomSeverityList = JsonSerializer.Deserialize<List<Tuple<int, Severity>>>(injson) ?? [];
+        SymptomSeverityList.Add(new Tuple<int, Severity>(SymptomId, NewSeverity));
+        var json = JsonSerializer.Serialize(SymptomSeverityList, jsonOptions);
+        var healthRecordId = HealthRecordId;
+        return RedirectToPage("/SymptomLog", new { json, healthRecordId });
 
-        if (NewSeverity > 0 && SymptomId > 0)
-        {
-            SymptomSeverityList.Add(new Tuple<int, Severity>(SymptomId, NewSeverity));
-            var options = new JsonSerializerOptions { WriteIndented = false };
-            var json = JsonSerializer.Serialize(SymptomSeverityList, options);
-            var healthRecordId = HealthRecordId;
-            return RedirectToPage("/SymptomLog", new { json, healthRecordId});
-        }
-        return BadRequest("Symptom saknas!");
     }
-
+    //premjesti
     public async Task<string> GetSymptomName(int symptomId)
     {
         var symptom = await _context.SymptomTypes
