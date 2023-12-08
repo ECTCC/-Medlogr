@@ -31,6 +31,7 @@ public class SymptomLogModel : PageModel
     [Range(0, (double)µMedlogr.core.Enums.Severity.Maximal, ErrorMessage = "Välj en allvarlighetsgrad")]
     [BindProperty]
     public Severity NewSeverity { get; set; }
+    
     public Person? Person { get; set; }
     [BindProperty]
     public int HealthRecordId { get; set; }
@@ -75,7 +76,7 @@ public class SymptomLogModel : PageModel
     public async Task<IActionResult> OnPostAsync([FromForm] string json, int healthRecordId)
     {
         var currentHealthRecord = _context.HealthRecords
-            .Where(hr => hr.Id == HealthRecordId)
+            .Where(hr => hr.Id == healthRecordId)
             .FirstOrDefault();
        
         if (json is not null)

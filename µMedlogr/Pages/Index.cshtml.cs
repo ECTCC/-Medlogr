@@ -22,7 +22,7 @@ public class IndexModel(EntityManager entityManager, µMedlogrContext context, U
         MyUser = await _userManager.GetUserAsync(User);
         if (MyUser is not null)
         {
-            PeopleInCareOf = await _entityManager.GetJunctionData(MyUser);
+            PeopleInCareOf = await _entityManager.GetPeopleInCareOf(MyUser.Id);
             Me = _entityManager.GetUserPerson(MyUser.Id);
         }
         return Page();
