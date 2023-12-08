@@ -35,7 +35,8 @@ public class SymptomLogModel : PageModel
     [BindProperty]
     public int HealthRecordId { get; set; }
     public AppUser? MyUser { get; set; }
-    public HealthRecord? CurrentHealthRecord { get; set; }
+    //[BindProperty] 
+    //public HealthRecord CurrentHealthRecord { get; set; }
 
 
     [BindProperty]
@@ -48,7 +49,7 @@ public class SymptomLogModel : PageModel
         _userManager = userManager;
 
     }
-   
+
     public async Task OnGetAsync([FromQuery] string json, int healthRecordId)
     {
         if (json is not null)
@@ -60,19 +61,23 @@ public class SymptomLogModel : PageModel
         SymptomChoices = new SelectList(Symptoms, nameof(SymptomType.Id), nameof(SymptomType.Name));
 
         HealthRecordId = healthRecordId;
-        CurrentHealthRecord = _context.HealthRecords
-            .Where(hr => hr.Id == healthRecordId)
-            .FirstOrDefault();
-        MyUser = await _userManager.GetUserAsync(User);
-        Person = _entityManager.GetUserPerson(MyUser.Id);
-        CurrentHealthRecordEntries = await _entityManager.GetHealthRecordEntriesByHealthRekordId(Person.Id);
-        
-    }
+
+            MyUser = await _userManager.GetUserAsync(User);
+            Person = _entityManager.GetUserPerson(MyUser.Id);
+            //CurrentHealthRecord = _entityManager.GetHealthRecordById(MyUser.Id);
+
+            CurrentHealthRecordEntries = await _entityManager.GetHealthRecordEntriesByHealthRekordId(Person.Id);
     
+
+    }
+
     [ActionName("SaveSymptoms")]
     public async Task<IActionResult> OnPostAsync([FromForm] string json, int healthRecordId)
     {
-     
+        var currentHealthRecord = _context.HealthRecords
+            .Where(hr => hr.Id == HealthRecordId)
+            .FirstOrDefault();
+       
         if (json is not null)
         {
             var options = new JsonSerializerOptions { WriteIndented = false };
@@ -90,12 +95,19 @@ public class SymptomLogModel : PageModel
 
         };
 
+        if (currentHealthRecord != null) { 
         foreach (var (symptomId, severity) in SymptomSeverityList)
         {
             var measurment = await _entityManager.CreateSymptomMeasurement(symptomId, severity);
             healthRecordEntry.Measurements.Add(measurment);
         }
-        CurrentHealthRecord.Entries.Add(healthRecordEntry);
+        
+            currentHealthRecord.Entries.Add(healthRecordEntry);
+        }
+        else
+        {
+            return BadRequest("Inga HelthRekordId!");
+        }
 
         try
         {
