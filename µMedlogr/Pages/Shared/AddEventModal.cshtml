@@ -1,0 +1,35 @@
+﻿@model µMedlogr.Pages.Shared.AddEventModalModel
+@{
+}
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Lägg till en händelse</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+            <form method="post" asp-controller="Modal" asp-action="AddEvent" enctype="multipart/form-data">
+                @Html.HiddenFor(m => m.HealthRecordId)
+                <div class="form-group">
+                    <label asp-for="Event.Title" class="form-label">Händelse</label>
+                    <textarea asp-for="Event.Title" name="title" class="form-control" cols="40" rows="1" placeholder="Namn på Händelsen"></textarea>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Event.Description" class="form-label">Beskrivning</label>
+                    <textarea asp-for="Event.Description" name="description" class="form-control" cols="40" rows="1" placeholder="Kort kommentar"></textarea>
+                </div>
+                <input type="submit" class="btn btn-success" value="Logga Händelsen">
+            </form>
+            <a asp-controller="Modal" asp-action="AddEvent" asp-route-newEvent="@Model.Event">Test</a>
+        </div>
+    </div>
+</div>
+
+@* @section Scripts
+{
+    <script type="text/javascript">
+        $(window).on('load', function () {
+             $('#AddEventModal').modal('show');
+         });
+    </script>
+} *@

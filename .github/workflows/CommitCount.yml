@@ -1,0 +1,31 @@
+name: Show Commit Count
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  show-commit-count:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Show Repo Info
+      run: |
+        git log --oneline
+        git branch -a
+
+    - name: Show Commit Count
+      run: |
+        echo "Number of Commits: $(git rev-list --count --all)"
+      shell: bash
+
+    - name: Show Commit Count per Person
+      run: |
+        commit_count_per_person=$(git log --format='%aN' | grep -v '^$' | sort | uniq -c | awk '{print $2, $1}')
+        echo "Commit Count per Person: $commit_count_per_person"
+      shell: bash

@@ -2,11 +2,15 @@
 @using µMedlogr.core
 @using µMedlogr.core.Models
 @using Microsoft.EntityFrameworkCore
+@using µMedlogr.core.Services
+@using Microsoft.Extensions.DependencyInjection
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
 @inject µMedlogrContext context;
+@inject EntityManager EntityManager;
 @{
     var user = await UserManager.GetUserAsync(User);
+    var myPerson = user != null ? EntityManager.GetUserPerson(user.Id) : null;
     var inCareOf = context.AppUsers
                   .Where(x => x.Id == user!.Id)
                   .SelectMany(x => x.PeopleInCareOf)
@@ -29,8 +33,12 @@
                 @if (user?.Me != null) {
                     <li><a class="nav-link text-dark" asp-area="" asp-page="/Feverlog" asp-route-healthrecordId="@user.Me.HealthRecord?.Id">@user.Me.NickName</a></li>
                 }
+                <li>
+                    <input type="button" id="button1" value="Button1" />
+                </li>
             </ul>
         </li>
+
         <li class="nav-item">
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
         </li>
@@ -48,3 +56,18 @@
         </li>
     }
 </ul>
+
+@if (myPerson is not null) {
+    <div id="AddEventModal" class="modal fade">
+        @Html.Partial("AddEventModal", new AddEventModalModel(Context.RequestServices.GetService<DrugService>())) { HealthRecordId = myPerson.HealthRecord.Id })
+    </div>
+}
+
+@* Will not run in partials, left as example *@
+@section Scripts {
+    <script type="text/javascript">
+        $('#button1').click((event) => {
+            $('#AddEventModal').modal('show')
+        });
+    </script>
+}

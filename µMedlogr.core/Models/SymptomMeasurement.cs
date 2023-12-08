@@ -5,9 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace µMedlogr.core.Models;
 [PrimaryKey(nameof(Id))]
-public class SymptomMeasurement {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+public class SymptomMeasurement : Entity {
     [Required]
     public SymptomType? Symptom { get; set; }
     public Severity SubjectiveSeverity { get; set; }

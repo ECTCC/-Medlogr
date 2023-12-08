@@ -4,9 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace µMedlogr.core.Models;
 [PrimaryKey(nameof(Id))]
-public class SymptomType {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+public class SymptomType : Entity {
     [Required]
     public string? Name { get; set; }
 
@@ -16,7 +14,7 @@ public class SymptomType {
     /// The duration for which a symptom will be reported 
     /// as active before a new assessment is needed
     /// </summary>
-    //public float MeasureInterval { get; set; }
+    //public Timespan MeasureInterval { get; set; }
 
     public SymptomType() { 
         Records = new HashSet<HealthRecord>();

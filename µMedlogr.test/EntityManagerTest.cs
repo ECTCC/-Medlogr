@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Moq;
 
-namespace µMedlogr.test;
+namespace µMedlogr.Tests.Unit;
 public class EntityManagerTest {
     private readonly DbContextOptions<µMedlogrContext> _contextOptions;
     public EntityManagerTest() {
         _contextOptions = new DbContextOptionsBuilder<µMedlogrContext>()
-       .UseInMemoryDatabase("TestDb")
+       .UseInMemoryDatabase("TestDb") //Add Context imdb root
        .ConfigureWarnings(b => b.Ignore(InMemoryEventId.TransactionIgnoredWarning))
        .Options;
         ResetDb();
@@ -21,6 +21,7 @@ public class EntityManagerTest {
 
     #region Tests Invariant
     [Fact]
+    [Trait("Category", "Unit")]
     public void CreateSymptomMeasurement_SymptomIdIsZero_ReturnTaskEvaluatedToNull() {
         //Arrange
         var sut = CreateEntityManagerWithMockedDbContext();
@@ -33,14 +34,16 @@ public class EntityManagerTest {
         Assert.Null(actual.Result);
     }
     [Fact]
+    [Trait("Category", "Unit")]
     public void CreateSymptomMeasurement_SeverityIsOutOfRange_ThrowsArgumentOutOfRangeException() {
         //Arrange
         var sut = CreateDefaultEntityManager();
         //Act
         //Assert
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => sut.CreateSymptomMeasurement(1, (Severity)Int32.MaxValue));
+        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => sut.CreateSymptomMeasurement(1, (Severity)int.MaxValue));
     }
     [Fact]
+    [Trait("Category", "Unit")]
     public void EntityManager_ConstructorWithNullContext_ThrowsArgumentNullException() {
         //Arrange
         //Act
@@ -48,6 +51,7 @@ public class EntityManagerTest {
         Assert.Throws<ArgumentNullException>(() => new EntityManager(null!, null!));
     }
     [Fact]
+    [Trait("Category", "Unit")]
     public void SaveSymptomMeasurement_DatabaseDoesNotSaveValidValue_ThrowsDbUpdateException() {
         //Arrange
         var optionsbuilder = new DbContextOptionsBuilder<µMedlogrContext>();
@@ -66,6 +70,7 @@ public class EntityManagerTest {
         Assert.ThrowsAsync<DbUpdateException>(() => sut.SaveNewSymptomMeasurement(symptomMeasurement));
     }
     [Fact]
+    [Trait("Category", "Unit")]
     public void AddTemperatureData_InvalidHealthRecordId_ReturnsFalse() {
         //Arrange
         var sut = CreateEntityManagerWithMockedDbContext();
@@ -81,6 +86,7 @@ public class EntityManagerTest {
     #endregion
     #region Tests Variant
     [Theory]
+    [Trait("Category", "Unit")]
     [MemberData(nameof(ValidTemperatureData))]
     internal void AddTemperatureData_ValidTemperatureParameterData_ReturnsTrue(int healthRecordId, float temperature, string notes) {
         //Arrange
@@ -92,6 +98,7 @@ public class EntityManagerTest {
     }
 
     [Theory]
+    [Trait("Category", "Unit")]
     [MemberData(nameof(ValidSymptomMeasurementData))]
     internal void CreateSymptomMeasurement_ValidNewSymptomParameters_ReturnsANewMeasurement(int validSymptomId, Severity severity) {
         //Arrange
@@ -102,6 +109,7 @@ public class EntityManagerTest {
         Assert.NotNull(actual.Result);
     }
     [Theory]
+    [Trait("Category", "Unit")]
     [MemberData(nameof(ValidSymptomMeasurementsNotAlreadyInDatabase))]
     internal void SaveSymptomMeasurement_ValidNewSymptom_ReturnsTrue(SymptomMeasurement validSymptomMeasurement) {
         //Arrange
@@ -119,6 +127,7 @@ public class EntityManagerTest {
         mock.Verify(m => m.SaveChangesAsync(default), Times.Once);
     }
     [Theory]
+    [Trait("Category", "Unit")]
     [MemberData(nameof(ValidSymptomMeasurementsAlreadyInDatabase))]
     internal void SaveSymptomMeasurement_NewSymptomIsAlreadyAnEntity_ReturnsFalse(SymptomMeasurement validSymptomMeasurement) {
         //Arrange
@@ -134,7 +143,6 @@ public class EntityManagerTest {
     #endregion
     #region Private
     private EntityManager CreateDefaultEntityManager() {
-        //ResetDb();
         var context = CreateContext();
         Mock<UserManager<AppUser>> userManagerMock = DefaultUserManagerMock();
 
@@ -159,10 +167,9 @@ public class EntityManagerTest {
 
     private void ResetDb() {
         using var context = new µMedlogrContext(_contextOptions);
-
+        // Do not delete between uses
         context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
-
         context.SaveChanges();
     }
 
@@ -188,13 +195,6 @@ public class EntityManagerTest {
 
         context.SaveChanges();
     }
-
-    //private EntityManager CreateEntityManagerInMemoryDb()
-    //{
-    //    var optionbuilder = new DbContextOptionsBuilder<µMedlogrContext>()
-    //         .UseInMemoryDatabase(databaseName: "InMemoryDb")
-    //         .Options;
-    //}
 
     #endregion
     #region TestData

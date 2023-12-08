@@ -24,6 +24,8 @@ public class Program {
         //builder.Services.AddDbContext<µMedlogrContext>();
         builder.Services.AddScoped<µMedlogrContext>();
         builder.Services.AddScoped<EntityManager>();
+        builder.Services.AddScoped<HealthRecordService>();
+        builder.Services.AddScoped<DrugService>();
         builder.Services.AddAuthentication().AddCookie();
         builder.Services.AddAuthorization();
         var app = builder.Build();
@@ -52,7 +54,7 @@ public class Program {
         app.UseAuthorization();
 
         app.MapRazorPages();
-
+        app.MapControllers();
         app.Run();
     }
 }

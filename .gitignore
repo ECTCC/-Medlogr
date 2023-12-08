@@ -398,4 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 
 # Development
-µMedlogr/appsettings*.json
+appsettings.*.json

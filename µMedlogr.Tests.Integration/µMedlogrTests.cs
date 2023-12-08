@@ -11,6 +11,7 @@ public class µMedlogrTests {
         }
 
         [Fact]
+        [Trait("Category", "Integration")]
         public async Task CanGetIndexPage() {
             // Arrange
             var navbar = "<ul class=\"navbar-nav\">";
@@ -20,20 +21,22 @@ public class µMedlogrTests {
             var content = await response.Content.ReadAsStringAsync();
 
             //Assert
+            response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(contentType, response.Content.Headers.ContentType?.MediaType);
             Assert.True(response.Content.Headers.ContentLength > 0);
-            response.EnsureSuccessStatusCode();
             Assert.Contains(navbar, content);
         }
 
         [Fact]
+        [Trait("Category", "Integration")]
         public async Task CanLoginAsValidUser() {
             var identifyingElement = "<form class=\"form-inline\" action=\"/Identity/Account/Logout?returnUrl=%2F\" method=\"post\">";
 
         }
 
         [Fact]
+        [Trait("Category", "Integration")]
         public async Task LoginPage_ReturnsFailureForInvalidUser() {
 
             //Act

@@ -3,10 +3,11 @@
 @using Microsoft.EntityFrameworkCore
 @using µMedlogr.core
 @using µMedlogr.core.Models
-@inject SignInManager<AppUser> SignInManager
+@* @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
 @inject µMedlogrContext context;
 @{
+  // Move to code behiond
     string? myUserId = null;
     Person? myPerson = null;
     if (SignInManager.IsSignedIn(User))
@@ -22,7 +23,7 @@
                .FirstOrDefault();
         }
     }
-}
+} *@
 <div class="text-center">
     @if (Model.MyUser is not null)
     {
@@ -50,7 +51,7 @@
             <br />
             <label>
                 <input asp-for="IsPerson" type="radio" value="true" />
-                @if (myPerson != null)
+                @if (Model.Me != null)
                 {
                     <span>
                         Uppdatera min hälsodata
