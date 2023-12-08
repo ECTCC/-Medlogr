@@ -2,20 +2,22 @@ using µMedlogr.core;
 using µMedlogr.core.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using µMedlogr.core.Models;
 
 namespace µMedlogr;
 public class Program {
     public static void Main(string[] args) {
 
         //Only For manual testing data
+
         #region CustomSeeding
 #if DEBUG
-        var µMedlogrContextFactory = new µMedlogrContextFactory();
-        using (var context = µMedlogrContextFactory.CreateDbContext([""])) {
-            context.Database.EnsureDeleted();
-            context.Database.EnsureCreated();
-            context.SaveChanges();
-        }
+        //var µMedlogrContextFactory = new µMedlogrContextFactory();
+        //using (var context = µMedlogrContextFactory.CreateDbContext([""])) {
+        //    context.Database.EnsureDeleted();
+        //    context.Database.EnsureCreated();
+        //    context.SaveChanges();
+        //}
 #endif
         #endregion
 

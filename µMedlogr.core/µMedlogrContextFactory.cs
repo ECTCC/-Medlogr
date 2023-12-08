@@ -12,6 +12,7 @@ public class µMedlogrContextFactory : IDesignTimeDbContextFactory<µMedlogrCont
         var connstring = config.GetConnectionString("DefaultConnection");
         var optionsBuilder = new DbContextOptionsBuilder<µMedlogrContext>();
         optionsBuilder.UseSqlServer(connstring);
+        optionsBuilder.EnableSensitiveDataLogging();
 
         return new µMedlogrContext(optionsBuilder.Options);
     }

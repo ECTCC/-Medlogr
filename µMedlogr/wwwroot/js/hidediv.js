@@ -1,5 +1,5 @@
 ﻿
-const toggleButton = document.getElementById('toggleButton');
+const togglebutton = document.getElementById('togglebutton');
 const weightDiv = document.getElementById('weightDiv');
 
 //toggleButton.addEventListener('click', function () {

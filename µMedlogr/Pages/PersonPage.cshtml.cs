@@ -10,17 +10,17 @@ public class PersonPageModel(EntityManager entityManager, UserManager<AppUser> u
     private readonly UserManager<AppUser> _userManager = userManager;
 
     public Person Me { get; set; }
-    public List<string> GenderList { get; set; } = [];
-    public List<string> AllergiesList { get; set; } = [];
+    public List<string> GenderList { get; set; }
+    public List<string> AllergiesList { get; set; }
     public AppUser? MyUser { get; set; }
     public List<Person> PeopleInCareOf { get; set; }
 
     [BindProperty]
-    public List<string> SelectedAllergies { get; set; } = [];
+    public List<string> SelectedAllergies { get; set; }
     [BindProperty]
     public bool IsPerson { get; set; }
     [BindProperty]
-    public Person Person { get; set; } = new();
+    public Person Person { get; set; }
     [BindProperty]
     public DateOnly SelectedDate { get; set; }
     [BindProperty]

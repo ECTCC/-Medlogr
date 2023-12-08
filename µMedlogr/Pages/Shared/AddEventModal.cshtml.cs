@@ -8,7 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace µMedlogr.Pages.Shared;
 public class AddEventModalModel : PageModel {
     private readonly DrugService _drugService;
-    private class DrugModel {
+    private class DrugModel() {
         public int Id { get; set; } 
         public string Name { get; set; } = string.Empty;
     }
