@@ -255,6 +255,110 @@ namespace µMedlogr.core.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("µMedlogr.core.Models.Drug", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ActiveSubstance")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Effects")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Form")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("Drugs");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ActiveSubstance = "Kokain",
+                            Effects = "[4]",
+                            Form = 2,
+                            Name = "Ipren"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ActiveSubstance = "MDMA",
+                            Effects = "[4,3,1]",
+                            Form = 2,
+                            Name = "Treo"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ActiveSubstance = "Secret",
+                            Effects = "[0]",
+                            Form = 2,
+                            Name = "Viagra"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ActiveSubstance = "Kokain",
+                            Effects = "[2]",
+                            Form = 1,
+                            Name = "Amoxicillin"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ActiveSubstance = "alpha-methylphenethylamine",
+                            Effects = "[4,0]",
+                            Form = 7,
+                            Name = "Thomas Energy Supplement"
+                        });
+                });
+
+            modelBuilder.Entity("µMedlogr.core.Models.Event", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("HealthRecordId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("NotedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HealthRecordId");
+
+                    b.ToTable("Events");
+                });
+
             modelBuilder.Entity("µMedlogr.core.Models.HealthRecord", b =>
                 {
                     b.Property<int>("Id")
@@ -272,13 +376,6 @@ namespace µMedlogr.core.Migrations
                         .IsUnique();
 
                     b.ToTable("HealthRecords");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            PersonId = 1
-                        });
                 });
 
             modelBuilder.Entity("µMedlogr.core.Models.HealthRecordEntry", b =>
@@ -330,16 +427,6 @@ namespace µMedlogr.core.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("People");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Allergies = "[]",
-                            DateOfBirth = new DateOnly(1, 1, 1),
-                            NickName = "Nisse",
-                            WeightInKg = 47f
-                        });
                 });
 
             modelBuilder.Entity("µMedlogr.core.Models.SymptomMeasurement", b =>
@@ -376,6 +463,9 @@ namespace µMedlogr.core.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<TimeSpan>("MeasureInterval")
+                        .HasColumnType("time");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -383,6 +473,44 @@ namespace µMedlogr.core.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SymptomTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            MeasureInterval = new TimeSpan(0, 0, 0, 0, 0),
+                            Name = "Snuva"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            MeasureInterval = new TimeSpan(0, 0, 0, 0, 0),
+                            Name = "Hosta"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            MeasureInterval = new TimeSpan(0, 0, 0, 0, 0),
+                            Name = "Feber"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            MeasureInterval = new TimeSpan(0, 0, 0, 0, 0),
+                            Name = "Huvudvärk"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            MeasureInterval = new TimeSpan(0, 0, 0, 0, 0),
+                            Name = "Låg Energi"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            MeasureInterval = new TimeSpan(0, 0, 0, 0, 0),
+                            Name = "Nedsatt prestationsförmåga"
+                        });
                 });
 
             modelBuilder.Entity("µMedlogr.core.Models.TemperatureData", b =>
@@ -502,6 +630,20 @@ namespace µMedlogr.core.Migrations
                     b.Navigation("Me");
                 });
 
+            modelBuilder.Entity("µMedlogr.core.Models.Drug", b =>
+                {
+                    b.HasOne("µMedlogr.core.Models.Event", null)
+                        .WithMany("AdministeredMedicines")
+                        .HasForeignKey("EventId");
+                });
+
+            modelBuilder.Entity("µMedlogr.core.Models.Event", b =>
+                {
+                    b.HasOne("µMedlogr.core.Models.HealthRecord", null)
+                        .WithMany("Events")
+                        .HasForeignKey("HealthRecordId");
+                });
+
             modelBuilder.Entity("µMedlogr.core.Models.HealthRecord", b =>
                 {
                     b.HasOne("µMedlogr.core.Models.Person", "Person")
@@ -542,9 +684,16 @@ namespace µMedlogr.core.Migrations
                         .HasForeignKey("HealthRecordId");
                 });
 
+            modelBuilder.Entity("µMedlogr.core.Models.Event", b =>
+                {
+                    b.Navigation("AdministeredMedicines");
+                });
+
             modelBuilder.Entity("µMedlogr.core.Models.HealthRecord", b =>
                 {
                     b.Navigation("Entries");
+
+                    b.Navigation("Events");
 
                     b.Navigation("Temperatures");
                 });

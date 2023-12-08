@@ -121,6 +121,7 @@ public class EntityManager {
         var healthRecord = _context.HealthRecords.FirstOrDefault(x => x.Id == healthRecordId);
         if (healthRecord != null) {
             var tempdata = new TemperatureData() { Measurement = temperature, Comments = notes, TimeOfMeasurement = DateTime.Now };
+
             healthRecord.Temperatures.Add(tempdata);
 
             _context.Attach(healthRecord);

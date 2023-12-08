@@ -1,11 +1,24 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using µMedlogr.core;
 using µMedlogr.core.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace µMedlogr;
 public class Program {
     public static void Main(string[] args) {
+
+        //Only For manual testing data
+        #region CustomSeeding
+#if DEBUG
+        var µMedlogrContextFactory = new µMedlogrContextFactory();
+        using (var context = µMedlogrContextFactory.CreateDbContext([""])) {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            context.SaveChanges();
+        }
+#endif
+        #endregion
+
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
@@ -21,7 +34,6 @@ public class Program {
 
         builder.Services.AddRazorPages();
         builder.Services.AddDbContext<µMedlogrContext>(options => options.UseSqlServer(connectionString));
-        //builder.Services.AddDbContext<µMedlogrContext>();
         builder.Services.AddScoped<µMedlogrContext>();
         builder.Services.AddScoped<EntityManager>();
         builder.Services.AddScoped<HealthRecordService>();
@@ -38,8 +50,7 @@ public class Program {
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
-        using (var scope = app.Services.CreateScope())
-        {
+        using (var scope = app.Services.CreateScope()) {
             var services = scope.ServiceProvider;
 
             var context = services.GetRequiredService<µMedlogrContext>();
@@ -55,6 +66,8 @@ public class Program {
 
         app.MapRazorPages();
         app.MapControllers();
+
+
         app.Run();
     }
 }

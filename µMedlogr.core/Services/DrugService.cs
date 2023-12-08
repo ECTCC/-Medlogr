@@ -14,14 +14,20 @@ public class DrugService(µMedlogrContext context) : IEntityService<Drug> {
     }
 
     public IEnumerable<Drug> GetAll() {
-        throw new NotImplementedException();
+        return _context.Drugs.AsEnumerable();
     }
 
     public bool SaveAll(IEnumerable<Drug> values) {
-        throw new NotImplementedException();
+        bool canSave = false;
+        if (canSave) {
+            _context.AddRange(values);
+            return _context.SaveChanges() > 0;
+        }
+        return false;
     }
 
     public bool Update(Drug entity) {
-        throw new NotImplementedException();
+        _context.Update(entity);
+        return _context.SaveChanges() > 0;
     }
 }

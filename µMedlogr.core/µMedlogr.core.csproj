@@ -6,7 +6,6 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="EntityFramework" Version="6.4.4" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.0" />
@@ -28,7 +27,6 @@
 	  </AssemblyAttribute>
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Exceptions\" />
 	  <Folder Include="Migrations\" />
 	</ItemGroup>
 

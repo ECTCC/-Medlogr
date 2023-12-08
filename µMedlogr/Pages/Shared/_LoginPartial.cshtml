@@ -61,7 +61,8 @@
 
 @if (myPerson is not null) {
     <div id="AddEventModal" class="modal fade">
-        @Html.Partial("AddEventModal", new AddEventModalModel(Context.RequestServices.GetService<DrugService>())) { HealthRecordId = myPerson.HealthRecord.Id })
+        <partial name="Shared/AddEventModal" model="new Shared.AddEventModalModel(Context.RequestServices.GetService<DrugService>())"></partial>
+        @* @Html.Partial("AddEventModal", new AddEventModalModel(Context.RequestServices.GetService<DrugService>())) { HealthRecordId = myPerson.HealthRecord.Id }) *@
     </div>
 }
 

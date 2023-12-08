@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using µMedlogr.core.Exceptions;
 
 namespace µMedlogr.Pages;
 public class AddTemperatureModel : PageModel {
@@ -39,13 +40,13 @@ public class AddTemperatureModel : PageModel {
             return Page();
         }
 
-        var success = _entityManager.AddTemperatureData(healthRecordId, NewTemperature, Notes);
-        if (success) {
-            return RedirectToPage("/PersonPage");
-        } else {
+        try {
+            _entityManager.AddTemperatureData(healthRecordId, NewTemperature, Notes);
+        } catch (TemperatureOutOfRangeException) {
             TempData["Error"] = "Modal";
             TempData["Message"] = "Kunde inte lägga till temperaturmätning";
             return Page();
         }
+        return RedirectToPage("/PersonPage");
     }
 }
