@@ -67,8 +67,7 @@ public class SymptomLogModel : PageModel
         Person = _entityManager.GetPersonByHealthRecordId(healthRecordId);
         //CurrentHealthRecord = _entityManager.GetHealthRecordById(MyUser.Id);
 
-        CurrentHealthRecordEntries = await _entityManager.GetHealthRecordEntriesByHealthRekordId(healthRecordId);
-
+        CurrentHealthRecordEntries = await _entityManager.GetHealthRecordEntriesByHealthRekordId(healthRecordId); 
 
     }
 
