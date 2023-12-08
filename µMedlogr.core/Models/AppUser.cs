@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace µMedlogr.core.Models; 
+namespace µMedlogr.core.Models;
 public class AppUser : IdentityUser {
 
     public Person? Me { get; set; }

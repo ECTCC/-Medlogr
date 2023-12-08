@@ -14,7 +14,7 @@ public class SymptomType : Entity {
     /// The duration for which a symptom will be reported 
     /// as active before a new assessment is needed
     /// </summary>
-    //public float MeasureInterval { get; set; }
+    //public Timespan MeasureInterval { get; set; }
 
     public SymptomType() { 
         Records = new HashSet<HealthRecord>();
