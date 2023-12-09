@@ -15,6 +15,7 @@ public class µMedlogrContext : IdentityDbContext<AppUser> {
     internal DbSet<Event> Events { get; set; } = default!;
 
     public µMedlogrContext(DbContextOptions options) : base(options) { }
+    public µMedlogrContext() { }
 
     protected override void OnModelCreating(ModelBuilder builder) {
         base.OnModelCreating(builder);
