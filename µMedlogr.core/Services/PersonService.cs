@@ -7,19 +7,26 @@ public class PersonService(µMedlogrContext context) : IEntityService<Person>, I
     private readonly µMedlogrContext _context = context;
     #region EntityService
     public Task<bool> Delete(Person entity) {
-        throw new NotImplementedException();
+        if (entity == null) {
+            return Task.FromResult(false);
+        }
+        return Task.FromResult(true);
     }
 
     public Task<Person?> Find(int key) {
-        throw new NotImplementedException();
+        if(key <= 0) {
+            return Task.FromResult<Person?>(null);
+        }
+        return Task.FromResult<Person?>(null);
     }
 
     public Task<IEnumerable<Person>> GetAll() {
-        throw new NotImplementedException();
+        return Task.Run(() => _context.People.AsEnumerable());
     }
 
     public Task<bool> SaveAll(IEnumerable<Person> values) {
-        throw new NotImplementedException();
+        _context.AddRange(values);
+        return Task.Run(() => _context.SaveChanges() > 0);
     }
 
     public Task<bool> Update(Person entity) {

@@ -177,14 +177,6 @@ public class EntityManagerTest {
         using var context = new µMedlogrContext(_contextOptions);
 
         context.AddRange(
-            new SymptomType() {
-                Id = 1,
-                Name = "Snuva"
-            },
-            new SymptomType() {
-                Id = 2,
-                Name = "Hosta"
-            },
             new HealthRecord() {
                 Id = 1,
                 Temperatures = [],
