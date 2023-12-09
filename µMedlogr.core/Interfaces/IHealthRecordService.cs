@@ -7,4 +7,5 @@ internal interface IHealthRecordService {
     public Task<bool> SaveHealthRecord(HealthRecord record);
     public Task<bool> AddTemperatureDataToHealthRecord(HealthRecord record, TemperatureData data);
     public Task<bool> AddSymptomMeasurementToHealthRecord(HealthRecord record, SymptomMeasurement measurement);
+    public Task<bool> AddEventToHealthRecord(Event theEvent);
 }

@@ -45,5 +45,10 @@ public class HealthRecordService(µMedlogrContext context) : IEntityService<Heal
     public Task<bool> SaveHealthRecord(HealthRecord record) {
         throw new NotImplementedException();
     }
+
+    public Task<bool> AddEventToHealthRecord(Event theEvent) {
+        throw new NotImplementedException();
+    }
     #endregion
+
 }
