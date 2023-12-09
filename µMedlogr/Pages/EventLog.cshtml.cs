@@ -19,7 +19,7 @@ public class EventLogModel(HealthRecordService healthRecordService, PersonServic
             return BadRequest("Ett fel har inträffat");
         }
         //var appUserId = _userManager.GetUserId(User);
-        EventHistory = _healthRecordService.GetAll().Where(x => x.Id== healthRecordId).SelectMany(x => x.Events).ToList();
+        EventHistory = _healthRecordService.GetAll().Result.Where(x => x.Id== healthRecordId).SelectMany(x => x.Events).ToList();
 
         return Page();
     }

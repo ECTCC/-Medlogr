@@ -1,26 +1,33 @@
 ﻿using µMedlogr.core.Interfaces;
 using µMedlogr.core.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace µMedlogr.core.Services;
-public class DrugService(µMedlogrContext context) : IEntityService<Drug> {
+public class DrugService(µMedlogrContext context) : IEntityService<Drug>, IDrugService{
     private readonly µMedlogrContext _context = context;
-    public bool Delete(Drug entity) {
+    #region EntityService
+    public async Task<bool> Delete(Drug entity) {
         _context.Drugs.Remove(entity);
-        return _context.SaveChanges() > 0;
+        return _context.SaveChangesAsync().Result > 0;
     }
 
-    public Drug? Find(int key) {
-        return _context.Drugs.Find(key);
+    public async Task<Drug?> Find(int key) {
+        return await _context.Drugs.FindAsync(key);
     }
     /// <summary>
     /// Gets all drugs with only id and name properties
     /// </summary>
     /// <returns>A list of drugs</returns>
-    public IEnumerable<Drug> GetAll() {
-        return _context.Drugs.Select(x => new Drug() {Id=x.Id, Name=x.Name, ActiveSubstance=null! }).AsEnumerable();
+    public async Task<IEnumerable<Drug>> GetAll() {
+        return await _context.Drugs
+            .Select(x => new Drug() { 
+                Id = x.Id, 
+                Name = x.Name, 
+                ActiveSubstance = null! })
+            .ToListAsync();
     }
 
-    public bool SaveAll(IEnumerable<Drug> values) {
+    public async Task<bool> SaveAll(IEnumerable<Drug> values) {
         bool canSave = false;
         if (canSave) {
             _context.AddRange(values);
@@ -29,8 +36,14 @@ public class DrugService(µMedlogrContext context) : IEntityService<Drug> {
         return false;
     }
 
-    public bool Update(Drug entity) {
+    public async Task<bool> Update(Drug entity) {
         _context.Update(entity);
-        return _context.SaveChanges() > 0;
+        return await _context.SaveChangesAsync() > 0;
     }
+    #endregion
+    #region DrugService
+    public async Task<IEnumerable<Drug>> GetAllDrugs() {
+        return await GetAll();
+    }
+    #endregion
 }
