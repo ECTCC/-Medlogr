@@ -4,6 +4,12 @@
     ViewData["Title"] = Model.Nickname;
 }
 <div class="container">
+    @* Show Temperature chart *@
+    <!-- #region Temperaturechart -->
+    <div class="chart-container" width="600" height="400">
+        <canvas id="temperature-chart"></canvas>
+    </div>
+    <!-- #endregion -->
     @* Show List with TemperatureData *@
     <!-- #region TemperatureList -->
     <div class="row">
@@ -75,6 +81,15 @@
         input.addEventListener("input", (event) => {
             value.textContent = event.target.value;
         });
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+
+            var ctx = document.getElementById('temperature-chart');
+            var myChart = new Chart(ctx, @Html.Raw(Model.ChartJson) );
+
+        });
+
+
     </script>
     @{
         if (TempData["Error"] != null && (string)(TempData["Error"]??String.Empty) == "Modal") {
