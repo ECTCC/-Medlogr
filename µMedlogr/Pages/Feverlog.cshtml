@@ -75,12 +75,9 @@
         input.addEventListener("input", (event) => {
             value.textContent = event.target.value;
         });
-        // $(window).on('load', function () {
-        //     $('#errorModal').modal('show');
-        // });
     </script>
     @{
-        if (TempData["Error"] != null && (string)(TempData["Error"]) == "Modal") {
+        if (TempData["Error"] != null && (string)(TempData["Error"]??String.Empty) == "Modal") {
             <script type="text/javascript">
                 $(function () {
                     $('#errorModal').modal('show');

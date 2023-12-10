@@ -5,6 +5,7 @@ namespace µMedlogr.core.Interfaces;
 /// Represents a Service over people, Ensuring person business rules
 /// </summary>
 internal interface IPersonService {
+    public Task<AppUser?> GetAppUserWithRelationsById(string userId);
     public Task<Person?> GetAppUsersPersonById(string userId);
     public Task<Person?> FindPerson(int personId);
     public Task<bool> SavePerson(Person person);

@@ -89,7 +89,12 @@ public class PersonService(µMedlogrContext context) : IEntityService<Person>, I
         bool hasReasonableWeight = person.WeightInKg > 2 && person.WeightInKg < 200;
         return hasReasonableAge && hasReasonableWeight;
     }
-    private bool ExistsInDatabase<T>(int entityId) where T: Entity {
-        return _context.Find<T>(entityId) is not null;
-    }
+    private bool ExistsInDatabase<T>(int entityId) where T: Entity => _context.Find<T>(entityId) is not null;
+
+    public async Task<AppUser?> GetAppUserWithRelationsById(string userId) => 
+        await _context.AppUsers
+        .Where(x => x.Id.Equals(userId))
+        .Include(x => x.Me)
+        .Include(x => x.PeopleInCareOf)
+        .FirstOrDefaultAsync();
 }
