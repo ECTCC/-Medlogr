@@ -83,6 +83,23 @@ public class EntityManagerTest {
         //Assert
         Assert.False(result);
     }
+    [Fact]
+    [Trait("Category", "Unit")]
+    public async Task DeletePerson_ValidPerson_ReturnsTrue()
+    {
+        // Arrange
+        var sut = CreateDefaultEntityManager();
+        var validPersonId = 1; 
+
+        // Act
+        var personToDelete =  await sut.GetOnePerson(validPersonId);
+        var result = await sut.DeleteOnePerson(personToDelete);
+        var deletedPerson = await sut.GetOnePerson(validPersonId);
+
+        // Assert
+        Assert.True(result);
+        Assert.Null(deletedPerson);
+    }
     #endregion
     #region Tests Variant
     [Theory]
