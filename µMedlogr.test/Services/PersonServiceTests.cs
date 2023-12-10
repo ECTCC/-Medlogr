@@ -173,6 +173,24 @@ public class PersonServiceTests {
         Assert.False(result);
         this.mockRepository.VerifyAll();
     }
+    [Fact]
+    public async Task DeletePerson_ValidPerson_ReturnsTrue()
+    {
+        // Arrange
+        var mockPerson = new Person { Id = 1};
+        var mockContext = new Mock<µMedlogrContext>(_contextOptions);
+        mockContext.Setup(x => x.People.Remove(It.IsAny<Person>())).Callback<Person>((entity) => {
+        });
+        mockContext.Setup(x => x.SaveChangesAsync(default)).ReturnsAsync(1); 
+
+        var sut = new PersonService(mockContext.Object);
+
+        // Act
+        var result = await sut.DeletePerson(mockPerson);
+
+        // Assert
+        Assert.True(result);
+    }
     private µMedlogrContext CreateContext() => new(_contextOptions);
     private void ResetDb() {
         using var context = new µMedlogrContext(_contextOptions);
