@@ -97,4 +97,9 @@ public class PersonService(µMedlogrContext context) : IEntityService<Person>, I
         .Include(x => x.Me)
         .Include(x => x.PeopleInCareOf)
         .FirstOrDefaultAsync();
+
+    public async Task<bool> UpdateAppUser(AppUser user) {
+        _context.AppUsers.Update(user);
+        return await _context.SaveChangesAsync() > 0;
+    }
 }

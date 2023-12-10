@@ -3,27 +3,6 @@
 @using Microsoft.EntityFrameworkCore
 @using µMedlogr.core
 @using µMedlogr.core.Models
-@* @inject SignInManager<AppUser> SignInManager
-@inject UserManager<AppUser> UserManager
-@inject µMedlogrContext context;
-@{
-  // Move to code behiond
-    string? myUserId = null;
-    Person? myPerson = null;
-    if (SignInManager.IsSignedIn(User))
-    {
-        myUserId = UserManager.GetUserId(User);
-        if (myUserId != null)
-        {
-            myPerson = context.AppUsers
-              .Where(x => x.Id == myUserId)
-              .Include(x => x.Me)
-                .ThenInclude(m => m.HealthRecord)
-                .Select(x => x.Me)
-               .FirstOrDefault();
-        }
-    }
-} *@
 <div class="text-center">
     @if (Model.MyUser is not null)
     {

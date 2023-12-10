@@ -5,16 +5,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace µMedlogr.Pages;
-public class PersonPageModel(EntityManager entityManager, UserManager<AppUser> userManager) : PageModel {
-    private readonly EntityManager _entityManager = entityManager;
+public class PersonPageModel(PersonService personService, UserManager<AppUser> userManager) : PageModel {
+    #region Fields
+    //private readonly EntityManager _entityManager = entityManager;
     private readonly UserManager<AppUser> _userManager = userManager;
-
-    public Person Me { get; set; }
+    private readonly PersonService _personService = personService;
+    #endregion
+    #region Properties
+    public Person? Me { get; set; }
     public List<string> GenderList { get; set; }
     public List<string> AllergiesList { get; set; }
     public AppUser? MyUser { get; set; }
     public List<Person> PeopleInCareOf { get; set; }
-
+    #endregion
+    #region BindProperties
     [BindProperty]
     public List<string> SelectedAllergies { get; set; }
     [BindProperty]
@@ -31,15 +35,16 @@ public class PersonPageModel(EntityManager entityManager, UserManager<AppUser> u
     public string EditNickName { get; set; }
     [BindProperty]
     public float? EditedWeight { get; set; }
+    #endregion
 
     public async Task<IActionResult> OnGetAsync() {
         AllergiesList = PersonPage.CreateAllergiesList();
         MyUser = await _userManager.GetUserAsync(User);
-        if(MyUser is not null)
-            {
-                PeopleInCareOf = await _entityManager.GetJunctionData(MyUser);
-                Me = await _entityManager.GetMeFromUser(MyUser);
-            }
+        if (MyUser is not null) {
+            MyUser = await _personService.GetAppUserWithRelationsById(MyUser.Id);
+            PeopleInCareOf = MyUser?.PeopleInCareOf.ToList() ?? [];
+            Me = MyUser?.Me;
+        }
         return Page();
     }
     public async Task<IActionResult> OnPostSavePersonAsync() {
@@ -50,7 +55,7 @@ public class PersonPageModel(EntityManager entityManager, UserManager<AppUser> u
         }
         Person.Allergies = PersonPage.ReturnSameListOrAddStringNoAllergy(SelectedAllergies);
         Person.DateOfBirth = SelectedDate;
-        var myperson = _entityManager.GetUserPerson(MyUser.Id);
+        var myperson = _personService.GetAppUsersPersonById(MyUser.Id);
         if (IsPerson) {
             if (myperson == null) {
                 var healthrecord = new HealthRecord {
@@ -58,13 +63,14 @@ public class PersonPageModel(EntityManager entityManager, UserManager<AppUser> u
                 };
                 Person.HealthRecord = healthrecord;
                 MyUser.Me = Person;
-                await _entityManager.UpdateEntity<AppUser>(MyUser);
+                await _personService.UpdateAppUser(MyUser);
+                //await _entityManager.UpdateEntity<AppUser>(MyUser);
             } else {
                 MyUser.Me!.Allergies = PersonPage.ReturnSameListOrAddStringNoAllergy(SelectedAllergies);
                 MyUser.Me.DateOfBirth = SelectedDate;
                 MyUser.Me.NickName = Person.NickName;
                 MyUser.Me.WeightInKg = Person.WeightInKg;
-                await _entityManager.UpdateEntity<AppUser>(MyUser);
+                await _personService.UpdatePerson(MyUser.Me);
             }
         } else {
             var healthrecord = new HealthRecord {
@@ -72,31 +78,29 @@ public class PersonPageModel(EntityManager entityManager, UserManager<AppUser> u
             };
             Person.HealthRecord = healthrecord;
             MyUser.PeopleInCareOf.Add(Person);
-            await _entityManager.UpdateEntity<AppUser>(MyUser);
+            await _personService.UpdateAppUser(MyUser);
         }
-      return RedirectToPage("/PersonPage");
+        return RedirectToPage("/PersonPage");
     }
-    public async Task<IActionResult> OnPostEditPersonInCareOfAsync(int id)
-    {
-        var person = await _entityManager.GetOnePerson(id);
+    public async Task<IActionResult> OnPostEditPersonInCareOfAsync(int id) {
+        var person = await _personService.FindPerson(id);
         var allergies = PersonPage.ReturnSameListOrAddStringNoAllergy(EditListAllergies);
-        if(EditNickName is null)
-        {
+        if (EditNickName is null) {
             return RedirectToPage("/PersonPage");
         }
-        var success = await _entityManager.EditOnePerson(person,EditNickName,EditBirthDate,EditedWeight,allergies);
-        if (success == false)
-        {
+        person.DateOfBirth = EditBirthDate; person.NickName = EditNickName;
+        person.Allergies = allergies;
+        person.WeightInKg = EditedWeight;
+        var success = await _personService.UpdatePerson(person);
+        if (!success) {
             //Error handeling here or error message.
         }
         return RedirectToPage("/PersonPage");
     }
-    public async Task<IActionResult>OnPostDeletePersonAsync(int id)
-    {
-        var person = await _entityManager.GetOnePerson(id);
-        var success = await _entityManager.DeleteOnePerson(person);
-        if(success == false)
-        {
+    public async Task<IActionResult> OnPostDeletePersonAsync(int id) {
+        var person = await _personService.FindPerson(id);
+        var success = await _personService.DeletePerson(person);
+        if (!success) {
             //Error handeling here. 
         }
         return RedirectToPage("/PersonPage");
