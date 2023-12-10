@@ -3,14 +3,10 @@ using µMedlogr.core.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Diagnostics.CodeAnalysis;
 
 namespace µMedlogr.Pages;
 public class PersonPageModel(PersonService personService, UserManager<AppUser> userManager) : PageModel {
-    #region Fields
-    //private readonly EntityManager _entityManager = entityManager;
-    private readonly UserManager<AppUser> _userManager = userManager;
-    private readonly PersonService _personService = personService;
-    #endregion
     #region Properties
     public Person? Me { get; set; }
     public List<string> GenderList { get; set; }
@@ -39,23 +35,23 @@ public class PersonPageModel(PersonService personService, UserManager<AppUser> u
 
     public async Task<IActionResult> OnGetAsync() {
         AllergiesList = PersonPage.CreateAllergiesList();
-        MyUser = await _userManager.GetUserAsync(User);
+        MyUser = await userManager.GetUserAsync(User);
         if (MyUser is not null) {
-            MyUser = await _personService.GetAppUserWithRelationsById(MyUser.Id);
+            MyUser = await personService.GetAppUserWithRelationsById(MyUser.Id);
             PeopleInCareOf = MyUser?.PeopleInCareOf.ToList() ?? [];
             Me = MyUser?.Me;
         }
         return Page();
     }
     public async Task<IActionResult> OnPostSavePersonAsync() {
-        MyUser = await _userManager.GetUserAsync(User);
+        MyUser = await userManager.GetUserAsync(User);
         if (MyUser == null) {
             // Put Error Message in Tempdata
             return RedirectToPage("/PersonPage");
         }
         Person.Allergies = PersonPage.ReturnSameListOrAddStringNoAllergy(SelectedAllergies);
         Person.DateOfBirth = SelectedDate;
-        var myperson = _personService.GetAppUsersPersonById(MyUser.Id);
+        var myperson = personService.GetAppUsersPersonById(MyUser.Id);
         if (IsPerson) {
             if (myperson == null) {
                 var healthrecord = new HealthRecord {
@@ -63,14 +59,13 @@ public class PersonPageModel(PersonService personService, UserManager<AppUser> u
                 };
                 Person.HealthRecord = healthrecord;
                 MyUser.Me = Person;
-                await _personService.UpdateAppUser(MyUser);
-                //await _entityManager.UpdateEntity<AppUser>(MyUser);
+                await personService.UpdateAppUser(MyUser);
             } else {
                 MyUser.Me!.Allergies = PersonPage.ReturnSameListOrAddStringNoAllergy(SelectedAllergies);
                 MyUser.Me.DateOfBirth = SelectedDate;
                 MyUser.Me.NickName = Person.NickName;
                 MyUser.Me.WeightInKg = Person.WeightInKg;
-                await _personService.UpdatePerson(MyUser.Me);
+                await personService.UpdatePerson(MyUser.Me);
             }
         } else {
             var healthrecord = new HealthRecord {
@@ -78,28 +73,29 @@ public class PersonPageModel(PersonService personService, UserManager<AppUser> u
             };
             Person.HealthRecord = healthrecord;
             MyUser.PeopleInCareOf.Add(Person);
-            await _personService.UpdateAppUser(MyUser);
+            await personService.UpdateAppUser(MyUser);
         }
         return RedirectToPage("/PersonPage");
     }
     public async Task<IActionResult> OnPostEditPersonInCareOfAsync(int id) {
-        var person = await _personService.FindPerson(id);
+        var person = await personService.FindPerson(id);
         var allergies = PersonPage.ReturnSameListOrAddStringNoAllergy(EditListAllergies);
         if (EditNickName is null) {
             return RedirectToPage("/PersonPage");
         }
-        person.DateOfBirth = EditBirthDate; person.NickName = EditNickName;
+        person.DateOfBirth = EditBirthDate;
+        person.NickName = EditNickName;
         person.Allergies = allergies;
         person.WeightInKg = EditedWeight;
-        var success = await _personService.UpdatePerson(person);
+        var success = await personService.UpdatePerson(person);
         if (!success) {
             //Error handeling here or error message.
         }
         return RedirectToPage("/PersonPage");
     }
     public async Task<IActionResult> OnPostDeletePersonAsync(int id) {
-        var person = await _personService.FindPerson(id);
-        var success = await _personService.DeletePerson(person);
+        var person = await personService.FindPerson(id);
+        var success = await personService.DeletePerson(person);
         if (!success) {
             //Error handeling here. 
         }

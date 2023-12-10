@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace µMedlogr.Pages;
 
 public class IndexModel(UserManager<AppUser> userManager, PersonService personService) : PageModel {
-    private readonly UserManager<AppUser> _userManager = userManager;
-    private readonly PersonService _personService = personService;
 
     public AppUser? MyUser { get; set; }
     public Person? Me { get; set; }
@@ -17,9 +15,9 @@ public class IndexModel(UserManager<AppUser> userManager, PersonService personSe
     public List<Person> PeopleInCareOf { get; set; }
 
     public async Task<IActionResult> OnGetAsync() {
-        MyUser = await _userManager.GetUserAsync(User);
+        MyUser = await userManager.GetUserAsync(User);
         if (MyUser is not null) {
-            MyUser = await _personService.GetAppUserWithRelationsById(MyUser.Id);
+            MyUser = await personService.GetAppUserWithRelationsById(MyUser.Id);
             PeopleInCareOf = [.. MyUser?.PeopleInCareOf];
             Me = MyUser?.Me;
         }

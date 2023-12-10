@@ -8,28 +8,22 @@ using System.ComponentModel.DataAnnotations;
 using µMedlogr.core.Exceptions;
 
 namespace µMedlogr.Pages;
-public class AddTemperatureModel : PageModel {
-    public readonly UserManager<AppUser> _userManager;
-    private readonly EntityManager _entityManager;
-    private readonly µMedlogrContext _context;
-    public List<TemperatureData> Temperatures { get; set; } = [];
-    public string Nickname { get; set; } = string.Empty;
+public class AddTemperatureModel(EntityManager entityManager, µMedlogrContext context, UserManager<AppUser> userManager) : PageModel {
+
+    public List<TemperatureData> Temperatures { get; set; }
+    public string Nickname { get; set; }
     public int HealthRecordId { get; set; }
     [BindProperty]
     [Range(35, 45, ErrorMessage = "Value for {0} must be between {1} and {2}")]
     public float NewTemperature { get; set; }
     [BindProperty]
     public string? Notes { get; set; }
-    public AddTemperatureModel(EntityManager entityManager, µMedlogrContext context, UserManager<AppUser> userManager) {
-        _entityManager = entityManager;
-        _context = context;
-        _userManager = userManager;
-    }
+
     public void OnGet(int healthRecordId) {
-        Nickname = _context.HealthRecords
+        Nickname = context.HealthRecords
             .Find(healthRecordId)?
             .Person?.NickName ?? "Anonym person";
-        Temperatures = _entityManager.GetTemperatureDataByHealthRecordId(healthRecordId).ToList();
+        Temperatures = entityManager.GetTemperatureDataByHealthRecordId(healthRecordId).ToList();
         HealthRecordId = healthRecordId;
     }
 
@@ -41,7 +35,7 @@ public class AddTemperatureModel : PageModel {
         }
 
         try {
-            _entityManager.AddTemperatureData(healthRecordId, NewTemperature, Notes);
+            entityManager.AddTemperatureData(healthRecordId, NewTemperature, Notes);
         } catch (TemperatureOutOfRangeException) {
             TempData["Error"] = "Modal";
             TempData["Message"] = "Kunde inte lägga till temperaturmätning";

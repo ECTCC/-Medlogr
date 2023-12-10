@@ -50,6 +50,7 @@ public class PersonService(µMedlogrContext context) : IEntityService<Person>, I
         return _context.People
             .Where(x => x.Id == personId)
             .Include(x => x.CareGivers)
+            .Include(x => x.HealthRecord)
             .FirstOrDefault();
     }
 
@@ -60,6 +61,8 @@ public class PersonService(µMedlogrContext context) : IEntityService<Person>, I
         IQueryable<AppUser> appUser = _context.AppUsers
             .Include(x => x.Me)
             .ThenInclude(x => x.CareGivers)
+            .Include(x=> x.Me)
+            .ThenInclude(x => x.HealthRecord)
             .Where(x => x.Id == userId);
         if (!appUser.Any()) {
             return null;
@@ -95,7 +98,9 @@ public class PersonService(µMedlogrContext context) : IEntityService<Person>, I
         await _context.AppUsers
         .Where(x => x.Id.Equals(userId))
         .Include(x => x.Me)
+        .ThenInclude(x => x.HealthRecord)
         .Include(x => x.PeopleInCareOf)
+        .ThenInclude(x => x.HealthRecord)
         .FirstOrDefaultAsync();
 
     public async Task<bool> UpdateAppUser(AppUser user) {

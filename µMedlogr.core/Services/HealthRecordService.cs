@@ -1,9 +1,9 @@
 ﻿using µMedlogr.core.Interfaces;
 using µMedlogr.core.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace µMedlogr.core.Services;
 public class HealthRecordService(µMedlogrContext context) : IEntityService<HealthRecord>, IHealthRecordService {
-    private readonly µMedlogrContext _context = context;
     #region EntityService
     public Task<bool> Delete(HealthRecord entity) {
         throw new NotImplementedException();
@@ -34,11 +34,16 @@ public class HealthRecordService(µMedlogrContext context) : IEntityService<Heal
         throw new NotImplementedException();
     }
 
-    public Task<HealthRecord> GetHealthRecordById(int id) {
-        throw new NotImplementedException();
+    public async Task<HealthRecord?> GetHealthRecordById(int id) {
+        return await context.HealthRecords
+            .Where(x => x.Id == id)
+            .Include(x => x.Events)
+            .Include(x => x.Entries)
+            .Include(x => x.Temperatures)
+            .FirstOrDefaultAsync();
     }
 
-    public Task<HealthRecord> GetHealthRecordByName(string name) {
+    public Task<HealthRecord> GetHealthRecordByAppUserId(string appUserId) {
         throw new NotImplementedException();
     }
 
