@@ -51,7 +51,7 @@ public class PersonPageModel(PersonService personService, UserManager<AppUser> u
         }
         Person.Allergies = PersonPage.ReturnSameListOrAddStringNoAllergy(SelectedAllergies);
         Person.DateOfBirth = SelectedDate;
-        var myperson = personService.GetAppUsersPersonById(MyUser.Id);
+        var myperson = await personService.GetAppUsersPersonById(MyUser.Id);
         if (IsPerson) {
             if (myperson == null) {
                 var healthrecord = new HealthRecord {

@@ -12,13 +12,15 @@
                 @Html.HiddenFor(m => m.HealthRecordId)
                 <div class="form-group">
                     <label asp-for="Event.Title" class="form-label">Händelse</label>
-                    <textarea asp-for="Event.Title" name="title" class="form-control" cols="40" rows="1" placeholder="Namn på Händelsen"></textarea>
+                    <textarea asp-for="Event.Title" name="title" class="form-control" cols="40" rows="1" placeholder="Vad har hänt"></textarea>
                 </div>
                 <div class="form-group">
                     <label asp-for="Event.Description" class="form-label">Beskrivning</label>
-                    <textarea asp-for="Event.Description" name="description" class="form-control" cols="40" rows="1" placeholder="Kort kommentar"></textarea>
+                    <textarea asp-for="Event.Description" name="description" class="form-control" cols="40" rows="1" placeholder="Kort beskrivning"></textarea>
                 </div>
-                <select asp-for="SelectedDrugs" asp-items="Model.DrugChoices" name="drugId"></select>
+                <div class="form-group">
+                    <select asp-for="SelectedDrugs" asp-items="Model.DrugChoices" multiple name="drugId" class="form-control"></select>
+                </div>
 
                 <input type="submit" class="btn btn-success" value="Logga Händelsen">
             </form>

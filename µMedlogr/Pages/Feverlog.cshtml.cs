@@ -1,16 +1,13 @@
 using µMedlogr.core;
+using µMedlogr.core.Exceptions;
 using µMedlogr.core.Models;
 using µMedlogr.core.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel.DataAnnotations;
-using µMedlogr.core.Exceptions;
-using Microsoft.Extensions.Options;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Data;
 using Newtonsoft.Json;
-using System.Numerics;
+using System.ComponentModel.DataAnnotations;
+using System.Data;
 
 namespace µMedlogr.Pages;
 public class AddTemperatureModel(EntityManager entityManager, µMedlogrContext context, UserManager<AppUser> userManager) : PageModel {
