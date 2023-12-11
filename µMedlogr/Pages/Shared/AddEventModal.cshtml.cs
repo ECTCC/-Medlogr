@@ -8,7 +8,6 @@ using Microsoft.CodeAnalysis.Operations;
 
 namespace µMedlogr.Pages.Shared;
 public class AddEventModalModel : PageModel {
-    private readonly DrugService _drugService;
     [BindProperty]
     public Event? Event { get; set; }
     [BindProperty]
@@ -17,19 +16,9 @@ public class AddEventModalModel : PageModel {
     public SelectList DrugChoices { get; set; }
     [BindProperty]
     public int[] SelectedDrugs {  get; set; }
-    public AddEventModalModel(DrugService drugservice) {
-        _drugService = drugservice;
-        var _drugmap = _drugService.GetAll().Result.ToDictionary(x => x.Id, x => x.Name);
+    public AddEventModalModel(DrugService drugService) {
+        var _drugmap = drugService.GetAll().Result.ToDictionary(x => x.Id, x => x.Name);
         DrugChoices = new SelectList(_drugmap.OrderBy(x => x.Value), "Key", "Value", 0);
-    }
-    public IActionResult OnGet(int healthrecordId) {
-        //List<(int id, string name)> drugs = _drugService.GetAll().Select(x => (x.Id, x.Name)).ToList();
-
-        //DrugChoices = new SelectList(drugs, nameof(Drug.Id), nameof(Drug.Name));
-
-        //HealthRecordId = healthrecordId;
-        //AddEventModalModel viewdata = new(_drugService) { HealthRecordId = healthrecordId };
-        return Partial("Shared/AddEventModal", this);
     }
 }
 internal class DrugModel() {

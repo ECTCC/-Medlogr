@@ -6,22 +6,17 @@
 @using Microsoft.Extensions.DependencyInjection
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
-@inject µMedlogrContext context;
-@inject EntityManager EntityManager;
 @inject DrugService DrugService;
+@inject PersonService PersonService;
 @{
     List<Person> inCareOf = [];
-    AppUser user = null!;
-    Person myPerson = null!;
+    AppUser? user = null!;
+    Person? myPerson = null;
     if (User is not null) {
         user = await UserManager.GetUserAsync(User);
         if(user != null){
-        myPerson = user != null ? EntityManager.GetUserPerson(user?.Id) : null;
-        inCareOf = await context.AppUsers
-                      .Where(x => x.Id == user.Id)
-                      .SelectMany(x => x.PeopleInCareOf)
-                      .Include(x => x.HealthRecord)
-                      .ToListAsync();
+            myPerson = user != null ? await PersonService.GetAppUsersPersonById(user.Id) : null;
+            inCareOf = user?.PeopleInCareOf.ToList() ?? [];
         }
     }
 }

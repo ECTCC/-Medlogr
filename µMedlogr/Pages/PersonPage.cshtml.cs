@@ -10,26 +10,26 @@ namespace µMedlogr.Pages;
 public class PersonPageModel(PersonService personService, UserManager<AppUser> userManager) : PageModel {
     #region Properties
     public Person? Me { get; set; }
-    public List<string> GenderList { get; set; }
-    public List<string> AllergiesList { get; set; }
+    public List<string> GenderList { get; set; } = [];
+    public List<string> AllergiesList { get; set; } = [];
     public AppUser? MyUser { get; set; }
-    public List<Person>? PeopleInCareOf { get; set; }
+    public List<Person>? PeopleInCareOf { get; set; } = [];
     #endregion
     #region BindProperties
     [BindProperty]
-    public List<string> SelectedAllergies { get; set; }
+    public List<string> SelectedAllergies { get; set; } = [];
     [BindProperty]
     public bool IsPerson { get; set; }
     [BindProperty]
-    public Person Person { get; set; }
+    public Person? Person { get; set; }
     [BindProperty]
     public DateOnly SelectedDate { get; set; }
     [BindProperty]
-    public List<string> EditListAllergies { get; set; }
+    public List<string> EditListAllergies { get; set; } = [];
     [BindProperty]
     public DateOnly EditBirthDate { get; set; }
     [BindProperty]
-    public string EditNickName { get; set; }
+    public string EditNickName { get; set; } = "";
     [BindProperty]
     public float? EditedWeight { get; set; }
     #endregion
@@ -96,9 +96,8 @@ public class PersonPageModel(PersonService personService, UserManager<AppUser> u
     }
     public async Task<IActionResult> OnPostDeletePersonAsync(int id) {
         var person = await personService.FindPerson(id);
-        var success = await personService.DeletePerson(person);
-        if (!success) {
-            //Error handeling here. 
+        if (person is not null) {
+            await personService.DeletePerson(person);
         }
         return RedirectToPage("/PersonPage");
     }

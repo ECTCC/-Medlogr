@@ -5,7 +5,7 @@ using µMedlogr.core.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace µMedlogr.Pages;
-public class EventLogModel(HealthRecordService healthRecordService, PersonService personService, UserManager<AppUser> userManager, DrugService drugService) : PageModel {
+public class EventLogModel(HealthRecordService healthRecordService) : PageModel {
     
     public List<Event> EventHistory { get; set; }
     public int HealthRecordId { get; set; }
@@ -14,7 +14,7 @@ public class EventLogModel(HealthRecordService healthRecordService, PersonServic
         if (healthRecordId == 0) {
             return BadRequest("Ett fel har inträffat");
         }
-        EventHistory = [.. (await healthRecordService.GetHealthRecordById(healthRecordId)).Events];
+        EventHistory = [.. (await healthRecordService.GetHealthRecordById(healthRecordId))?.Events];
 
         return Page();
     }

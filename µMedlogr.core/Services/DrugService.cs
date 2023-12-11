@@ -3,11 +3,11 @@ using µMedlogr.core.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace µMedlogr.core.Services;
-public class DrugService(µMedlogrContext context) : IEntityService<Drug>, IDrugService{
+public class DrugService(µMedlogrContext context) : IEntityService<Drug>, IDrugService {
     #region EntityService
     public async Task<bool> Delete(Drug entity) {
         context.Drugs.Remove(entity);
-        return context.SaveChangesAsync().Result > 0;
+        return await context.SaveChangesAsync() > 0;
     }
 
     public async Task<Drug?> Find(int key) {
@@ -19,20 +19,17 @@ public class DrugService(µMedlogrContext context) : IEntityService<Drug>, IDrug
     /// <returns>A list of drugs</returns>
     public async Task<IEnumerable<Drug>> GetAll() {
         return await context.Drugs
-            .Select(x => new Drug() { 
-                Id = x.Id, 
-                Name = x.Name, 
-                ActiveSubstance = null! })
+            .Select(x => new Drug() {
+                Id = x.Id,
+                Name = x.Name,
+                ActiveSubstance = null!
+            })
             .ToListAsync();
     }
 
     public async Task<bool> SaveAll(IEnumerable<Drug> values) {
-        bool canSave = false;
-        if (canSave) {
-            context.AddRange(values);
-            return context.SaveChanges() > 0;
-        }
-        return false;
+        context.AddRange(values);
+        return await context.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> Update(Drug entity) {
