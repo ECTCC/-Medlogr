@@ -12,7 +12,7 @@ public class IndexModel(UserManager<AppUser> userManager, PersonService personSe
     public AppUser? MyUser { get; set; }
     public Person? Me { get; set; }
 
-    public List<Person> PeopleInCareOf { get; set; }
+    public List<Person>? PeopleInCareOf { get; set; }
 
     public async Task<IActionResult> OnGetAsync() {
         MyUser = await userManager.GetUserAsync(User);

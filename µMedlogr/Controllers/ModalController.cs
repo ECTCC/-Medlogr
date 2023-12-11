@@ -14,7 +14,7 @@ public class ModalController(HealthRecordService healthRecordService, DrugServic
         if (healthrecordId != 0 && title != null && description != null) {
             ICollection<Drug> drugs = (await drugService.FindRange(drugId)).ToList();
             var newEvent = new Event() {Title = title, Description=description, NotedAt=DateTime.Now, AdministeredMedicines=drugs };
-            await healthRecordService.AddEventToHealthRecord(newEvent);
+            await healthRecordService.AddEventToHealthRecord(newEvent, healthrecordId);
         }
         return Redirect(Request.Headers["Referer"]);
     }
