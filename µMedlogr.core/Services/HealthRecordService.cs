@@ -44,8 +44,16 @@ public class HealthRecordService(µMedlogrContext context) : IEntityService<Heal
             .FirstOrDefaultAsync();
     }
 
-    public Task<HealthRecord> GetHealthRecordByAppUserId(string appUserId) {
-        throw new NotImplementedException();
+    public async Task<HealthRecord?> GetHealthRecordByAppUserId(string appUserId) {
+        var user = context.AppUsers
+            .Where(x => x.Id == appUserId)
+            .Select(x => x.Me);
+        HealthRecord? record = null;
+        if(user.Any()) {
+            // user should never be null under given conditions 
+            record = await user.Select(user => user!.HealthRecord).FirstOrDefaultAsync();
+        }
+        return record;
     }
 
     public async Task<bool> SaveHealthRecord(HealthRecord record) {
