@@ -31,7 +31,8 @@ public class HealthRecordService(µMedlogrContext context) : IEntityService<Heal
     }
 
     public Task<bool> AddTemperatureDataToHealthRecord(HealthRecord record, TemperatureData data) {
-        throw new NotImplementedException();
+        
+
     }
 
     public async Task<HealthRecord?> GetHealthRecordById(int id) {
@@ -84,5 +85,9 @@ public class HealthRecordService(µMedlogrContext context) : IEntityService<Heal
     }
     private static bool IsValidHealthRecord(HealthRecord healthRecord) {
         return healthRecord.Id <= 0;
+    }
+    private static bool IsValidData(TemperatureData data)
+    {
+       data.Measurement
     }
 }

@@ -37,15 +37,12 @@ public class SymptomLogModel : PageModel
     [BindProperty]
     public int HealthRecordId { get; set; }
     public AppUser? MyUser { get; set; }
-    //[BindProperty] 
-    //public HealthRecord CurrentHealthRecord { get; set; }
-
-
     [BindProperty]
     public List<HealthRecordEntry> CurrentHealthRecordEntries { get; set; }
 
     public SymptomLogModel(EntityManager entityManager, µMedlogrContext context, UserManager<AppUser> userManager,HealthRecordService healthRecordService)
     {
+        
         _context = context;
         _entityManager = entityManager;
         _userManager = userManager;
@@ -66,11 +63,7 @@ public class SymptomLogModel : PageModel
 
         MyUser = await _userManager.GetUserAsync(User);
         Person = _entityManager.GetPersonByHealthRecordId(healthRecordId);
-        //CurrentHealthRecord = _entityManager.GetHealthRecordById(MyUser.Id);
-
         CurrentHealthRecordEntries = await _entityManager.GetHealthRecordEntriesByHealthRekordId(healthRecordId);
-
-
     }
 
     [ActionName("SaveSymptoms")]
@@ -79,8 +72,7 @@ public class SymptomLogModel : PageModel
         var options = new JsonSerializerOptions { WriteIndented = false };
         this.SymptomSeverityList = JsonSerializer.Deserialize<List<Tuple<int, Severity>>>(json) ?? [];
 
-        var currentHealthRecord = await _healthRecordService.GetHealthRecordById(healthRecordId);
-            
+        var currentHealthRecord = await _healthRecordService.GetHealthRecordById(healthRecordId);         
        
         if (SymptomSeverityList.Count < 1 || json is null || currentHealthRecord is null)
         {
