@@ -18,7 +18,8 @@ namespace µMedlogr.core.Services
         public static List<string> CreateAllergiesList()
         {
             List<string> allergieslist = new List<string>();
-            allergieslist.AddRange(new List<string> {"Pollen","Glutten","Laktos","Jordnötter","Skaldjur","Ägg","Vete","Selleri"});
+            allergieslist.AddRange(new List<string> {"Pollen","Glutten","Laktos","Jordnötter","Skaldjur","Ägg","Vete","Selleri",
+            "Hög coupling","Låg cohesion"});
 
             return allergieslist;
         }
