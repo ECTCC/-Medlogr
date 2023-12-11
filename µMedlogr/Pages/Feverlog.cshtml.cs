@@ -98,7 +98,7 @@ public class AddTemperatureModel(EntityManager entityManager, µMedlogrContext c
             TempData["Message"] = "Kunde inte lägga till temperaturmätning";
             return Page();
         }
-        return RedirectToPage("/PersonPage");
+        return RedirectToPage("/Feverlog", new { healthRecordId });
     }
 }
 
