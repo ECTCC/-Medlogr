@@ -51,7 +51,7 @@ public class HealthRecordService(µMedlogrContext context) : IEntityService<Heal
         HealthRecord? record = null;
         if(user.Any()) {
             // user should never be null under given conditions 
-            record = await user.Select(user => user!.HealthRecord).FirstOrDefaultAsync();
+            record = await user.Select(user => user!.HealthRecord).Include(x => x.Person).Include(x => x.Events).Include(x => x.Temperatures).FirstOrDefaultAsync();
         }
         return record;
     }
@@ -64,8 +64,8 @@ public class HealthRecordService(µMedlogrContext context) : IEntityService<Heal
         return (await context.SaveChangesAsync()) > 0;
     }
 
-    public async Task<bool> AddEventToHealthRecord(Event @event, int healthrecordId) {
-        HealthRecord? record = context.HealthRecords.Find(healthrecordId);
+    public async Task<bool> AddEventToHealthRecord(Event @event, int healthRecordId) {
+        HealthRecord? record = context.HealthRecords.Find(healthRecordId);
         if (record is not null && IsValidEvent(@event)) {
             record.Events.Add(@event);
             context.Update(record);
