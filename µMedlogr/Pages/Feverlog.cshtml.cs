@@ -1,8 +1,6 @@
-using µMedlogr.core;
 using µMedlogr.core.Exceptions;
 using µMedlogr.core.Models;
 using µMedlogr.core.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
@@ -10,23 +8,24 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 
 namespace µMedlogr.Pages;
-public class AddTemperatureModel(EntityManager entityManager, µMedlogrContext context, UserManager<AppUser> userManager) : PageModel {
-    public ChartJs Chart { get; set; }
-    public string ChartJson { get; set; }
-    public List<TemperatureData> Temperatures { get; set; }
-    public string Nickname { get; set; }
+// TODO: Until sonarlint can understand primary constructros fully, keep this disabled 
+#pragma warning disable S3604
+public class AddTemperatureModel(HealthRecordService healthRecordService) : PageModel {
+    public ChartJs Chart { get; set; } = null!;
+    public string ChartJson { get; set; } = "";
+    public List<TemperatureData> Temperatures { get; set; } = [];
+    public string Nickname { get; set; } = "";
     public int HealthRecordId { get; set; }
     [BindProperty]
     [Range(35, 45, ErrorMessage = "Value for {0} must be between {1} and {2}")]
-    public float NewTemperature { get; set; }
+    public float MeasuredTemperature { get; set; }
     [BindProperty]
     public string? Notes { get; set; }
 
-    public void OnGet(int healthRecordId) {
-        Nickname = context.HealthRecords
-            .Find(healthRecordId)?
-            .Person?.NickName ?? "Anonym person";
-        Temperatures = entityManager.GetTemperatureDataByHealthRecordId(healthRecordId).ToList();
+    public async void OnGet(int healthRecordId) {
+        var healthRecord = await healthRecordService.GetHealthRecordById(healthRecordId);
+        Nickname = healthRecord?.Person?.NickName ?? "Anonym person";
+        Temperatures = healthRecord?.Temperatures.ToList() ?? []; 
         Temperatures.Sort((y, x) => x.TimeOfMeasurement.CompareTo(y.TimeOfMeasurement));
         var temps = Temperatures.Take(10).Select(x => (int)Math.Round(x.Measurement)).ToList();
         var times = Temperatures.Take(10).Select(x => x.TimeOfMeasurement).ToList();
@@ -84,15 +83,22 @@ public class AddTemperatureModel(EntityManager entityManager, µMedlogrContext c
         });
     }
 
-    public IActionResult OnPost(int healthRecordId) {
+    public async Task<IActionResult> OnPost(int healthRecordId) {
         if (!ModelState.IsValid) {
             TempData["Error"] = "Modal";
             TempData["Message"] = "Kontrollera angivna data";
             return Page();
         }
+        var healthRecord = await healthRecordService.GetHealthRecordById(healthRecordId);
+        var temperatureData = new TemperatureData() { Measurement = MeasuredTemperature, Comments=Notes, TimeOfMeasurement = DateTime.Now };
 
+        if(healthRecord is null) {
+            TempData["Error"] = "Modal";
+            TempData["Message"] = "Tekniskt fel. Kunde inte hitta loggen, kontakta sidans administratör";
+            return Page();
+        }
         try {
-            entityManager.AddTemperatureData(healthRecordId, NewTemperature, Notes);
+            await healthRecordService.AddTemperatureDataToHealthRecord(healthRecord, temperatureData);
         } catch (TemperatureOutOfRangeException) {
             TempData["Error"] = "Modal";
             TempData["Message"] = "Kunde inte lägga till temperaturmätning";
@@ -101,7 +107,8 @@ public class AddTemperatureModel(EntityManager entityManager, µMedlogrContext c
         return RedirectToPage("/Feverlog", new { healthRecordId });
     }
 }
-
+#pragma warning restore S3604
+#region Chart conversion classes
 public class ChartJs {
     public string type { get; set; }
     public int duration { get; set; }
@@ -151,3 +158,4 @@ public class Dataset {
     public string yAxisID { get; set; }
     public string xAxisID { get; set; }
 }
+#endregion
