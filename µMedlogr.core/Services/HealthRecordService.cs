@@ -1,6 +1,8 @@
-﻿using µMedlogr.core.Interfaces;
+﻿using µMedlogr.core.Exceptions;
+using µMedlogr.core.Interfaces;
 using µMedlogr.core.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 
 namespace µMedlogr.core.Services;
 public class HealthRecordService(µMedlogrContext context) : IEntityService<HealthRecord>, IHealthRecordService {
@@ -30,9 +32,16 @@ public class HealthRecordService(µMedlogrContext context) : IEntityService<Heal
         throw new NotImplementedException();
     }
 
-    public Task<bool> AddTemperatureDataToHealthRecord(HealthRecord record, TemperatureData data) {
-        throw new NotImplementedException();
+    public async Task<bool> AddTemperatureDataToHealthRecord(HealthRecord record, TemperatureData data) {
+        ArgumentNullException.ThrowIfNull(record);
+        ArgumentNullException.ThrowIfNull(data);
+        TemperatureOutOfRangeException.ThrowIfEqual(false, IsValidTemperature(data.Measurement));
+
+        record.Temperatures.Add(data);
+        context.Update(record);
+        return await context.SaveChangesAsync() > 0;
     }
+
 
     public async Task<HealthRecord?> GetHealthRecordById(int id) {
         return await context.HealthRecords
@@ -82,7 +91,12 @@ public class HealthRecordService(µMedlogrContext context) : IEntityService<Heal
         }
         return true;
     }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool IsValidHealthRecord(HealthRecord healthRecord) {
         return healthRecord.Id <= 0;
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool IsValidTemperature(float measurement) {
+        return measurement >= 35 && measurement <= 45;
     }
 }
