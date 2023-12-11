@@ -6,13 +6,14 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Diagnostics.CodeAnalysis;
 
 namespace µMedlogr.Pages;
+#pragma warning disable S3604
 public class PersonPageModel(PersonService personService, UserManager<AppUser> userManager) : PageModel {
     #region Properties
     public Person? Me { get; set; }
     public List<string> GenderList { get; set; }
     public List<string> AllergiesList { get; set; }
     public AppUser? MyUser { get; set; }
-    public List<Person> PeopleInCareOf { get; set; }
+    public List<Person>? PeopleInCareOf { get; set; }
     #endregion
     #region BindProperties
     [BindProperty]
@@ -102,3 +103,4 @@ public class PersonPageModel(PersonService personService, UserManager<AppUser> u
         return RedirectToPage("/PersonPage");
     }
 }
+#pragma warning restore S3604

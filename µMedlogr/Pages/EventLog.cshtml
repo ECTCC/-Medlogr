@@ -19,7 +19,7 @@
             </div>
             <div class="card-footer text-muted">
                 <p>
-                    @entry.NotedAt.ToString("yyyy/mm/dd hh:mm:ss")
+                    @entry.NotedAt.ToString("G")
                 </p>
             </div>
         </div>
@@ -30,7 +30,7 @@
 </div>
 
 <div id="AddEventModal" class="modal fade">
-    <partial name="Shared/AddEventModal" model="new Shared.AddEventModalModel(Model.HttpContext.RequestServices.GetService<DrugService>()){HealthRecordId=Model.HealthRecordId}"></partial>
+    <partial name="Shared/AddEventModal" model="new Shared.AddEventModalModel(Model.HttpContext.RequestServices.GetService<DrugService>()!){HealthRecordId=Model.HealthRecordId}"></partial>
 </div>
 
 @section Scripts {
