@@ -4,25 +4,28 @@
 @{
 }
 
-<div class="container" id="eventlog">
+<div class="container" id="eventlog" style="align-content:center; display:flex; justify-content:center">
     @foreach (var entry in Model.EventHistory) {
-        <div class="row">
-            <div class="col-sm">
-                @entry.NotedAt.ToString("yyyy/mm/dd hh:mm:ss")
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">@entry.Title</h5>
+                <p class="card-text">@entry.Description</p>
+                @if (entry.AdministeredMedicines.Count > 0) {
+                    <p>Medicinerade med</p>
+                }
+                @foreach (var drug in entry.AdministeredMedicines) {
+                    <p> <b>Namn</b> @drug.Name  <b>Aktiv substans</b> @drug.ActiveSubstance </p>
+                }
             </div>
-            <div class="col-sm">
-                @entry.Title
+            <div class="card-footer text-muted">
+                <p>
+                    @entry.NotedAt.ToString("yyyy/mm/dd hh:mm:ss")
+                </p>
             </div>
-            <div class="col-sm">
-                @entry.AdministeredMedicines
-            </div>
-        </div>
-        <div class="row">
-            @entry.Description
         </div>
     }
 </div>
-<div id="pagecontrol">
+<div id="pagecontrol" style="align-content:center; display:flex; justify-content:center">
     <a class="btn btn-success" id="eventbutton" value="">Logga en händelse </a>
 </div>
 

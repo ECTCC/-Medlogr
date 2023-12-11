@@ -38,6 +38,7 @@ public class HealthRecordService(µMedlogrContext context) : IEntityService<Heal
         return await context.HealthRecords
             .Where(x => x.Id == id)
             .Include(x => x.Events)
+            .ThenInclude(x => x.AdministeredMedicines)
             .Include(x => x.Entries)
             .Include(x => x.Temperatures)
             .FirstOrDefaultAsync();
@@ -47,13 +48,33 @@ public class HealthRecordService(µMedlogrContext context) : IEntityService<Heal
         throw new NotImplementedException();
     }
 
-    public Task<bool> SaveHealthRecord(HealthRecord record) {
-        throw new NotImplementedException();
+    public async Task<bool> SaveHealthRecord(HealthRecord record) {
+        if(record is null || !IsValidHealthRecord(record)) {
+            return false;
+        }
+        context.HealthRecords.Add(record);
+        return (await context.SaveChangesAsync()) > 0;
     }
 
-    public Task<bool> AddEventToHealthRecord(Event theEvent) {
-        throw new NotImplementedException();
+    public async Task<bool> AddEventToHealthRecord(Event @event, int healthrecordId) {
+        HealthRecord? record = context.HealthRecords.Find(healthrecordId);
+        if (record is not null && IsValidEvent(@event)) {
+            record.Events.Add(@event);
+            context.Update(record);
+            return (await context.SaveChangesAsync()) > 0;
+        }
+        return false;
     }
     #endregion
 
+    private static bool IsValidEvent(Event @event) {
+        var timeSpan = new TimeSpan(DateTime.Now.Ticks - @event.NotedAt.Ticks);
+        if (@event is null || timeSpan.Ticks < 0 || timeSpan.TotalMilliseconds > 5000 ) { 
+            return false; 
+        }
+        return true;
+    }
+    private static bool IsValidHealthRecord(HealthRecord healthRecord) {
+        return healthRecord.Id <= 0;
+    }
 }
