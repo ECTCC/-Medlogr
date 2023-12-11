@@ -255,7 +255,8 @@ namespace µMedlogr.core.Migrations
                         name: "FK_Events_HealthRecords_HealthRecordId",
                         column: x => x.HealthRecordId,
                         principalTable: "HealthRecords",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -275,7 +276,8 @@ namespace µMedlogr.core.Migrations
                         name: "FK_HealthRecordsEntrys_HealthRecords_HealthRecordId",
                         column: x => x.HealthRecordId,
                         principalTable: "HealthRecords",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -320,7 +322,8 @@ namespace µMedlogr.core.Migrations
                         name: "FK_TemperatureDatas_HealthRecords_HealthRecordId",
                         column: x => x.HealthRecordId,
                         principalTable: "HealthRecords",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -342,7 +345,8 @@ namespace µMedlogr.core.Migrations
                         name: "FK_Drugs_Events_EventId",
                         column: x => x.EventId,
                         principalTable: "Events",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -362,7 +366,8 @@ namespace µMedlogr.core.Migrations
                         name: "FK_SymptomMeasurements_HealthRecordsEntrys_HealthRecordEntryId",
                         column: x => x.HealthRecordEntryId,
                         principalTable: "HealthRecordsEntrys",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_SymptomMeasurements_SymptomTypes_SymptomId",
                         column: x => x.SymptomId,
@@ -370,6 +375,11 @@ namespace µMedlogr.core.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "MeId", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "37290e33-eedf-4d2a-ae40-544c5da72297", 0, "fa38e27a-a23f-4977-a902-0e199d0e79da", "Test@Test.com", true, false, null, null, "TEST@TEST.COM", "TEST", "AQAAAAIAAYagAAAAEHuFGihfSqzz4qFhPBf/apjBQy4yILVsnNJku4i5JvYbtOLHz2gK3+nzBoNUloRLoA==", null, false, "1514c361-7826-40cc-88a3-82c57b159dbe", false, "Test" });
 
             migrationBuilder.InsertData(
                 table: "Drugs",
@@ -382,6 +392,11 @@ namespace µMedlogr.core.Migrations
                     { 4, "Kokain", "[2]", null, 1, "Amoxicillin" },
                     { 5, "alpha-methylphenethylamine", "[4,0]", null, 7, "Thomas Energy Supplement" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "People",
+                columns: new[] { "Id", "Allergies", "DateOfBirth", "NickName", "WeightInKg" },
+                values: new object[] { 1, "[]", new DateOnly(2023, 12, 11), "Totte", 55f });
 
             migrationBuilder.InsertData(
                 table: "SymptomTypes",

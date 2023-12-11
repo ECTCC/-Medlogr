@@ -253,6 +253,24 @@ namespace µMedlogr.core.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "37290e33-eedf-4d2a-ae40-544c5da72297",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "fa38e27a-a23f-4977-a902-0e199d0e79da",
+                            Email = "Test@Test.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "TEST@TEST.COM",
+                            NormalizedUserName = "TEST",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHuFGihfSqzz4qFhPBf/apjBQy4yILVsnNJku4i5JvYbtOLHz2gK3+nzBoNUloRLoA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "1514c361-7826-40cc-88a3-82c57b159dbe",
+                            TwoFactorEnabled = false,
+                            UserName = "Test"
+                        });
                 });
 
             modelBuilder.Entity("µMedlogr.core.Models.Drug", b =>
@@ -427,6 +445,16 @@ namespace µMedlogr.core.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("People");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Allergies = "[]",
+                            DateOfBirth = new DateOnly(2023, 12, 11),
+                            NickName = "Totte",
+                            WeightInKg = 55f
+                        });
                 });
 
             modelBuilder.Entity("µMedlogr.core.Models.SymptomMeasurement", b =>
@@ -634,14 +662,16 @@ namespace µMedlogr.core.Migrations
                 {
                     b.HasOne("µMedlogr.core.Models.Event", null)
                         .WithMany("AdministeredMedicines")
-                        .HasForeignKey("EventId");
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("µMedlogr.core.Models.Event", b =>
                 {
                     b.HasOne("µMedlogr.core.Models.HealthRecord", null)
                         .WithMany("Events")
-                        .HasForeignKey("HealthRecordId");
+                        .HasForeignKey("HealthRecordId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("µMedlogr.core.Models.HealthRecord", b =>
@@ -659,14 +689,16 @@ namespace µMedlogr.core.Migrations
                 {
                     b.HasOne("µMedlogr.core.Models.HealthRecord", null)
                         .WithMany("Entries")
-                        .HasForeignKey("HealthRecordId");
+                        .HasForeignKey("HealthRecordId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("µMedlogr.core.Models.SymptomMeasurement", b =>
                 {
                     b.HasOne("µMedlogr.core.Models.HealthRecordEntry", null)
                         .WithMany("Measurements")
-                        .HasForeignKey("HealthRecordEntryId");
+                        .HasForeignKey("HealthRecordEntryId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("µMedlogr.core.Models.SymptomType", "Symptom")
                         .WithMany()
@@ -681,7 +713,8 @@ namespace µMedlogr.core.Migrations
                 {
                     b.HasOne("µMedlogr.core.Models.HealthRecord", null)
                         .WithMany("Temperatures")
-                        .HasForeignKey("HealthRecordId");
+                        .HasForeignKey("HealthRecordId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("µMedlogr.core.Models.Event", b =>

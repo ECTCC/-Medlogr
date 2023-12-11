@@ -73,8 +73,8 @@ public static class ModelBuilderExtensions {
 
         var firstUser = new AppUser {
             UserName = "Test",
-            Email = "µMail.com",
-            EmailConfirmed = false,
+            Email = "Test@Test.com",
+            EmailConfirmed = true,
         };
         firstUser.NormalizedUserName = firstUser.UserName.ToUpper();
         firstUser.NormalizedEmail = firstUser.Email.ToUpper();

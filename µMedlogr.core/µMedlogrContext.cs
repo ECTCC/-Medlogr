@@ -20,6 +20,31 @@ public class µMedlogrContext : IdentityDbContext<AppUser> {
     protected override void OnModelCreating(ModelBuilder builder) {
         base.OnModelCreating(builder);
 
+        builder.Entity<SymptomMeasurement>()
+            .HasOne<HealthRecordEntry>()
+            .WithMany(x => x.Measurements)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<HealthRecordEntry>()
+            .HasOne<HealthRecord>()
+            .WithMany(x => x.Entries)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Event>()
+            .HasMany(x => x.AdministeredMedicines)
+            .WithOne()
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.Entity<Event>()
+            .HasOne<HealthRecord>()
+            .WithMany(x => x.Events)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<TemperatureData>()
+            .HasOne<HealthRecord>()
+            .WithMany(x => x.Temperatures)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.Entity<AppUser>()
             .HasMany(x => x.PeopleInCareOf)
             .WithMany(x => x.CareGivers)
@@ -40,54 +65,5 @@ public class µMedlogrContext : IdentityDbContext<AppUser> {
             .WithOne(x => x.HealthRecord)
             .HasForeignKey<HealthRecord>("PersonId");
         builder.Seed();
-    }
-
-    private void InitData(ModelBuilder builder) {
-        builder.Entity<Drug>().HasData(
-            new Drug() {
-                Id = 1,
-                Name = "Ipren",
-                Form = Enums.Form.Tablet,
-                ActiveSubstance = "Kokain",
-                Effects = [Enums.Effect.Analgesic]
-            },
-            new Drug() {
-                Id = 2,
-                Name = "Treo",
-                Form = Enums.Form.Tablet,
-                ActiveSubstance = "MDMA",
-                Effects = [Enums.Effect.Analgesic, Enums.Effect.Anti_Inflammatory, Enums.Effect.Antipyretic]
-            },
-            new Drug() {
-                Id = 3,
-                Name = "Viagra",
-                Form = Enums.Form.Tablet,
-                ActiveSubstance = "Secret",
-                Effects = [Enums.Effect.Other]
-            },
-            new Drug() {
-                Id = 4,
-                Name = "Amoxicillin",
-                Form = Enums.Form.Liquid,
-                ActiveSubstance = "Kokain",
-                Effects = [Enums.Effect.Antibiotic]
-            },
-            new Drug() {
-                Id = 5,
-                Name = "Thomas Energy Supplement",
-                Form = Enums.Form.Injection,
-                ActiveSubstance = "alpha-methylphenethylamine",
-                Effects = [Enums.Effect.Analgesic, Enums.Effect.Other]
-            }
-            );
-        builder.Entity<SymptomType>().HasData(
-            new SymptomType() { Id = 1, Name = "Snuva" },
-            new SymptomType() { Id = 2, Name = "Hosta" },
-            new SymptomType() { Id = 3, Name = "Feber" },
-            new SymptomType() { Id = 4, Name = "Huvudvärk" },
-            new SymptomType() { Id = 5, Name = "Låg Energi" },
-            new SymptomType() { Id = 6, Name = "Nedsatt prestationsförmåga" }
-            );
-
     }
 }
