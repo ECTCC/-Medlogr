@@ -36,7 +36,6 @@ public class HealthRecordService(µMedlogrContext context) : IEntityService<Heal
         ArgumentNullException.ThrowIfNull(record);
         ArgumentNullException.ThrowIfNull(data);
         TemperatureOutOfRangeException.ThrowIfEqual(false, IsValidTemperature(data.Measurement));
-
         record.Temperatures.Add(data);
         context.Update(record);
         return await context.SaveChangesAsync() > 0;
@@ -44,13 +43,13 @@ public class HealthRecordService(µMedlogrContext context) : IEntityService<Heal
 
 
     public async Task<HealthRecord?> GetHealthRecordById(int id) {
-        return await context.HealthRecords
-            .Where(x => x.Id == id)
+        return context.HealthRecords
             .Include(x => x.Events)
             .ThenInclude(x => x.AdministeredMedicines)
             .Include(x => x.Entries)
             .Include(x => x.Temperatures)
-            .FirstOrDefaultAsync();
+            .Where(x => x.Id == id)
+            .FirstOrDefault();
     }
 
     public async Task<HealthRecord?> GetHealthRecordByAppUserId(string appUserId) {
@@ -58,7 +57,7 @@ public class HealthRecordService(µMedlogrContext context) : IEntityService<Heal
             .Where(x => x.Id == appUserId)
             .Select(x => x.Me);
         HealthRecord? record = null;
-        if(user.Any()) {
+        if (user.Any()) {
             // user should never be null under given conditions 
             record = await user.Select(user => user!.HealthRecord).Include(x => x.Person).Include(x => x.Events).Include(x => x.Temperatures).FirstOrDefaultAsync();
         }

@@ -32,7 +32,7 @@
             @Html.HiddenFor(m => m.HealthRecordId)
             <div class="form-group">
                 <label asp-for="MeasuredTemperature" class="form-label">Uppmätt temperatur</label>
-                <input asp-for="MeasuredTemperature" class="form-range" id="thermometer-value" type="range" list="thermometer-markers" min="30" max="45" step="0.1" />
+                <input asp-for="MeasuredTemperature" class="form-range" id="thermometer-value" type="range" list="thermometer-markers" min="30" max="45" step="0.1" value="35"/>
                 <p class="form-label">Temperatur: <output id="temperature-value"></output>°C</p>
                 @Html.ValidationMessageFor(x => x.MeasuredTemperature, "Kontrollera Temperaturen", new { @class = "text-danger" })
             </div>

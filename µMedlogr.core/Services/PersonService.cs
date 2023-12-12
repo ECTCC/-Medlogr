@@ -20,7 +20,7 @@ public class PersonService(µMedlogrContext context) : IEntityService<Person>, I
     }
 
     public Task<IEnumerable<Person>> GetAll() {
-        return Task.Run(() => _context.People.AsEnumerable());
+        return Task.Run(() => context.People.AsEnumerable());
     }
 
     public Task<bool> SaveAll(IEnumerable<Person> values) {
@@ -38,7 +38,7 @@ public class PersonService(µMedlogrContext context) : IEntityService<Person>, I
     #endregion
     #region PersonService
     public async Task<bool> DeletePerson(Person person) {
-        _context.People.Remove(person);
+        context.People.Remove(person);
         return await context.SaveChangesAsync() > 0;
     }
 
@@ -57,21 +57,29 @@ public class PersonService(µMedlogrContext context) : IEntityService<Person>, I
         if(userId is null) {
             return null;
         }
+        /*
         IQueryable<AppUser> appUser = context.AppUsers
             .Include(x => x.Me)
             .ThenInclude(x => x.CareGivers)
-            .Include(x=> x.Me)
+            .Include(x => x.Me)
             .ThenInclude(x => x.HealthRecord)
             .Where(x => x.Id == userId);
-        if (!appUser.Any()) {
-            return null;
-        }
         return await appUser.Select(x => x.Me).FirstOrDefaultAsync();
+        */
+        return await context.AppUsers
+            .Where(x => x.Id == userId)
+            .Include(x => x.Me)
+            .ThenInclude(x => x.CareGivers)
+            .Include(x => x.Me)
+            .ThenInclude(x => x.HealthRecord)
+            .Select(x => x.Me)
+            .FirstOrDefaultAsync();
+
     }
 
     public async Task<bool> SavePerson(Person person) {
         if (person is not null && HasValidData(person) && person.Id == 0) {
-            _context.People.Add(person);
+            context.People.Add(person);
             return await context.SaveChangesAsync() > 0;
         }
         return false;
@@ -79,7 +87,7 @@ public class PersonService(µMedlogrContext context) : IEntityService<Person>, I
 
     public async Task<bool> UpdatePerson(Person person) {
         if (person is not null && HasValidData(person) && ExistsInDatabase<Person>(person.Id)) {
-            _context.People.Update(person);
+            context.People.Update(person);
             return await context.SaveChangesAsync() > 0;
         }
         return false;
@@ -94,16 +102,16 @@ public class PersonService(µMedlogrContext context) : IEntityService<Person>, I
     private bool ExistsInDatabase<T>(int entityId) where T: Entity => context.Find<T>(entityId) is not null;
 
     public async Task<AppUser?> GetAppUserWithRelationsById(string userId) => 
-        await _context.AppUsers
-        .Where(x => x.Id.Equals(userId))
+        await context.AppUsers
         .Include(x => x.Me)
         .ThenInclude(x => x.HealthRecord)
         .Include(x => x.PeopleInCareOf)
         .ThenInclude(x => x.HealthRecord)
+        .Where(x => x.Id.Equals(userId))
         .FirstOrDefaultAsync();
 
     public async Task<bool> UpdateAppUser(AppUser user) {
-        _context.AppUsers.Update(user);
-        return await _context.SaveChangesAsync() > 0;
+        context.AppUsers.Update(user);
+        return await context.SaveChangesAsync() > 0;
     }
 }

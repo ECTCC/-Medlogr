@@ -9,21 +9,22 @@
 @inject DrugService DrugService;
 @inject PersonService PersonService;
 @{
-    List<Person> inCareOf = [];
-    AppUser? user = null!;
-    Person? myPerson = null;
-    if (User is not null) {
-        user = await UserManager.GetUserAsync(User);
-        if(user != null){
-            myPerson = user != null ? await PersonService.GetAppUsersPersonById(user.Id) : null;
-            inCareOf = user?.PeopleInCareOf.ToList() ?? [];
-        }
-    }
+    // List<Person> inCareOf = [];
+    // AppUser? user = null!;
+    // Person? myPerson = null;
+    // if (User is not null) {
+    //     user = await UserManager.GetUserAsync(User);
+    //     if(user != null){
+    //         user = await PersonService.GetAppUserWithRelationsById(user.Id);
+    //         myPerson = user?.Me;
+    //         inCareOf = user?.PeopleInCareOf.ToList() ?? [];
+    //     }
+    // }
 }
 
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User)) {
-        <li class="nav-item dropdown">
+        @* <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Feber Loggar
             </a>
@@ -38,7 +39,7 @@
                     <li><a class="nav-link" asp-area="" asp-page="/Feverlog" asp-route-healthrecordId="@user.Me.HealthRecord?.Id">@user.Me.NickName</a></li>
                 }
             </ul>
-        </li>
+        </li> *@
 
         <li class="nav-item">
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>

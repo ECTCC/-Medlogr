@@ -12,7 +12,7 @@ namespace µMedlogr.Pages;
 #pragma warning disable S3604
 public class AddTemperatureModel(HealthRecordService healthRecordService) : PageModel {
     public ChartJs Chart { get; set; } = null!;
-    public string ChartJson { get; set; } = "";
+    public string ChartJson { get; set; } = null!;
     public List<TemperatureData> Temperatures { get; set; } = [];
     public string Nickname { get; set; } = "";
     public int HealthRecordId { get; set; }

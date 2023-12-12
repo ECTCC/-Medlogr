@@ -48,7 +48,7 @@ public class EntityManagerTest {
         //Arrange
         //Act
         //Assert
-        Assert.Throws<ArgumentNullException>(() => new EntityManager(null!, null!));
+        Assert.Throws<ArgumentNullException>(() => new EntityManager(null!));
     }
     [Fact]
     [Trait("Category", "Unit")]
@@ -57,8 +57,7 @@ public class EntityManagerTest {
         var optionsbuilder = new DbContextOptionsBuilder<µMedlogrContext>();
         var mock = new Mock<µMedlogrContext>(optionsbuilder.Options);
         mock.Setup(m => m.SaveChangesAsync(default)).ReturnsAsync(0);
-        var userManagerMock = DefaultUserManagerMock();
-        var sut = new EntityManager(mock.Object, userManagerMock.Object);
+        var sut = new EntityManager(mock.Object);
         var symptomMeasurement = new SymptomMeasurement {
             Id = 0,
             Symptom = new SymptomType { Id = 1, Name = "Snuva", Records = [] },
@@ -132,10 +131,9 @@ public class EntityManagerTest {
         //Arrange
         var optionsbuilder = new DbContextOptionsBuilder<µMedlogrContext>();
         var mock = new Mock<µMedlogrContext>(optionsbuilder.Options);
-        var userManagerMock = DefaultUserManagerMock();
         mock.Setup(m => m.SaveChangesAsync(default)).Verifiable();
         mock.Setup(m => m.SaveChangesAsync(default)).ReturnsAsync(1);
-        var sut = new EntityManager(mock.Object, userManagerMock.Object);
+        var sut = new EntityManager(mock.Object);
 
         //Act
         var actual = sut.SaveNewSymptomMeasurement(validSymptomMeasurement);
@@ -161,9 +159,7 @@ public class EntityManagerTest {
     #region Private
     private EntityManager CreateDefaultEntityManager() {
         var context = CreateContext();
-        Mock<UserManager<AppUser>> userManagerMock = DefaultUserManagerMock();
-
-        return new EntityManager(context, userManagerMock.Object);
+        return new EntityManager(context);
     }
 
     private static Mock<UserManager<AppUser>> DefaultUserManagerMock() {
@@ -175,9 +171,8 @@ public class EntityManagerTest {
     private EntityManager CreateEntityManagerWithMockedDbContext() {
         var optionsbuilder = new DbContextOptionsBuilder<µMedlogrContext>();
         var mock = new Mock<µMedlogrContext>(optionsbuilder.Options);
-        var userManagerMock = DefaultUserManagerMock();
 
-        return new EntityManager(mock.Object, userManagerMock.Object);
+        return new EntityManager(mock.Object);
     }
 
     private µMedlogrContext CreateContext() => new(_contextOptions);

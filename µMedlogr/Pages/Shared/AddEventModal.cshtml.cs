@@ -15,7 +15,7 @@ public class AddEventModalModel : PageModel {
     [BindProperty]
     public SelectList DrugChoices { get; set; }
     [BindProperty]
-    public int[] SelectedDrugs {  get; set; }
+    public int[] SelectedDrugs { get; set; } = [];
     public AddEventModalModel(DrugService drugService) {
         var _drugmap = drugService.GetAll().Result.ToDictionary(x => x.Id, x => x.Name);
         DrugChoices = new SelectList(_drugmap.OrderBy(x => x.Value), "Key", "Value", 0);

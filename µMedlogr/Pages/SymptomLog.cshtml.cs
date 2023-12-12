@@ -37,9 +37,6 @@ public class SymptomLogModel : PageModel
     [BindProperty]
     public int HealthRecordId { get; set; }
     public AppUser? MyUser { get; set; }
-    //[BindProperty] 
-    //public HealthRecord CurrentHealthRecord { get; set; }
-
 
     [BindProperty]
     public List<HealthRecordEntry> CurrentHealthRecordEntries { get; set; }
@@ -57,7 +54,7 @@ public class SymptomLogModel : PageModel
         if (json is not null)
         {
             var options = new JsonSerializerOptions { WriteIndented = false };
-            this.SymptomSeverityList = JsonSerializer.Deserialize<List<Tuple<int, Severity>>>(json) ?? [];
+            this.SymptomSeverityList = JsonSerializer.Deserialize<List<Tuple<int, Severity>>>(json, options) ?? [];
         }
         var Symptoms = await _context.SymptomTypes.ToListAsync();
         SymptomChoices = new SelectList(Symptoms, nameof(SymptomType.Id), nameof(SymptomType.Name));
@@ -77,7 +74,7 @@ public class SymptomLogModel : PageModel
     public async Task<IActionResult> OnPostAsync([FromForm] string json, int healthRecordId)
     {
         var options = new JsonSerializerOptions { WriteIndented = false };
-        this.SymptomSeverityList = JsonSerializer.Deserialize<List<Tuple<int, Severity>>>(json) ?? [];
+        this.SymptomSeverityList = JsonSerializer.Deserialize<List<Tuple<int, Severity>>>(json, options) ?? [];
 
         var currentHealthRecord = await _healthRecordService.GetHealthRecordById(healthRecordId);
             

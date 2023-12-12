@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace µMedlogr.Pages;
 public class EventLogModel(HealthRecordService healthRecordService) : PageModel {
-    
-    public List<Event> EventHistory { get; set; }
+
+    public List<Event> EventHistory { get; set; } = [];
     public int HealthRecordId { get; set; }
 
     public async Task<ActionResult> OnGet(int healthRecordId) {

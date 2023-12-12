@@ -1,11 +1,13 @@
 ﻿using µMedlogr.core.Enums;
+using µMedlogr.core.Migrations;
 using µMedlogr.core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics.CodeAnalysis;
 
 namespace µMedlogr.core.Services;
-public class EntityManager(µMedlogrContext context) {
+public class EntityManager( µMedlogrContext context) {
     #region Person
     internal Person? GetPersonByHealthRecordId(int healthRecordId) {
         return context.HealthRecords

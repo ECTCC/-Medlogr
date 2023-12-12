@@ -17,7 +17,7 @@
             <div class="p-2">
                 <h4><strong>Namn:</strong> @Model?.Me?.NickName</h4>
                 <h6>Allergier</h6>
-                @if (Model.Me is not null) {
+                @if (Model?.Me is not null) {
                     foreach (var allergy in Model.Me.Allergies) {
                         <a>@allergy</a>
                     }
@@ -40,7 +40,7 @@
             </div>
         </div>
 
-        @if (Model.PeopleInCareOf.Count > 0) {
+        @if (Model.PeopleInCareOf?.Count > 0) {
             @foreach (var person in Model.PeopleInCareOf) {
                 <div class="card d-flex justify-content-between">
                     <div class="p-2">
