@@ -40,7 +40,7 @@ public class PersonPageModel(PersonService personService, UserManager<AppUser> u
         if (MyUser is not null) {
             MyUser = await personService.GetAppUserWithRelationsById(MyUser.Id);
             PeopleInCareOf = MyUser?.PeopleInCareOf.ToList() ?? [];
-            Me = MyUser?.Me;
+            Me = MyUser?.Me; 
         }
         return Page();
     }
