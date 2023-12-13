@@ -3,6 +3,7 @@ using µMedlogr.core.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using µMedlogr.core.Models;
+using µMedlogr.core.Interfaces;
 
 namespace µMedlogr;
 public class Program {
@@ -72,10 +73,10 @@ public class Program {
         builder.Services.AddDbContext<µMedlogrContext>(options => options.UseSqlServer(connectionString));
         builder.Services.AddScoped<µMedlogrContext>();
         builder.Services.AddScoped<EntityManager>();
-        builder.Services.AddScoped<HealthRecordService>();
-        builder.Services.AddScoped<DrugService>();
-        builder.Services.AddScoped<PersonService>();
-        builder.Services.AddScoped<SymptomService>();
+        builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
+        builder.Services.AddScoped<IDrugService, DrugService>();
+        builder.Services.AddScoped<IPersonService, PersonService>();
+        builder.Services.AddScoped<ISymptomService, SymptomService>();
         builder.Services.AddAuthentication().AddCookie();
         builder.Services.AddAuthorization();
     }

@@ -1,17 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
+﻿using µMedlogr.core;
+using µMedlogr.core.Models;
+using µMedlogr.core.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Moq;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
-using µMedlogr.core;
-using µMedlogr.core.Models;
-using µMedlogr.core.Services;
 
-namespace µMedlogr.Tests.Unit.Services; 
+namespace µMedlogr.Tests.Unit.Services;
 public class PersonServiceTests {
     private readonly DbContextOptions<µMedlogrContext> _contextOptions;
     private readonly µMedlogrContext _context;
@@ -142,7 +136,7 @@ public class PersonServiceTests {
         var result = await sut.GetAppUsersPersonById(userId);
 
         // Assert
-        Assert.Equal(null, result);
+        Assert.Null(result);
         this.mockRepository.VerifyAll();
     }
 

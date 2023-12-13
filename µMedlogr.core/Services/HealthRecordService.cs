@@ -3,9 +3,10 @@ using µMedlogr.core.Interfaces;
 using µMedlogr.core.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace µMedlogr.core.Services;
-public class HealthRecordService(µMedlogrContext context) : IEntityService<HealthRecord>, IHealthRecordService {
+public class HealthRecordService(µMedlogrContext context) : IHealthRecordService {
     #region EntityService
     public Task<bool> Delete(HealthRecord entity) {
         throw new NotImplementedException();
@@ -28,8 +29,12 @@ public class HealthRecordService(µMedlogrContext context) : IEntityService<Heal
     }
     #endregion
     #region HealthRecordService
-    public Task<bool> AddSymptomMeasurementToHealthRecord(HealthRecord record, SymptomMeasurement measurement) {
-        throw new NotImplementedException();
+    public async Task<bool> AddSymptomMeasurementToHealthRecord(HealthRecord record, HealthRecordEntry entry) {
+        ArgumentNullException.ThrowIfNull(record);
+        ArgumentNullException.ThrowIfNull(entry);
+        record.Entries.Add(entry);
+        context.Update(record);
+        return await context.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> AddTemperatureDataToHealthRecord(HealthRecord record, TemperatureData data) {

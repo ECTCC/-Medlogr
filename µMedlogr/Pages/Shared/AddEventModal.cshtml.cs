@@ -5,9 +5,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using µMedlogr.core.Services;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis.Operations;
+using µMedlogr.core.Interfaces;
 
 namespace µMedlogr.Pages.Shared;
-public class AddEventModalModel : PageModel {
+public class AddEventModalModel([FromServices] IDrugService drugService) : PageModel {
     [BindProperty]
     public Event? Event { get; set; }
     [BindProperty]
@@ -16,9 +17,11 @@ public class AddEventModalModel : PageModel {
     public SelectList DrugChoices { get; set; }
     [BindProperty]
     public int[] SelectedDrugs { get; set; } = [];
-    public AddEventModalModel(DrugService drugService) {
-        var _drugmap = drugService.GetAll().Result.ToDictionary(x => x.Id, x => x.Name);
+
+    public async Task<IActionResult> OnGet() {
+        var _drugmap = (await drugService.GetAllDrugs()).ToDictionary(x => x.Id, x => x.Name);
         DrugChoices = new SelectList(_drugmap.OrderBy(x => x.Value), "Key", "Value", 0);
+        return Page();
     }
 }
 internal class DrugModel() {

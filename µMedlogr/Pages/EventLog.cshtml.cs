@@ -1,11 +1,10 @@
-using µMedlogr.core.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using µMedlogr.core.Models;
 using Microsoft.AspNetCore.Mvc;
+using µMedlogr.core.Interfaces;
 
 namespace µMedlogr.Pages;
-public class EventLogModel(HealthRecordService healthRecordService) : PageModel {
+public class EventLogModel(IHealthRecordService healthRecordService) : PageModel {
 
     public List<Event> EventHistory { get; set; } = [];
     public int HealthRecordId { get; set; }

@@ -3,11 +3,11 @@ using µMedlogr.core.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Diagnostics.CodeAnalysis;
+using µMedlogr.core.Interfaces;
 
 namespace µMedlogr.Pages;
 #pragma warning disable S3604
-public class PersonPageModel(PersonService personService, UserManager<AppUser> userManager) : PageModel {
+public class PersonPageModel(IPersonService personService, UserManager<AppUser> userManager) : PageModel {
     #region Properties
     public Person? Me { get; set; }
     public List<string> GenderList { get; set; } = [];

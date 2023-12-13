@@ -2,7 +2,7 @@
 using µMedlogr.core.Models;
 
 namespace µMedlogr.core.Services;
-internal class SymptomService(µMedlogrContext medlogrContext) : IEntityService<SymptomType>, ISymptomService {
+internal class SymptomService(µMedlogrContext medlogrContext) : ISymptomService {
     #region EntityService
     public async Task<bool> Delete(SymptomType entity) {
         medlogrContext.SymptomTypes.Remove(entity);
@@ -32,6 +32,10 @@ internal class SymptomService(µMedlogrContext medlogrContext) : IEntityService<
     #region SymptomService
     public async Task<IEnumerable<SymptomType>> GetAllSymptoms() {
         return await GetAll();
+    }
+
+    public async Task<SymptomType?> FindSymptom(int id) {
+        return medlogrContext.SymptomTypes.Find(id);
     }
     #endregion
 }

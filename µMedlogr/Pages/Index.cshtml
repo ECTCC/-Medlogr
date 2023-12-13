@@ -7,10 +7,6 @@
 @using µMedlogr.core
 @using µMedlogr.core.Services
 
-@{
-
-}
-
 <div class="container">
     @if (Model.MyUser is not null) {
         <div class="card d-flex justify-content-between">
@@ -88,7 +84,3 @@
         </section>
     }
 </div>
-
-@* <div id="AddEventModal" class="modal fade">
-    <partial name="Shared/AddEventModal" model="new Shared.AddEventModalModel(Model.HttpContext.RequestServices.GetService<DrugService>()){HealthRecordId=Model.}"></partial>
-</div> *@

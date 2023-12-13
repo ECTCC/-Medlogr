@@ -45,6 +45,16 @@ public class µMedlogrContext : IdentityDbContext<AppUser> {
             .WithMany(x => x.Temperatures)
             .OnDelete(DeleteBehavior.Cascade);
 
+
+        builder.Entity<HealthRecord>()
+            .HasOne(x => x.Person)
+            .WithOne(x => x.HealthRecord)
+            .HasForeignKey<HealthRecord>("PersonId");
+        ConfigureUser(builder);
+        builder.Seed();
+    }
+
+    private static void ConfigureUser(ModelBuilder builder) {
         builder.Entity<AppUser>()
             .HasMany(x => x.PeopleInCareOf)
             .WithMany(x => x.CareGivers)
@@ -59,11 +69,5 @@ public class µMedlogrContext : IdentityDbContext<AppUser> {
 
         builder.Entity<AppUser>()
             .HasOne(x => x.Me);
-
-        builder.Entity<HealthRecord>()
-            .HasOne(x => x.Person)
-            .WithOne(x => x.HealthRecord)
-            .HasForeignKey<HealthRecord>("PersonId");
-        builder.Seed();
     }
 }

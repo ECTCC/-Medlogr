@@ -1,16 +1,16 @@
 using µMedlogr.core.Exceptions;
 using µMedlogr.core.Models;
-using µMedlogr.core.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using µMedlogr.core.Interfaces;
 
 namespace µMedlogr.Pages;
 // TODO: Until sonarlint can understand primary constructros fully, keep this disabled 
 #pragma warning disable S3604
-public class AddTemperatureModel(HealthRecordService healthRecordService) : PageModel {
+public class AddTemperatureModel(IHealthRecordService healthRecordService) : PageModel {
     public ChartJs Chart { get; set; } = null!;
     public string ChartJson { get; set; } = null!;
     public List<TemperatureData> Temperatures { get; set; } = [];

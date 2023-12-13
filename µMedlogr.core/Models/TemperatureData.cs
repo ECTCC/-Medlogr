@@ -1,8 +1,6 @@
-﻿using µMedlogr.core.Interfaces;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using µMedlogr.core.Exceptions;
+using µMedlogr.core.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using µMedlogr.core.Exceptions;
 
 namespace µMedlogr.core.Models;
 [PrimaryKey(nameof(Id))]
@@ -13,7 +11,7 @@ public class TemperatureData : Entity, INumericMeasurement<float> {
         get => _measurement;
         set {
             if (value < 35 || value > 45) {
-                throw new TemperatureOutOfRangeException("Temperature must be between 35 and 45 degrees");
+                throw new TemperatureOutOfRangeException(nameof(Measurement), "Temperature must be between 35 and 45 degrees");
             }
             _measurement = value;
         }

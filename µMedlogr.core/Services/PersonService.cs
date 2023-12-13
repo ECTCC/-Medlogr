@@ -3,7 +3,7 @@ using µMedlogr.core.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace µMedlogr.core.Services;
-public class PersonService(µMedlogrContext context) : IEntityService<Person>, IPersonService {
+public class PersonService(µMedlogrContext context) : IPersonService {
     #region EntityService
     public Task<bool> Delete(Person entity) {
         if (entity == null) {

@@ -3,7 +3,7 @@ using µMedlogr.core.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace µMedlogr.core.Services;
-public class DrugService(µMedlogrContext context) : IEntityService<Drug>, IDrugService {
+public class DrugService(µMedlogrContext context) : IDrugService {
     #region EntityService
     public async Task<bool> Delete(Drug entity) {
         context.Drugs.Remove(entity);

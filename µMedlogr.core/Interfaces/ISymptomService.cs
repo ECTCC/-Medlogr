@@ -2,7 +2,8 @@
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace µMedlogr.core.Interfaces;
-internal interface ISymptomService {
+public interface ISymptomService {
 
     public Task<IEnumerable<SymptomType>> GetAllSymptoms();
+    public Task<SymptomType?> FindSymptom(int id);
 }
