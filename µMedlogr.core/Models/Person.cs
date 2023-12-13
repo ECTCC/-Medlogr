@@ -9,7 +9,7 @@ public class Person : Entity {
     public string? NickName { get; set; }
     public DateOnly DateOfBirth { get; set; }
     [NotMapped]
-    public TimeSpan Age { get; }
+    public TimeSpan Age { get => new (DateTime.Now.Ticks - DateOfBirth.ToDateTime(TimeOnly.MinValue).Ticks); }
     public float? WeightInKg { get; set; }
     public List<string> Allergies { get; set; } = [];
     public HealthRecord HealthRecord { get; set; } = default!;

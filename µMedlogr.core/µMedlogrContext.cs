@@ -20,16 +20,54 @@ public class µMedlogrContext : IdentityDbContext<AppUser> {
     protected override void OnModelCreating(ModelBuilder builder) {
         base.OnModelCreating(builder);
 
+        ConfigurePerson(builder);
+        ConfigureHealthRecordEntry(builder);
+        ConfigureSymptomMeasurement(builder);
+        ConfigureTemperatureData(builder);
+        ConfigureHealthRecord(builder);
+        ConfigureEvent(builder);
+        ConfigureUser(builder);
+        builder.Seed();
+    }
+
+    private void ConfigurePerson(ModelBuilder builder) {
+        builder.Entity<Person>().Navigation(x => x.HealthRecord).AutoInclude();
+    }
+
+    private static void ConfigureSymptomMeasurement(ModelBuilder builder) {
         builder.Entity<SymptomMeasurement>()
             .HasOne<HealthRecordEntry>()
             .WithMany(x => x.Measurements)
             .OnDelete(DeleteBehavior.Cascade);
-
+    }
+    private static void ConfigureHealthRecordEntry(ModelBuilder builder) {
         builder.Entity<HealthRecordEntry>()
             .HasOne<HealthRecord>()
             .WithMany(x => x.Entries)
             .OnDelete(DeleteBehavior.Cascade);
+    }
+    private static void ConfigureTemperatureData(ModelBuilder builder) {
+        builder.Entity<TemperatureData>()
+            .HasOne<HealthRecord>()
+            .WithMany(x => x.Temperatures)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
+    private static void ConfigureHealthRecord(ModelBuilder builder) {
+        builder.Entity<HealthRecord>()
+            .HasOne(x => x.Person)
+            .WithOne(x => x.HealthRecord)
+            .HasForeignKey<HealthRecord>("PersonId");
+    builder.Entity<HealthRecord>()
+            .Navigation(x => x.Person).AutoInclude();
+        builder.Entity<HealthRecord>()
+            .Navigation(x => x.Entries).AutoInclude();
+        builder.Entity<HealthRecord>()
+            .Navigation(x => x.Events).AutoInclude();
+        builder.Entity<HealthRecord>()
+            .Navigation(x => x.Temperatures).AutoInclude();
+    }
 
+    private static void ConfigureEvent(ModelBuilder builder) {
         builder.Entity<Event>()
             .HasMany(x => x.AdministeredMedicines)
             .WithOne()
@@ -39,19 +77,6 @@ public class µMedlogrContext : IdentityDbContext<AppUser> {
             .HasOne<HealthRecord>()
             .WithMany(x => x.Events)
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder.Entity<TemperatureData>()
-            .HasOne<HealthRecord>()
-            .WithMany(x => x.Temperatures)
-            .OnDelete(DeleteBehavior.Cascade);
-
-
-        builder.Entity<HealthRecord>()
-            .HasOne(x => x.Person)
-            .WithOne(x => x.HealthRecord)
-            .HasForeignKey<HealthRecord>("PersonId");
-        ConfigureUser(builder);
-        builder.Seed();
     }
 
     private static void ConfigureUser(ModelBuilder builder) {
