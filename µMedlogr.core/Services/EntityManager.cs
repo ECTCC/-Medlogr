@@ -118,9 +118,9 @@ public class EntityManager( µMedlogrContext context) {
             .Select(x => x.HealthRecord)
             .SingleOrDefault();
     }
-    public async Task<List<HealthRecordEntry>> GetHealthRecordEntriesByHealthRekordId(int personId) {
+    public async Task<List<HealthRecordEntry>> GetHealthRecordEntriesByHealthRekordId(int healthRecordId) {
         var healthRekordentries = await context.HealthRecords
-            .Where(hr => hr.PersonId == personId)
+            .Where(hr => hr.Id == healthRecordId)
             .SelectMany(hr => hr.Entries)
             .Include(entry => entry.Measurements)
             .ToListAsync();

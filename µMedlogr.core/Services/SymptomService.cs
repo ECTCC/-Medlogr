@@ -1,4 +1,5 @@
-﻿using µMedlogr.core.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using µMedlogr.core.Interfaces;
 using µMedlogr.core.Models;
 
 namespace µMedlogr.core.Services;
@@ -14,7 +15,7 @@ internal class SymptomService(µMedlogrContext medlogrContext) : ISymptomService
     }
 
     public async Task<IEnumerable<SymptomType>> GetAll() {
-        return [.. medlogrContext.SymptomTypes.Select(x => new SymptomType() {Id = x.Id, Name=x.Name })];
+        return await medlogrContext.SymptomTypes.ToListAsync();
     }
 
 

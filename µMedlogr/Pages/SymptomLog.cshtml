@@ -16,7 +16,12 @@
             <input type="hidden" name="healthRecordId" value="@Model.HealthRecordId" />
             <div class="form-group">
                 <label asp-for="SymptomId" class="form-label">Ange Symptom</label>
-                <select asp-for="SymptomId" asp-items="Model.SymptomChoices"></select>
+                <select asp-for="SymptomId">
+                    @foreach (var symptom in Model.SymptomChoices)
+                    {
+                        <option value="@symptom.Key">@symptom.Value</option>
+                    }
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="NewSeverity" class="col-form-label" />
@@ -37,7 +42,7 @@
                 @foreach (var (symptomId, severity) in Model.SymptomSeverityList)
                 {
                     <tr>
-                        <td> @await Model.GetSymptomName(@symptomId)</td>
+                        <td> @Model.SymptomChoices[symptomId]</td>
                         <td>@severity</td>
                     </tr>
                 }

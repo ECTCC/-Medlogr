@@ -56,6 +56,15 @@ public class HealthRecordService(µMedlogrContext context) : IHealthRecordServic
             .Where(x => x.Id == id)
             .FirstOrDefault();
     }
+    public async Task<List<HealthRecordEntry>> GetHealthRecordEntriesByHealthRekordId(int healthRecordId)
+    {
+        var healthRekordentries = await context.HealthRecords
+            .Where(hr => hr.Id == healthRecordId)
+            .SelectMany(hr => hr.Entries)
+            .Include(entry => entry.Measurements)
+            .ToListAsync();
+        return healthRekordentries;
+    }
 
     public async Task<HealthRecord?> GetHealthRecordByAppUserId(string appUserId) {
         var user = context.AppUsers

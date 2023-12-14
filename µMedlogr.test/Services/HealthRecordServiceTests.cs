@@ -87,6 +87,21 @@ public class HealthRecordServiceTests {
         Assert.True(false);
         this.mockRepository.VerifyAll();
     }
+    [Fact]
+    public async Task GetHealthRecordEntriesByHealthRekordId_StateUnderTest_ExpectedBehavior()
+    {
+        //Arrange
+        var service = this.CreateService();
+        int id = 0;
+
+        //Act
+        var result = await service.GetHealthRecordEntriesByHealthRekordId(
+             id);
+        //Assert
+        Assert.True(false);
+        this.mockRepository.VerifyAll();
+    }
+
 
     [Fact]
     public async Task SaveHealthRecord_StateUnderTest_ExpectedBehavior() {
